@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ivTripPhoto"
+        android:id="@+id/ivTripBanner"
         android:layout_gravity="center_horizontal" />
 
     <TextView
@@ -22,6 +22,33 @@
         android:text="1.1 miles Away"
         android:id="@+id/tvTripDistance"
         android:layout_gravity="center_horizontal" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:id="@+id/tvTripLength"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hours"
+            android:id="@+id/tvHours"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/tvTripLength"
+            android:layout_toEndOf="@+id/tvTripLength"
+            android:paddingLeft="5dp" />
+
+
+    </RelativeLayout>
 
 
 </LinearLayout>

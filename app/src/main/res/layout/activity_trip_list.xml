@@ -7,15 +7,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activities.LoginActivity">
+    tools:context=".activities.TripListActivity">
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login with Facebook"
-        android:id="@+id/btnLogin"
-        android:layout_marginTop="186dp"
+        android:text="trip list activity"
+        android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:onClick="login"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="67dp" />
 </RelativeLayout>

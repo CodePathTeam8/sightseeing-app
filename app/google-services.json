@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "966401477795",
+    "firebase_url": "https://sightseeing-app.firebaseio.com",
+    "project_id": "sightseeing-app",
+    "storage_bucket": "sightseeing-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966401477795:android:b32eb7599b833371",
+        "android_client_info": {
+          "package_name": "team8.codepath.sightseeingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966401477795-sv7e9v0ak2s45rfd9ebcbe4tk9fd4hrs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpoacDEU7SOjU4xFvCqLGznKPkMhPNJnk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -51,6 +51,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    if(user.getUid()!= null)
+                        onLoginSuccess();
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -107,7 +111,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         Intent i = new Intent(this, TripListActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
+        finish();
+
     }
 
     private void handleFacebookAccessToken(AccessToken token) {

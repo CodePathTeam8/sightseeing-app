@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Sightseeing App</string>
+    <string name="points_interest">Points of Interest/Places</string>
 </resources>

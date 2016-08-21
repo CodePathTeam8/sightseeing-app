@@ -1,9 +1,13 @@
 package team8.codepath.sightseeingapp.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -35,6 +39,15 @@ public class TripListActivity extends AppCompatActivity {
 
         aTrips.notifyDataSetChanged();
 
+        lvTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
+                Trip trip = aTrips.getItem(position);
+                intent.putExtra("trip", Parcels.wrap(trip));
+                startActivity(intent);
+            }
+        });
 
     }
 }

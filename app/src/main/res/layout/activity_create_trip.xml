@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.TripListActivity">
+    tools:context="team8.codepath.sightseeingapp.CreateTripActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -17,25 +17,18 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <ListView
-        android:id="@+id/lvTrips"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_gravity="left|center_horizontal" />
+    <include layout="@layout/content_create_trip" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabCreateTrip"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:onClick="createTweet"
-        android:src="@drawable/ic_add" />
+        android:src="@android:drawable/ic_menu_share" />
 
 </android.support.design.widget.CoordinatorLayout>

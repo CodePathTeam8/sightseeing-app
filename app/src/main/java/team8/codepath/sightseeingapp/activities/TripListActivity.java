@@ -2,6 +2,7 @@ package team8.codepath.sightseeingapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -16,12 +17,17 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import team8.codepath.sightseeingapp.CreateTripActivity;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
 import team8.codepath.sightseeingapp.models.Trip;
 
 public class TripListActivity extends AppCompatActivity {
 
+    @BindView(R.id.fabCreateTrip)
+    FloatingActionButton fabCreateTrip;
     private ArrayList<Trip> trips;
     private TripsArrayAdapter aTrips;
     private ListView lvTrips;
@@ -31,6 +37,7 @@ public class TripListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_list);
+        ButterKnife.bind(this);
 
 
         // Find the toolbar view inside the activity layout
@@ -57,6 +64,14 @@ public class TripListActivity extends AppCompatActivity {
                 Trip trip = aTrips.getItem(position);
                 intent.putExtra("trip", Parcels.wrap(trip));
                 startActivity(intent);
+            }
+        });
+
+        fabCreateTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(TripListActivity.this, CreateTripActivity.class);
+                startActivity(i);
             }
         });
 

@@ -3,4 +3,5 @@
     <string name="points_interest">Points of Interest/Places</string>
     <string name="facebook_app_id">1031583523556756</string>
     <string name="fb_login_protocol_scheme">fb1031583523556756</string>
+    <string name="action_settings">Settings</string>
 </resources>

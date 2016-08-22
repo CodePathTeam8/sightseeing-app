@@ -1,54 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ivTripBanner"
-        android:layout_gravity="center_horizontal" />
+        android:adjustViewBounds="true"
+        tools:src="@android:drawable/btn_star_big_on" />
 
-    <TextView
-        android:layout_width="wrap_content"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Ice Cream Tour"
-        android:id="@+id/tvTripName"
-        android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1.1 miles Away"
-        android:id="@+id/tvTripDistance"
-        android:layout_gravity="center_horizontal" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
+        android:weightSum="1"
+        android:padding="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10"
-            android:id="@+id/tvTripLength"
-            android:layout_gravity="center_horizontal" />
+            android:text="Ice Cream Tour"
+            android:id="@+id/tvTripName"
+            android:layout_gravity="left|center_horizontal"
+            android:textSize="20dp" />
 
-        <TextView
+
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="hours"
-            android:id="@+id/tvHours"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/tvTripLength"
-            android:layout_toEndOf="@+id/tvTripLength"
-            android:paddingLeft="5dp" />
+            android:layout_gravity="left|center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.1 miles"
+                android:id="@+id/tvTripDistance"
+                android:layout_gravity="left|center_horizontal"
+                android:paddingRight="0dp" />
 
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="away"
+                android:id="@+id/tvAway"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/tvTripDistance"
+                android:layout_toEndOf="@+id/tvTripDistance"/>
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:id="@+id/tvTripLength"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hours"
+                android:id="@+id/tvHours"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/tvTripLength"
+                android:layout_toEndOf="@+id/tvTripLength"
+                android:paddingLeft="3dp" />
+
+
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

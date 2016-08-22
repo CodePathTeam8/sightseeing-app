@@ -56,10 +56,10 @@ public class Trip {
         // Mock Data
         jsonArray = new JSONArray();
         try{
-            jsonArray.put(new JSONObject("{\"id\":\"1\", \"name\":\"Trip 1\", \"distance\":\"11.1 miles \", \"totalLength\": 12, \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
-            jsonArray.put(new JSONObject("{\"id\":\"2\", \"name\":\"Trip 2\", \"distance\":\"6.5 miles \", \"totalLength\": 1.5, \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
-            jsonArray.put(new JSONObject("{\"id\":\"3\", \"name\":\"Trip 3\", \"distance\":\"3.1 miles \", \"totalLength\": 21, \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
-            jsonArray.put(new JSONObject("{\"id\":\"4\", \"name\":\"Trip 4\", \"distance\":\"2 miles \", \"totalLength\": 3, \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
+            jsonArray.put(new JSONObject("{\"id\":\"1\", \"name\":\"Best of Manhattan Ice Cream\", \"distance\":\"11.1 miles \", \"totalLength\": 12, \"bannerPhoto\": \"http://feliciarogersauthor.weebly.com/uploads/1/2/6/7/12672742/9911388_orig.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
+            jsonArray.put(new JSONObject("{\"id\":\"2\", \"name\":\"Staten Island Treats\", \"distance\":\"6.5 miles \", \"totalLength\": 1.5, \"bannerPhoto\": \"http://67.media.tumblr.com/560d23f751255935a78173eb25941a5e/tumblr_nrp7ewTL1Z1ttdrv5o1_1280.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
+            jsonArray.put(new JSONObject("{\"id\":\"3\", \"name\":\"Alphabet City Sweets\", \"distance\":\"3.1 miles \", \"totalLength\": 21, \"bannerPhoto\": \"http://www.billsseafood.com/wp-content/uploads/2015/04/Bills-Seafood-Restaurant-Westbrook-CT-Ice-Cream-Shop-and-Gift-Shop.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
+            jsonArray.put(new JSONObject("{\"id\":\"4\", \"name\":\"Hell's Kitchen Delights\", \"distance\":\"2 miles \", \"totalLength\": 3, \"bannerPhoto\": \"http://www.cafeinteriordesign.com/gallery/ice-cream-shop/ice-cream-shop-20.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
         } catch (JSONException e) {
         }
         ArrayList<Trip> trips = new ArrayList<>();

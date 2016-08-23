@@ -1,6 +1,5 @@
 package team8.codepath.sightseeingapp.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -10,16 +9,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import org.parceler.Parcels;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import team8.codepath.sightseeingapp.CreateTripActivity;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
 import team8.codepath.sightseeingapp.models.Trip;
@@ -31,7 +33,7 @@ public class TripListActivity extends AppCompatActivity {
     private ArrayList<Trip> trips;
     private TripsArrayAdapter aTrips;
     private ListView lvTrips;
-
+    private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("trips");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,33 +48,52 @@ public class TripListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         lvTrips = (ListView) findViewById(R.id.lvTrips);
-        trips = new ArrayList<>();
-        aTrips = new TripsArrayAdapter(this, trips);
-        lvTrips.setAdapter(aTrips);
+//        trips = new ArrayList<>();
+//        aTrips = new TripsArrayAdapter(R.layout.item_trip, mDatabase);
+//        lvTrips.setAdapter(aTrips);
 
-
-        aTrips.addAll(Trip.fromJSONArray());
-
-
-        aTrips.notifyDataSetChanged();
-
-        lvTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("trips");
+        FirebaseListAdapter<Trip> mAdapter = new FirebaseListAdapter<Trip>(this, Trip.class, R.layout.item_trip, ref) {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
-                Trip trip = aTrips.getItem(position);
-                intent.putExtra("trip", Parcels.wrap(trip));
-                startActivity(intent);
-            }
-        });
+            protected void populateView(View view, Trip trip, int position) {
+                ImageView ivTripBanner = (ImageView) view.findViewById(R.id.ivTripBanner);
+                TextView tvTripName = (TextView) view.findViewById(R.id.tvTripName);
+                TextView tvTripDistance = (TextView) view.findViewById(R.id.tvTripDistance);
+                TextView tvTripLength = (TextView) view.findViewById(R.id.tvTripLength);
 
-        fabCreateTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(TripListActivity.this, CreateTripActivity.class);
-                startActivity(i);
+                ivTripBanner.setImageResource(android.R.color.transparent); // clear out old image for recycled view
+                Picasso.with(getApplicationContext()).load(trip.getBannerPhoto()).into(ivTripBanner);
+                tvTripName.setText(trip.getName());
+                tvTripDistance.setText(trip.getDistance());
+                tvTripLength.setText(trip.getTotalLength());
+
+
             }
-        });
+        };
+        lvTrips.setAdapter(mAdapter);
+
+//        aTrips.addAll(mDatabase);
+
+//        aTrips.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
+
+//        lvTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
+//                Trip trip = aTrips.getItem(position);
+//                intent.putExtra("trip", Parcels.wrap(trip));
+//                startActivity(intent);
+//            }
+//        });
+//
+//        fabCreateTrip.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent i = new Intent(TripListActivity.this, CreateTripActivity.class);
+//                startActivity(i);
+//            }
+//        });
 
     }
 

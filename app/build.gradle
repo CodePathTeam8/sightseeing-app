@@ -40,6 +40,8 @@ dependencies {
     compile 'org.parceler:parceler-api:1.1.1'
     apt 'org.parceler:parceler:1.1.1'
 
+    compile 'com.google.firebase:firebase-database:9.4.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

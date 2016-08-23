@@ -1,18 +1,20 @@
 package team8.codepath.sightseeingapp.models;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by floko_000 on 8/18/2016.
  */
-@Parcel
 public class Place {
-
+    private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("places");
 
     public int id;
     public String name;
@@ -20,16 +22,22 @@ public class Place {
     public String bannerPhoto;
     public String hours;
     public static JSONArray jsonArray;
+    public String placeId;
 
     public Place(){
-        initializeJsonArray();
+        addData();
+    }
+
+    public Place(String name, String placeId){
+        this.name = name;
+        this.placeId = placeId;
     }
 
     public String getName() {
         return name;
     }
 
-
+    public String getPlaceId() {return placeId;}
     public int getAverageStay() {
         return averageStay;
     }
@@ -43,15 +51,11 @@ public class Place {
 
 
     // Mock Data
-    public static void initializeJsonArray(){
-        jsonArray = new JSONArray();
-        try{
-            jsonArray.put(new JSONObject("{\"id\":\"1\", \"name\":\"Museum A\", \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"hours\": \"9am-10pm\"}"));
-            jsonArray.put(new JSONObject("{\"id\":\"2\", \"name\":\"Ashleys Ice Cream\", \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"hours\": \"10am-1pm\"}"));
-            jsonArray.put(new JSONObject("{\"id\":\"3\", \"name\":\"Yummy Ice Cream\", \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"hours\": \"9am-11pm\"}"));
-            jsonArray.put(new JSONObject("{\"id\":\"4\", \"name\":\"Super Yummy Ice Cream\", \"bannerPhoto\": \"http://www-tc.pbs.org/food/files/2012/07/History-of-Ice-Cream-1.jpg\", \"hours\": \"6am-10pm\"}"));
-        } catch (JSONException e) {
-        }
+    public void addData(){
+//        Place place = new Place("Ample Hills Creamery", "ChIJ9QuctVVawokR2xUuRAu-bs4");
+//        Place place_two = new Place("Emack & Bolio's", "ChIJ9aeRDrlYwokR0OXIVGvP_sg");
+//        mDatabase.child("1").setValue(place);
+//        mDatabase.child("2").setValue(place_two);
     }
 
 
@@ -80,12 +84,15 @@ public class Place {
     // public static Place fromJSON(JSONObject jsonObject){
     public static Place fromJSON(JSONObject jsonObject){
         Place place = new Place();
+        String uuid = UUID.randomUUID().toString();
 
         try {
             place.id = jsonObject.getInt("id");
-            place.name = jsonObject.getString("text");
+            place.name = jsonObject.getString("name");
             place.averageStay = jsonObject.getInt("averageStay");
             place.hours = jsonObject.getString("hours");
+            place.placeId = jsonObject.getString("place_id");
+            mDatabase.child(uuid).setValue(place);
         } catch (JSONException e) {
             e.printStackTrace();
         }

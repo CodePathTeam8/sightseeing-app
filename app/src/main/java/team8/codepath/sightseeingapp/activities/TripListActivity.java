@@ -39,7 +39,6 @@ public class TripListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
 
-
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.

@@ -14,14 +14,13 @@ import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
-import team8.codepath.sightseeingapp.models.Place;
 import team8.codepath.sightseeingapp.models.Trip;
 
 public class TripDetailsActivity extends AppCompatActivity {
     String name;
     String distance;
     String time;
-    private ArrayList<Place> places;
+    private ArrayList<String> places;
     private PlacesArrayAdapter aPlaces;
     private ListView lvPlaces;
 
@@ -48,7 +47,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         Picasso.with(getApplicationContext()).load(trip.getBannerPhoto()).into(tripImage);
 
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
-        places = new ArrayList<>();
+        places = new ArrayList<String>();
         aPlaces = new PlacesArrayAdapter(this, places);
         lvPlaces.setAdapter(aPlaces);
 

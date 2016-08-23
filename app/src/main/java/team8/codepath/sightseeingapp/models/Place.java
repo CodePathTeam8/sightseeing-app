@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import java.util.UUID;
 /**
  * Created by floko_000 on 8/18/2016.
  */
+@Parcel
 public class Place {
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("places");
 

@@ -1,14 +1,17 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +20,8 @@ import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -48,12 +53,9 @@ public class TripListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         lvTrips = (ListView) findViewById(R.id.lvTrips);
-//        trips = new ArrayList<>();
-//        aTrips = new TripsArrayAdapter(R.layout.item_trip, mDatabase);
-//        lvTrips.setAdapter(aTrips);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("trips");
-        FirebaseListAdapter<Trip> mAdapter = new FirebaseListAdapter<Trip>(this, Trip.class, R.layout.item_trip, ref) {
+        final FirebaseListAdapter<Trip> mAdapter = new FirebaseListAdapter<Trip>(this, Trip.class, R.layout.item_trip, ref) {
             @Override
             protected void populateView(View view, Trip trip, int position) {
                 ImageView ivTripBanner = (ImageView) view.findViewById(R.id.ivTripBanner);
@@ -69,24 +71,24 @@ public class TripListActivity extends AppCompatActivity {
 
 
             }
+
+
         };
         lvTrips.setAdapter(mAdapter);
 
-//        aTrips.addAll(mDatabase);
-
-//        aTrips.notifyDataSetChanged();
         mAdapter.notifyDataSetChanged();
 
-//        lvTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
-//                Trip trip = aTrips.getItem(position);
-//                intent.putExtra("trip", Parcels.wrap(trip));
-//                startActivity(intent);
-//            }
-//        });
-//
+        lvTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
+                Trip trip = mAdapter.getItem(position);
+                Log.d("Trip", trip.toString());
+                intent.putExtra("trip", Parcels.wrap(trip));
+                startActivity(intent);
+            }
+        });
+
 //        fabCreateTrip.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

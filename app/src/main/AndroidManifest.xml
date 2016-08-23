@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateTripActivity"
+            android:name=".activities.CreateTripActivity"
             android:label="@string/title_activity_create_trip"
             android:theme="@style/AppTheme"></activity>
     </application>

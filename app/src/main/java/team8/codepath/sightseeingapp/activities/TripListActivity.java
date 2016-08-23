@@ -3,7 +3,10 @@ package team8.codepath.sightseeingapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -13,13 +16,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import team8.codepath.sightseeingapp.CreateTripActivity;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
 import team8.codepath.sightseeingapp.models.Trip;
@@ -28,6 +33,10 @@ public class TripListActivity extends AppCompatActivity {
 
     @BindView(R.id.fabCreateTrip)
     FloatingActionButton fabCreateTrip;
+    @BindView(R.id.ndTrips)
+    DrawerLayout ndTrips;
+    @BindView(R.id.nvView)
+    NavigationView nvView;
     private ArrayList<Trip> trips;
     private TripsArrayAdapter aTrips;
     private ListView lvTrips;
@@ -75,8 +84,11 @@ public class TripListActivity extends AppCompatActivity {
             }
         });
 
-    }
+        // Setup drawer view
+        setupDrawerContent(nvView);
 
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,17 +118,49 @@ public class TripListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-/*        if (id == R.id.action_settings) {
-            return true;
-        }*/
+        // The action bar home/up action should open or close the drawer.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                ndTrips.openDrawer(GravityCompat.START);
+                return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+
+    }
+
+    private void selectDrawerItem(MenuItem menuItem) {
+        switch(menuItem.getItemId()) {
+
+            case R.id.navLogout:
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+                finish();
+                Intent i = new Intent(this, LoginActivity.class);
+                startActivity(i);
+
+                break;
+        }
+
+        // Close the navigation drawer
+        ndTrips.closeDrawers();
+    }
+
 
 }

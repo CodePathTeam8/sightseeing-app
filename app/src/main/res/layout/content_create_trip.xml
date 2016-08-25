@@ -33,10 +33,10 @@
                 android:id="@+id/tvTripName" />
 
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etTripName"
-                android:text="Best of Manhattan Ice Cream" />
+                android:hint="Best of Manhattan Ice Cream" />
         </LinearLayout>
 
 
@@ -50,7 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Points of Interest / Places"
+
                 android:id="@+id/tvEnterPlaces" />
+
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -58,21 +60,42 @@
                 android:layout_height="match_parent"
                 android:weightSum="1">
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/etPlaceName"
-                    android:text="Point of Interest"
-                    android:layout_weight="0.57" />
+            <AutoCompleteTextView
+                android:id="@+id/actv_places"
+                android:layout_width="243dp"
+                android:layout_height="wrap_content"
+                android:hint="Search for a place"
+                android:layout_gravity="center_horizontal"
+                android:singleLine="true"
+                android:layout_weight="1" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/btnAddPlace"
-                    android:src="@drawable/ic_add"
-                    android:background="#ef9a9a" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/btnClear"
+                android:background="@null"
+                android:src="@drawable/backspace"
+                android:layout_weight="0.04" />
+
 
             </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/place_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/place_attribution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </LinearLayout>
 

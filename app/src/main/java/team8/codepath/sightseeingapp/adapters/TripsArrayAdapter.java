@@ -1,7 +1,6 @@
 package team8.codepath.sightseeingapp.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import team8.codepath.sightseeingapp.R;
-import team8.codepath.sightseeingapp.models.Trip;
+import team8.codepath.sightseeingapp.models.TripModel;
 
 /**
  * Created by floko_000 on 8/18/2016.
  */
-public class TripsArrayAdapter extends ArrayAdapter<Trip>{
+public class TripsArrayAdapter extends ArrayAdapter<TripModel>{
 
     private Context context;
 
-    public TripsArrayAdapter(Context context, List<Trip> trips){
+    public TripsArrayAdapter(Context context, List<TripModel> trips){
         super(context, 0, trips);
         this.context = context;
     }
@@ -31,7 +30,7 @@ public class TripsArrayAdapter extends ArrayAdapter<Trip>{
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Trip trip = getItem(position);
+        TripModel trip = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_trip, parent, false);

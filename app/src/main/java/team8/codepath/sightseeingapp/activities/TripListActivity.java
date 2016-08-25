@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
-import team8.codepath.sightseeingapp.models.Trip;
+import team8.codepath.sightseeingapp.models.TripModel;
 
 public class TripListActivity extends AppCompatActivity {
 
@@ -37,7 +37,7 @@ public class TripListActivity extends AppCompatActivity {
     DrawerLayout ndTrips;
     @BindView(R.id.nvView)
     NavigationView nvView;
-    private ArrayList<Trip> trips;
+    private ArrayList<TripModel> trips;
     private TripsArrayAdapter aTrips;
     private ListView lvTrips;
 
@@ -61,7 +61,7 @@ public class TripListActivity extends AppCompatActivity {
         lvTrips.setAdapter(aTrips);
 
 
-        aTrips.addAll(Trip.fromJSONArray());
+        aTrips.addAll(TripModel.fromJSONArray());
 
 
         aTrips.notifyDataSetChanged();
@@ -70,7 +70,7 @@ public class TripListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
-                Trip trip = aTrips.getItem(position);
+                TripModel trip = aTrips.getItem(position);
                 intent.putExtra("trip", Parcels.wrap(trip));
                 startActivity(intent);
             }

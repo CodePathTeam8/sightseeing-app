@@ -11,18 +11,18 @@ import java.util.ArrayList;
  * Created by floko_000 on 8/18/2016.
  */
 @Parcel
-public class Trip {
+public class TripModel {
 
 
     public int id;
     public String name;
     public long totalLength;
     public String bannerPhoto;
-    public ArrayList<Place> places;
+    public ArrayList<PlaceModel> places;
     public static JSONArray jsonArray;
     public String distance;
 
-    public Trip(){}
+    public TripModel(){}
 
     public String getBannerPhoto() {
         return bannerPhoto;
@@ -45,14 +45,14 @@ public class Trip {
     }
 
 
-    public ArrayList<Place> getPlaces() {
+    public ArrayList<PlaceModel> getPlaces() {
         return places;
     }
 
     // Output list of tweets from jsonarray.
-    //public static ArrayList<Place> fromJSONArray(JSONArray jsonArray){
+    //public static ArrayList<PlaceModel> fromJSONArray(JSONArray jsonArray){
 
-    public static ArrayList<Trip> fromJSONArray(){
+    public static ArrayList<TripModel> fromJSONArray(){
         // Mock Data
         jsonArray = new JSONArray();
         try{
@@ -62,12 +62,12 @@ public class Trip {
             jsonArray.put(new JSONObject("{\"id\":\"4\", \"name\":\"Hell's Kitchen Delights\", \"distance\":\"2 miles \", \"totalLength\": 3, \"bannerPhoto\": \"http://www.cafeinteriordesign.com/gallery/ice-cream-shop/ice-cream-shop-20.jpg\", \"places\": ['Ice Cream Palace', 'Curlys', 'Ice Cream World']}"));
         } catch (JSONException e) {
         }
-        ArrayList<Trip> trips = new ArrayList<>();
+        ArrayList<TripModel> trips = new ArrayList<>();
         // Iterate JSON array and create tweets
         for (int i=0; i<jsonArray.length(); i++){
             try {
                 JSONObject tripJson = jsonArray.getJSONObject(i);
-                Trip trip = Trip.fromJSON(tripJson);
+                TripModel trip = TripModel.fromJSON(tripJson);
                 if (trip != null){
                     trips.add(trip);
                 }
@@ -80,9 +80,9 @@ public class Trip {
     }
 
     // Deserialize the JSON and build Tweet Objects
-    // public static Place fromJSON(JSONObject jsonObject){
-    public static Trip fromJSON(JSONObject jsonObject){
-        Trip trip = new Trip();
+    // public static PlaceModel fromJSON(JSONObject jsonObject){
+    public static TripModel fromJSON(JSONObject jsonObject){
+        TripModel trip = new TripModel();
 
         try {
             trip.id = jsonObject.getInt("id");
@@ -90,11 +90,11 @@ public class Trip {
             trip.totalLength = jsonObject.getLong("totalLength");
             trip.bannerPhoto = jsonObject.getString("bannerPhoto");
             trip.distance = jsonObject.getString("distance");
-            ArrayList<Place> listdata = new ArrayList<Place>();
+            ArrayList<PlaceModel> listdata = new ArrayList<PlaceModel>();
             JSONArray jArray = jsonObject.getJSONArray("places");
             if (jArray != null) {
                 for (int i=0;i<jArray.length();i++){
-                    Place p = new Place();
+                    PlaceModel p = new PlaceModel();
                     p.name = jArray.get(i).toString();
                     p.hours = "M-F 9-5";
                     listdata.add(p);

@@ -14,14 +14,14 @@ import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
-import team8.codepath.sightseeingapp.models.Place;
-import team8.codepath.sightseeingapp.models.Trip;
+import team8.codepath.sightseeingapp.models.PlaceModel;
+import team8.codepath.sightseeingapp.models.TripModel;
 
 public class TripDetailsActivity extends AppCompatActivity {
     String name;
     String distance;
     String time;
-    private ArrayList<Place> places;
+    private ArrayList<PlaceModel> places;
     private PlacesArrayAdapter aPlaces;
     private ListView lvPlaces;
 
@@ -30,7 +30,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_details);
 
-        Trip trip = (Trip) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
+        TripModel trip = (TripModel) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
         name = trip.getName();
         distance = trip.getDistance();
         time = trip.getTotalLength();

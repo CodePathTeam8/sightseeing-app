@@ -15,9 +15,9 @@ import team8.codepath.sightseeingapp.models.PlaceModel;
 /**
  * Created by meganoneill on 8/21/16.
  */
-public class PlacesArrayAdapter extends ArrayAdapter<PlaceModel> {
+public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
 
-    public PlacesArrayAdapter(Context context, List<PlaceModel> places) {
+    public PlaceListArrayAdapter(Context context, List<PlaceModel> places) {
         super(context, android.R.layout.simple_list_item_1, places);
     }
 
@@ -27,17 +27,17 @@ public class PlacesArrayAdapter extends ArrayAdapter<PlaceModel> {
 
         if(convertView == null){
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_place, parent, false);
+            convertView = inflater.inflate(R.layout.item_place_list, parent, false);
         }
 
         String name = place.getName();
-        String hours = place.getHours();
+        String placeId = place.getPlaceId();
 
         TextView placeName = (TextView) convertView.findViewById(R.id.tvPlaceName);
         placeName.setText(name);
 
-        TextView placeHours = (TextView) convertView.findViewById(R.id.tvPlaceHours);
-        placeHours.setText(hours);
+        TextView placeHours = (TextView) convertView.findViewById(R.id.tvPlaceId);
+        placeHours.setText(placeId);
 
         return convertView;
     }

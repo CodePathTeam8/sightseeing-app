@@ -1,12 +1,8 @@
 package team8.codepath.sightseeingapp.activities;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -15,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -30,12 +25,13 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+
+import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
+import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
+import team8.codepath.sightseeingapp.models.PlaceModel;
 
 public class CreateTripActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener{
@@ -49,18 +45,17 @@ public class CreateTripActivity extends AppCompatActivity
     private TextView mPlaceDetailsAttribution;
     EditText etTripName;
     ImageButton btnClear;
-    ListView lvPlaces;
+
+    private ArrayList<PlaceModel> places;
+    private PlaceListArrayAdapter aPlaces;
+    private ListView lvPlaces;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
-        // functionality, which automatically sets up the API client to handle Activity lifecycle
-        // events. If your activity does not extend FragmentActivity, make sure to call connect()
-        // and disconnect() explicitly.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
+                .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
         setContentView(R.layout.activity_create_trip);
@@ -79,6 +74,13 @@ public class CreateTripActivity extends AppCompatActivity
             public void onClick(View view) {
             }
         });
+
+        // Setup list of Places within trip
+        lvPlaces = (ListView) findViewById(R.id.lvPlaces);
+        places = new ArrayList<>();
+        aPlaces = new PlaceListArrayAdapter(this, places);
+        lvPlaces.setAdapter(aPlaces);
+
     }
 
     private void setupPlacesAutoComplete() {
@@ -115,7 +117,7 @@ public class CreateTripActivity extends AppCompatActivity
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             /*
              Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each Place suggestion in a AutocompletePrediction from which we
+             The adapter stores each PlaceModel suggestion in a AutocompletePrediction from which we
              read the place ID and title.
               */
             final AutocompletePrediction item = mAdapter.getItem(position);
@@ -125,7 +127,7 @@ public class CreateTripActivity extends AppCompatActivity
             Log.i(TAG, "Autocomplete item selected: " + primaryText);
 
             /*
-             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+             Issue a request to the Places Geo Data API to retrieve a PlaceModel object with additional
              details about the place.
               */
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
@@ -134,7 +136,7 @@ public class CreateTripActivity extends AppCompatActivity
 
             Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
                     Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "Called getPlaceById to get Place details for " + placeId);
+            Log.i(TAG, "Called getPlaceById to get PlaceModel details for " + placeId);
         }
     };
 
@@ -150,28 +152,17 @@ public class CreateTripActivity extends AppCompatActivity
         public void onResult(PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
-                Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
+                Log.e(TAG, "PlaceModel query did not complete. Error: " + places.getStatus().toString());
                 places.release();
                 return;
             }
-            // Get the Place object from the buffer.
+            // Get the PlaceModel object from the buffer.
             final Place place = places.get(0);
-
-            // Format details of the place for display and show it in a TextView.
-            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
-                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-                    place.getWebsiteUri()));
-
-            // Display the third party attributions if set.
-            final CharSequence thirdPartyAttribution = places.getAttributions();
-            if (thirdPartyAttribution == null) {
-                mPlaceDetailsAttribution.setVisibility(View.GONE);
-            } else {
-                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
-            }
-
-            Log.i(TAG, "Place details received: " + place.getName());
+            PlaceModel newPlace = new PlaceModel();
+            newPlace.placeId = place.getId();
+            newPlace.name = place.getName().toString();
+            aPlaces.add(newPlace);
+            Log.i(TAG, "PlaceModel details received: " + place.getName());
 
             places.release();
         }

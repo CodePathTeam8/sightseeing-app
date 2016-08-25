@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Created by floko_000 on 8/18/2016.
  */
 @Parcel
-public class Place {
+public class PlaceModel {
 
 
     public int id;
@@ -19,21 +19,25 @@ public class Place {
     public int averageStay;
     public String bannerPhoto;
     public String hours;
+    public int order;
+    public String placeId;
     public static JSONArray jsonArray;
 
-    public Place(){
+    public PlaceModel(){
         initializeJsonArray();
     }
-
     public String getName() {
         return name;
     }
-
-
+    public String getPlaceId() {
+        return placeId;
+    }
     public int getAverageStay() {
         return averageStay;
     }
-
+    public int getOrder() {
+        return order;
+    }
     public String getHours() {
         return hours;
     }
@@ -56,15 +60,15 @@ public class Place {
 
 
     // Output list of tweets from jsonarray.
-    //public static ArrayList<Place> fromJSONArray(JSONArray jsonArray){
+    //public static ArrayList<PlaceModel> fromJSONArray(JSONArray jsonArray){
 
-    public static ArrayList<Place> fromJSONArray(){
-        ArrayList<Place> places = new ArrayList<>();
+    public static ArrayList<PlaceModel> fromJSONArray(){
+        ArrayList<PlaceModel> places = new ArrayList<>();
         // Iterate JSON array and create tweets
         for (int i=0; i<jsonArray.length(); i++){
             try {
                 JSONObject placeJson = jsonArray.getJSONObject(i);
-                Place place = Place.fromJSON(placeJson);
+                PlaceModel place = PlaceModel.fromJSON(placeJson);
                 if (place != null){
                     places.add(place);
                 }
@@ -76,10 +80,10 @@ public class Place {
         return places;
     }
 
-    // Deserialize the JSON and build Tweet Objects
-    // public static Place fromJSON(JSONObject jsonObject){
-    public static Place fromJSON(JSONObject jsonObject){
-        Place place = new Place();
+    // Deserialize the JSON and build PlaceModel Objects
+    // public static PlaceModel fromJSON(JSONObject jsonObject){
+    public static PlaceModel fromJSON(JSONObject jsonObject){
+        PlaceModel place = new PlaceModel();
 
         try {
             place.id = jsonObject.getInt("id");

@@ -1,110 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.CreateTripActivity"
-    tools:showIn="@layout/activity_create_trip">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:weightSum="1">
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".activities.CreateTripActivity"
+        tools:showIn="@layout/activity_create_trip">
+
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Trip Name"
-                android:id="@+id/tvTripName" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/etTripName"
-                android:hint="Name your trip" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:layout_gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Points of Interest / Places"
-
-                android:id="@+id/tvEnterPlaces" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:weightSum="1">
 
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="1">
-
-            <AutoCompleteTextView
-                android:id="@+id/actv_places"
-                android:layout_width="243dp"
                 android:layout_height="wrap_content"
-                android:hint="Search for a place"
-                android:layout_gravity="center_horizontal"
-                android:singleLine="true"
-                android:layout_weight="1" />
+                android:layout_gravity="center_horizontal">
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/btnClear"
-                android:background="@null"
-                android:src="@drawable/backspace"
-                android:layout_weight="0.04" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trip Name"
+                    android:id="@+id/tvTripName" />
 
-
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/etTripName"
+                    android:hint="Name your trip" />
             </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/place_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autoLink="all"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="66dp"
+                android:layout_gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/place_attribution"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autoLink="all"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Points of Interest / Places"
+
+                    android:id="@+id/tvEnterPlaces" />
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="1">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actv_places"
+                        android:layout_width="243dp"
+                        android:layout_height="wrap_content"
+                        android:hint="Search for a place"
+                        android:layout_gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:layout_weight="1" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/btnClear"
+                        android:background="@null"
+                        android:src="@drawable/backspace"
+                        android:layout_weight="0.04" />
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/place_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoLink="all"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/place_attribution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoLink="all"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </LinearLayout>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="373dp"
+                android:id="@+id/lvPlaces" />
+
 
         </LinearLayout>
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="373dp"
-            android:id="@+id/lvPlaces" />
+    </RelativeLayout>
 
-
-    </LinearLayout>
-</RelativeLayout>

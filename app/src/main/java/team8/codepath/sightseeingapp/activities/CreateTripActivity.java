@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -68,10 +71,42 @@ public class CreateTripActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_trip_create, menu);
+        MenuItem createItem = menu.findItem(R.id.action_create);
+        /*final SearchView searchView = (SearchView) MenuItemCompat.getActionView(createItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                // make search call
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });*/
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     private void setupViews(){
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        // Find the toolbar view inside the activity layout
+        Toolbar toolbar = (Toolbar) findViewById(R.id.create_trip_toolbar);
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
+
 
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);

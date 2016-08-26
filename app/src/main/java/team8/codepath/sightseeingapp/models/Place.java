@@ -54,10 +54,10 @@ public class Place {
 
     // Mock Data
     public void addData(){
-//        Place place = new Place("Ample Hills Creamery", "ChIJ9QuctVVawokR2xUuRAu-bs4");
-//        Place place_two = new Place("Emack & Bolio's", "ChIJ9aeRDrlYwokR0OXIVGvP_sg");
-//        mDatabase.child("1").setValue(place);
-//        mDatabase.child("2").setValue(place_two);
+        Place place = new Place("Ample Hills Creamery", "ChIJ9QuctVVawokR2xUuRAu-bs4");
+        Place place_two = new Place("Emack & Bolio's", "ChIJ9aeRDrlYwokR0OXIVGvP_sg");
+        mDatabase.child("1").child("1").setValue(place);
+        mDatabase.child("1").child("2").setValue(place_two);
     }
 
 

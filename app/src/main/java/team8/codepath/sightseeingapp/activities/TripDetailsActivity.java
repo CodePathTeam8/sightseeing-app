@@ -2,10 +2,14 @@ package team8.codepath.sightseeingapp.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -14,6 +18,7 @@ import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
+import team8.codepath.sightseeingapp.models.Place;
 import team8.codepath.sightseeingapp.models.Trip;
 
 public class TripDetailsActivity extends AppCompatActivity {
@@ -47,15 +52,18 @@ public class TripDetailsActivity extends AppCompatActivity {
         Picasso.with(getApplicationContext()).load(trip.getBannerPhoto()).into(tripImage);
 
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
-        places = new ArrayList<String>();
-        aPlaces = new PlacesArrayAdapter(this, places);
-        lvPlaces.setAdapter(aPlaces);
 
+        final DatabaseReference dataPlaces = FirebaseDatabase.getInstance().getReference("places").child(trip.getId().toString());
+        final FirebaseListAdapter<Place> mAdapter = new FirebaseListAdapter<Place>(this, Place.class, R.layout.item_place, dataPlaces) {
+            @Override
+            protected void populateView(View view, Place place, int position) {
+                TextView tvPlaceName = (TextView) view.findViewById(R.id.tvPlaceName);
+                tvPlaceName.setText(place.getName());
+            }
+        };
+        lvPlaces.setAdapter(mAdapter);
 
-        aPlaces.addAll(trip.getPlaces());
-
-
-        aPlaces.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
     }
 

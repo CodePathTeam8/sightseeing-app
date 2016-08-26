@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import team8.codepath.sightseeingapp.CreateTripActivity;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
 import team8.codepath.sightseeingapp.models.Trip;
@@ -51,7 +52,6 @@ public class TripListActivity extends AppCompatActivity {
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-
         lvTrips = (ListView) findViewById(R.id.lvTrips);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("trips");
@@ -89,13 +89,14 @@ public class TripListActivity extends AppCompatActivity {
             }
         });
 
-//        fabCreateTrip.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(TripListActivity.this, CreateTripActivity.class);
-//                startActivity(i);
-//            }
-//        });
+
+        fabCreateTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(TripListActivity.this, CreateTripActivity.class);
+                startActivity(i);
+            }
+        });
 
     }
 

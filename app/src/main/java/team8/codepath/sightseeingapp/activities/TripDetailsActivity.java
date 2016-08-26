@@ -18,13 +18,14 @@ import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
-import team8.codepath.sightseeingapp.models.Place;
-import team8.codepath.sightseeingapp.models.Trip;
+import team8.codepath.sightseeingapp.models.PlaceModel;
+import team8.codepath.sightseeingapp.models.TripModel;
 
 public class TripDetailsActivity extends AppCompatActivity {
     String name;
     String distance;
     String time;
+
     private ArrayList<String> places;
     private PlacesArrayAdapter aPlaces;
     private ListView lvPlaces;
@@ -34,7 +35,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_details);
 
-        Trip trip = (Trip) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
+        TripModel trip = (TripModel) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
         name = trip.getName();
         distance = trip.getDistance();
         time = trip.getTotalLength();
@@ -54,9 +55,9 @@ public class TripDetailsActivity extends AppCompatActivity {
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
 
         final DatabaseReference dataPlaces = FirebaseDatabase.getInstance().getReference("places").child(trip.getId().toString());
-        final FirebaseListAdapter<Place> mAdapter = new FirebaseListAdapter<Place>(this, Place.class, R.layout.item_place, dataPlaces) {
+        final FirebaseListAdapter<PlaceModel> mAdapter = new FirebaseListAdapter<PlaceModel>(this, PlaceModel.class, R.layout.item_place, dataPlaces) {
             @Override
-            protected void populateView(View view, Place place, int position) {
+            protected void populateView(View view, PlaceModel place, int position) {
                 TextView tvPlaceName = (TextView) view.findViewById(R.id.tvPlaceName);
                 tvPlaceName.setText(place.getName());
             }

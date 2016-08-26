@@ -15,6 +15,11 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAsHfgV9aUFJ1OJWxbGE9cjmqMUjxV9yPk"/>
+
+
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,7 +47,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateTripActivity"
+            android:name=".activities.CreateTripActivity"
             android:label="@string/title_activity_create_trip"
             android:theme="@style/AppTheme"></activity>
     </application>

@@ -13,18 +13,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import team8.codepath.sightseeingapp.R;
-import team8.codepath.sightseeingapp.models.Trip;
+import team8.codepath.sightseeingapp.models.TripModel;
 
 /**
  * Created by floko_000 on 8/18/2016.
  */
-public class TripsArrayAdapter extends FirebaseRecyclerAdapter<Trip,
+public class TripsArrayAdapter extends FirebaseRecyclerAdapter<TripModel,
         TripsArrayAdapter.ViewHolder> {
 
     private Context context;
 
     public TripsArrayAdapter(int modelLayout, DatabaseReference ref) {
-        super(Trip.class, modelLayout, TripsArrayAdapter.ViewHolder.class, ref);
+        super(TripModel.class, modelLayout, TripsArrayAdapter.ViewHolder.class, ref);
     }
 
     // Easy access to the context object in the recyclerview
@@ -43,16 +43,17 @@ public class TripsArrayAdapter extends FirebaseRecyclerAdapter<Trip,
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(contactView);
         return viewHolder;
+
     }
 
     @Override
-    protected void populateViewHolder(ViewHolder viewHolder, Trip model, int position) {
+    protected void populateViewHolder(ViewHolder viewHolder, TripModel model, int position) {
 
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Trip trip = getItem(position);
+        TripModel trip = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_trip, parent, false);
@@ -80,7 +81,7 @@ public class TripsArrayAdapter extends FirebaseRecyclerAdapter<Trip,
 
     @Override
     public void onBindViewHolder(TripsArrayAdapter.ViewHolder viewHolder, int position) {
-        Trip trip = getItem(position);
+        TripModel trip = getItem(position);
 
         ImageView bannerView = viewHolder.banner;
 

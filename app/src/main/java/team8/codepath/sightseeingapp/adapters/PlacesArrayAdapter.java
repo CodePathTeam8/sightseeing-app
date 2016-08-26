@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import team8.codepath.sightseeingapp.R;
 
@@ -15,7 +15,7 @@ import team8.codepath.sightseeingapp.R;
  */
 public class PlacesArrayAdapter extends ArrayAdapter<String> {
 
-    public PlacesArrayAdapter(Context context, ArrayList<String> places) {
+    public PlacesArrayAdapter(Context context, List<String> places) {
         super(context, android.R.layout.simple_list_item_1, places);
     }
 

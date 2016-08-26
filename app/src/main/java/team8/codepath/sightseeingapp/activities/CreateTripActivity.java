@@ -76,24 +76,12 @@ public class CreateTripActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_trip_create, menu);
         MenuItem createItem = menu.findItem(R.id.action_create);
-        /*final SearchView searchView = (SearchView) MenuItemCompat.getActionView(createItem);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
+        createItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                // make search call
-                searchView.clearFocus();
-
+            public boolean onMenuItemClick(MenuItem menuItem) {
                 return true;
             }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });*/
+        });
         return super.onCreateOptionsMenu(menu);
     }
 

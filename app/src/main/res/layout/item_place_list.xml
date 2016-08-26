@@ -4,17 +4,36 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Andrews Ice Cream"
-        android:id="@+id/tvPlaceName"
-        android:textSize="16dp" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="#27b8bd"
+            android:paddingEnd="15dp"
+            android:paddingRight="15dp"
+            android:id="@+id/tvPosition"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Andrews Ice Cream"
+            android:id="@+id/tvPlaceName"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Place Id"
         android:id="@+id/tvPlaceId"
-        android:textSize="16dp" />
+        android:textSize="16dp"/>
+
 
 </LinearLayout>

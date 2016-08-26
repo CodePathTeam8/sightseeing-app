@@ -35,7 +35,7 @@ public class PlaceModel {
     public int getAverageStay() {
         return averageStay;
     }
-    public int getOrder() {
+    public int getPlaceOrder() {
         return order;
     }
     public String getHours() {

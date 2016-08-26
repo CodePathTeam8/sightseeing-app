@@ -1,5 +1,7 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -41,8 +44,6 @@ public class CreateTripActivity extends AppCompatActivity
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView actvPlaces;
-    private TextView mPlaceDetailsText;
-    private TextView mPlaceDetailsAttribution;
     EditText etTripName;
     ImageButton btnClear;
 
@@ -50,10 +51,13 @@ public class CreateTripActivity extends AppCompatActivity
     private PlaceListArrayAdapter aPlaces;
     private ListView lvPlaces;
 
+    public InputMethodManager imm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
@@ -63,17 +67,15 @@ public class CreateTripActivity extends AppCompatActivity
         setupPlacesAutoComplete();
     }
 
+
     private void setupViews(){
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
 
         // Setup list of Places within trip
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
@@ -83,14 +85,12 @@ public class CreateTripActivity extends AppCompatActivity
 
     }
 
+
     private void setupPlacesAutoComplete() {
+
         actvPlaces = (AutoCompleteTextView) findViewById(R.id.actv_places);
         // Register a listener that receives callbacks when a suggestion has been selected
         actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
-
-        // Retrieve the TextViews that will display details and attributions of the selected place.
-        mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
-        mPlaceDetailsAttribution = (TextView) findViewById(R.id.place_attribution);
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
@@ -133,9 +133,6 @@ public class CreateTripActivity extends AppCompatActivity
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-
-            Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
-                    Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Called getPlaceById to get PlaceModel details for " + placeId);
         }
     };
@@ -161,10 +158,11 @@ public class CreateTripActivity extends AppCompatActivity
             PlaceModel newPlace = new PlaceModel();
             newPlace.placeId = place.getId();
             newPlace.name = place.getName().toString();
+            actvPlaces.setText("");
             aPlaces.add(newPlace);
             Log.i(TAG, "PlaceModel details received: " + place.getName());
-
             places.release();
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
     };
 

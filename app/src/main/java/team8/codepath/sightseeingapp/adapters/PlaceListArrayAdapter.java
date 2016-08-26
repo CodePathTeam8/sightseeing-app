@@ -39,6 +39,9 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
         TextView placeHours = (TextView) convertView.findViewById(R.id.tvPlaceId);
         placeHours.setText(placeId);
 
+        TextView placePosition = (TextView) convertView.findViewById(R.id.tvPosition);
+        placePosition.setText(position + "");
+
         return convertView;
     }
 }

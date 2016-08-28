@@ -252,7 +252,7 @@ public class CreateTripActivity extends AppCompatActivity
 
         // make a new child object under Trips, and get key for it.
         String key = databaseReference.child("trips").push().getKey();
-        Map<String, Object> tripValues = trip.toMap();
+        Map<String, Object> tripValues = trip.toMap(key);
         childUpdates.put("trips/" + key, tripValues);
 
         // make a new child object under Places

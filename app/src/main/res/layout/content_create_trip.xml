@@ -105,11 +105,36 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="373dp"
+                android:layout_height="303dp"
                 android:id="@+id/lvPlaces" />
+
+
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trip Length"
+                    android:id="@+id/tvTripLength" />
+
+
+                <NumberPicker
+                    android:id="@+id/npTripLength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+            </LinearLayout>
 
 
         </LinearLayout>
 
-    </RelativeLayout>
+
+</RelativeLayout>
 

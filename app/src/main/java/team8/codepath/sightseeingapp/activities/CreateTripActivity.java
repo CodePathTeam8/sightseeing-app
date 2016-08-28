@@ -16,10 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,13 +34,18 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
 import team8.codepath.sightseeingapp.models.PlaceModel;
+import team8.codepath.sightseeingapp.models.TripModel;
 
 public class CreateTripActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener{
@@ -53,9 +61,15 @@ public class CreateTripActivity extends AppCompatActivity
     private ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
     private ListView lvPlaces;
+    private NumberPicker npTripLength;
+
+    int tripID = 0;
+    int placeID = 0;
 
     public InputMethodManager imm;
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = database.getReference("trips");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +81,7 @@ public class CreateTripActivity extends AppCompatActivity
                 .build();
         setContentView(R.layout.activity_create_trip);
         setupViews();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         setupPlacesAutoComplete();
     }
 
@@ -79,6 +94,11 @@ public class CreateTripActivity extends AppCompatActivity
         createItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+
+                String name = etTripName.getText().toString();
+                int totalLength = npTripLength.getValue();
+                String bannerPhoto = "http://feliciarogersauthor.weebly.com/uploads/1/2/6/7/12672742/9911388_orig.jpg";
+                writeNewTrip(name, totalLength, bannerPhoto, places);
                 return true;
             }
         });
@@ -88,17 +108,16 @@ public class CreateTripActivity extends AppCompatActivity
 
     private void setupViews(){
 
-
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.create_trip_toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
 
-
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
+
 
         // Setup list of Places within trip
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
@@ -106,6 +125,12 @@ public class CreateTripActivity extends AppCompatActivity
         aPlaces = new PlaceListArrayAdapter(this, places);
         lvPlaces.setAdapter(aPlaces);
 
+        // Setup Number Picker for Trip Length
+        npTripLength = (NumberPicker) findViewById(R.id.npTripLength);
+        npTripLength.setMinValue(1);
+        npTripLength.setMaxValue(48);
+        npTripLength.setWrapSelectorWheel(true);
+        npTripLength.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
     }
 
 
@@ -215,5 +240,35 @@ public class CreateTripActivity extends AppCompatActivity
         Toast.makeText(this,
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+    private void writeNewTrip(String name, int totalLength, String bannerPhoto, ArrayList<PlaceModel> places) {
+
+        TripModel trip = new TripModel(tripID+"", name, totalLength +"", bannerPhoto, null);
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        // make a new child object under Trips, and get key for it.
+        String key = databaseReference.child("trips").push().getKey();
+        Map<String, Object> tripValues = trip.toMap();
+        childUpdates.put("trips/" + key, tripValues);
+
+
+        childUpdates.put("places/" + key, null);
+        // make a new child object under Places
+      //  if (places != null) {
+        //     for (int i = 0; i <= places.size()-1; i++) {
+                Map<String, Object> placeValues = places.get(0).toMap();
+                String placeKey = databaseReference.child("places/" + key).push().getKey();
+                childUpdates.put("places/" + key, placeValues);
+                placeID++;
+          //  }
+        //};
+
+        databaseReference.updateChildren(childUpdates);
+        tripID ++;
+        finish();
     }
 }

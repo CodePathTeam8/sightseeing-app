@@ -1,6 +1,7 @@
 package team8.codepath.sightseeingapp.models;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
@@ -9,6 +10,8 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -105,6 +108,15 @@ public class PlaceModel {
         return place;
     }
 
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", name);
+        result.put("id", id);
+        result.put("order", order);
+        result.put("placeId", placeId);
+        return result;
+    }
 
 
 

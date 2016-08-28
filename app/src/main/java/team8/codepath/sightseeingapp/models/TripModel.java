@@ -1,6 +1,9 @@
 package team8.codepath.sightseeingapp.models;
 
+import android.support.annotation.Nullable;
+
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
@@ -9,6 +12,8 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by floko_000 on 8/18/2016.
@@ -32,8 +37,10 @@ public class TripModel {
         this.name = name;
         this.totalLength = totalLength;
         this.bannerPhoto = bannerPhoto;
+        if (places != null)
         this.places = places;
     }
+
     public String getBannerPhoto() {
         return bannerPhoto;
     }
@@ -129,6 +136,19 @@ public class TripModel {
 
         return trip;
     }
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", name);
+        result.put("totalLength", totalLength);
+        result.put("bannerPhoto", bannerPhoto);
+        result.put("id", id);
+        result.put("places", places);
+        return result;
+    }
+
 
 
 

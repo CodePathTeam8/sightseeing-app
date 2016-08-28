@@ -255,17 +255,17 @@ public class CreateTripActivity extends AppCompatActivity
         Map<String, Object> tripValues = trip.toMap();
         childUpdates.put("trips/" + key, tripValues);
 
-
-        childUpdates.put("places/" + key, null);
         // make a new child object under Places
-      //  if (places != null) {
-        //     for (int i = 0; i <= places.size()-1; i++) {
-                Map<String, Object> placeValues = places.get(0).toMap();
-                String placeKey = databaseReference.child("places/" + key).push().getKey();
-                childUpdates.put("places/" + key, placeValues);
+        databaseReference.child("places/" + key).push();
+
+        if (places != null) {
+            for (int i = 0; i <= places.size()-1; i++) {
+                Map<String, Object> placeValues = places.get(i).toMap();
+                String childPlaceKey = databaseReference.child("places/" + key).push().getKey();
+                childUpdates.put("places/" + key + "/" + childPlaceKey, placeValues);
                 placeID++;
-          //  }
-        //};
+            }
+        };
 
         databaseReference.updateChildren(childUpdates);
         tripID ++;

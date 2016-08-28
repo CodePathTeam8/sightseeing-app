@@ -139,12 +139,12 @@ public class TripModel {
 
 
     @Exclude
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMap(String key) {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
         result.put("totalLength", totalLength);
         result.put("bannerPhoto", bannerPhoto);
-        result.put("id", id);
+        result.put("id", key);
         result.put("places", places);
         return result;
     }

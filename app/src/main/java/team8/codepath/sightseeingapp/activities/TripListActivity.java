@@ -59,7 +59,6 @@ public class TripListActivity extends AppCompatActivity {
 
         SightseeingApplication app = (SightseeingApplication) getApplicationContext();
         UserModel currentUser = app.getUser();
-        Log.d("DEBUG", currentUser.getEmail());
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

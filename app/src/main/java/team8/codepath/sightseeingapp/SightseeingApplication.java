@@ -5,7 +5,11 @@ import android.app.Application;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
+import team8.codepath.sightseeingapp.models.UserModel;
+
 public class SightseeingApplication extends Application{
+
+    UserModel currentUser;
 
     @Override
     public void onCreate() {
@@ -14,5 +18,13 @@ public class SightseeingApplication extends Application{
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
+    }
+
+    public void setUser(UserModel user){
+         currentUser = user;
+    }
+
+    public UserModel getUser(){
+        return currentUser;
     }
 }

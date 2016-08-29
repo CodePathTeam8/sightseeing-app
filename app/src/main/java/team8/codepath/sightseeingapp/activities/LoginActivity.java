@@ -11,6 +11,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,9 +23,16 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.SightseeingApplication;
+import team8.codepath.sightseeingapp.models.UserModel;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,11 +45,15 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        final SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -66,12 +79,50 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize Facebook Login button
         callbackManager = CallbackManager.Factory.create();
 
-        btnFacebookLogin.setReadPermissions("email", "public_profile");
+        btnFacebookLogin.setReadPermissions(Arrays.asList("public_profile", "email", "user_location", "user_friends"));
         btnFacebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
+                // App code
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("LoginActivity", response.toString());
+
+                                try {
+
+                                    UserModel user = UserModel.fromJSON(object);
+
+                                    app.setUser(user);
+
+                                    String email = object.getString("email");
+                                    String location = object.getJSONObject("location").getString("id");
+
+                                    Log.d(TAG, email);
+                                    Log.d(TAG, location);
+                                    Log.d(TAG, user.getEmail());
+                                    Log.d(TAG, user.getLocationName());
+                                    UserModel user2 = app.getUser();
+
+                                    Log.d(TAG, user2.getEmail());
+
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender,location");
+                request.setParameters(parameters);
+                request.executeAsync();
 
             }
 

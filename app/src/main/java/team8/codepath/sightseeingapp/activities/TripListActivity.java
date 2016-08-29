@@ -33,8 +33,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
 import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.models.UserModel;
 
 public class TripListActivity extends AppCompatActivity {
 
@@ -54,6 +56,10 @@ public class TripListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
+
+        SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+        UserModel currentUser = app.getUser();
+        Log.d("DEBUG", currentUser.getEmail());
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

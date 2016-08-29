@@ -95,8 +95,8 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         bannerView.setImageResource(android.R.color.transparent); // clear out old image for recycled view
         Picasso.with(getContext()).load(trip.getBannerPhoto()).into(bannerView);
         viewHolder.name.setText(trip.getName());
-        viewHolder.distance.setText(trip.getDistance());
-        viewHolder.length.setText(trip.getTotalLength());
+        //viewHolder.distance.setText(trip.getDistance());
+        viewHolder.length.setText("Length: " + trip.getTotalLength());
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

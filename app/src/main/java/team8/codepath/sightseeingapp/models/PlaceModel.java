@@ -38,6 +38,7 @@ public class PlaceModel {
     public PlaceModel(String name, String placeId){
         this.name = name;
         this.placeId = placeId;
+        this.bannerPhoto = bannerPhoto;
     }
     public String getName() {
         return name;
@@ -115,6 +116,7 @@ public class PlaceModel {
         result.put("id", id);
         result.put("order", order);
         result.put("placeId", placeId);
+        result.put("bannerPhoto", bannerPhoto);
         return result;
     }
 

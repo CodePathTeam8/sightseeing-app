@@ -1,11 +1,10 @@
 package team8.codepath.sightseeingapp.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -16,13 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,17 +44,20 @@ import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.classes.PhotoTask;
 
 public class CreateTripActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener{
 
 
     public static final String TAG = "CreateTripActivity";
-    protected GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView actvPlaces;
     EditText etTripName;
     ImageButton btnClear;
+    ImageView ivPlacePhoto;
+    TextView tvPlacePhotoInfo;
 
     private ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
@@ -97,6 +98,9 @@ public class CreateTripActivity extends AppCompatActivity
 
                 String name = etTripName.getText().toString();
                 int totalLength = npTripLength.getValue();
+                // Temporary hardcoded to get the first banner photo
+                //tvPlacePhotoInfo.getText().toString();
+                //String bannerPhoto = aPlaces.getItem(0).bannerPhoto;
                 String bannerPhoto = "http://feliciarogersauthor.weebly.com/uploads/1/2/6/7/12672742/9911388_orig.jpg";
                 writeNewTrip(name, totalLength, bannerPhoto, places);
                 return true;
@@ -117,13 +121,16 @@ public class CreateTripActivity extends AppCompatActivity
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
+        ivPlacePhoto = (ImageView) findViewById(R.id.ivPlacePhoto);
+        tvPlacePhotoInfo = (TextView) findViewById(R.id.tvPlacePhotoInfo);//.findViewById(R.id.languageHeader)
 
 
         // Setup list of Places within trip
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
         places = new ArrayList<>();
-        aPlaces = new PlaceListArrayAdapter(this, places);
+        aPlaces = new PlaceListArrayAdapter(this, places, mGoogleApiClient);
         lvPlaces.setAdapter(aPlaces);
+
 
         // Setup Number Picker for Trip Length
         npTripLength = (NumberPicker) findViewById(R.id.npTripLength);
@@ -214,15 +221,6 @@ public class CreateTripActivity extends AppCompatActivity
         }
     };
 
-    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        Log.e(TAG, res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
-    }
-
     /**
      * Called when the Activity could not connect to Google Play services and the auto manager
      * could resolve the error automatically.
@@ -241,6 +239,7 @@ public class CreateTripActivity extends AppCompatActivity
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
     }
+
 
 
 

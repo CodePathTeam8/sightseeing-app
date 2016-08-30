@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import team8.codepath.sightseeingapp.classes.PhotoTask;
+
 /**
  * Created by floko_000 on 8/18/2016.
  */
@@ -32,7 +34,6 @@ public class PlaceModel {
     public String placeId;
 
     public PlaceModel(){
-        addData();
     }
 
     public PlaceModel(String name, String placeId){
@@ -56,57 +57,6 @@ public class PlaceModel {
     }
     public String getBannerPhoto() {
         return bannerPhoto;
-    }
-
-
-    // Mock Data
-    public void addData(){
-        PlaceModel place = new PlaceModel("Ample Hills Creamery", "ChIJ9QuctVVawokR2xUuRAu-bs4");
-        PlaceModel place_two = new PlaceModel("Emack & Bolio's", "ChIJ9aeRDrlYwokR0OXIVGvP_sg");
-        mDatabase.child("1").child("1").setValue(place);
-        mDatabase.child("1").child("2").setValue(place_two);
-    }
-
-
-    // Output list of tweets from jsonarray.
-    //public static ArrayList<PlaceModel> fromJSONArray(JSONArray jsonArray){
-
-    public static ArrayList<PlaceModel> fromJSONArray(){
-        ArrayList<PlaceModel> places = new ArrayList<>();
-        // Iterate JSON array and create tweets
-        for (int i=0; i<jsonArray.length(); i++){
-            try {
-                JSONObject placeJson = jsonArray.getJSONObject(i);
-                PlaceModel place = PlaceModel.fromJSON(placeJson);
-                if (place != null){
-                    places.add(place);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                continue;
-            }
-        }
-        return places;
-    }
-
-    // Deserialize the JSON and build PlaceModel Objects
-    // public static PlaceModel fromJSON(JSONObject jsonObject){
-    public static PlaceModel fromJSON(JSONObject jsonObject){
-        PlaceModel place = new PlaceModel();
-            String uuid = UUID.randomUUID().toString();
-
-        try {
-            place.id = jsonObject.getInt("id");
-            place.name = jsonObject.getString("name");
-            place.averageStay = jsonObject.getInt("averageStay");
-            place.hours = jsonObject.getString("hours");
-            place.placeId = jsonObject.getString("place_id");
-            mDatabase.child(uuid).setValue(place);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return place;
     }
 
     @Exclude

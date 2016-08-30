@@ -30,7 +30,7 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        PlaceModel place = this.getItem(position);
+        final PlaceModel place = this.getItem(position);
 
         if(convertView == null){
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -58,28 +58,25 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
 
 
         new PhotoTask(200, 200, mGoogleApiClient) {
-            @Override
-            protected void onPreExecute() {
-                // Display a temporary image to show while bitmap is loading.
-                ivPlacePhoto.setImageResource(R.drawable.background_fb_btn);
-            }
-
-            @Override
-            protected void onPostExecute(AttributedPhoto attributedPhoto) {
-                if (attributedPhoto != null) {
-                    // Photo has been loaded, display it.
-                    ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);
-
-                    // Display the attribution as HTML content if set.
-                    if (attributedPhoto.attribution == null) {
-                        tvPlacePhotoInfo.setVisibility(View.GONE);
-                    } else {
-                        tvPlacePhotoInfo.setVisibility(View.VISIBLE);
-                        tvPlacePhotoInfo.setText(Html.fromHtml(attributedPhoto.bitmap.toString()));
-                    }
-
+                @Override
+                protected void onPreExecute() {
+                    // Display a temporary image to show while bitmap is loading.
+                    ivPlacePhoto.setImageResource(R.drawable.background_fb_btn);
                 }
-            }
+                @Override
+                protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                    if (attributedPhoto != null) {
+                        // Photo has been loaded, display it.
+                        ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);
+                        // Display the attribution as HTML content if set.
+                        if (attributedPhoto.attribution == null) {
+                            tvPlacePhotoInfo.setVisibility(View.GONE);
+                        } else {
+                            tvPlacePhotoInfo.setVisibility(View.VISIBLE);
+                            tvPlacePhotoInfo.setText(Html.fromHtml(attributedPhoto.bitmap.toString()));
+                        }
+                    }
+                }
         }.execute(placeId);
 
         return convertView;

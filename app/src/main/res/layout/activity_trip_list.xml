@@ -27,12 +27,22 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.AppBarLayout>
+        <AutoCompleteTextView
+            android:id="@+id/actv_search_places"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Search for a place"
+            android:singleLine="true"
+            />
 
         <ListView
             android:id="@+id/lvTrips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_gravity="bottom"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_below="@+id/actv_search_places"
+            />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabCreateTrip"

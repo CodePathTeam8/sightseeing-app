@@ -8,5 +8,13 @@
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
+    <AutoCompleteTextView
+        android:id="@+id/actv_search_places"
+        android:layout_width="243dp"
+        android:layout_height="wrap_content"
+        android:hint="Search for a place"
+        android:layout_gravity="center_horizontal"
+        android:singleLine="true"
+        android:layout_weight="1" />
 
 </menu>

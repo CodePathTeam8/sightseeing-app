@@ -1,7 +1,9 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,16 +16,31 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -33,10 +50,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
+import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
 
-public class TripListActivity extends AppCompatActivity {
+public class TripListActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener {
 
     @BindView(R.id.fabCreateTrip)
     FloatingActionButton fabCreateTrip;
@@ -48,6 +68,10 @@ public class TripListActivity extends AppCompatActivity {
     private TripsArrayAdapter aTrips;
     private ListView lvTrips;
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("trips");
+    protected GoogleApiClient mGoogleApiClient;
+    private PlaceAutocompleteAdapter mAdapter;
+    private AutoCompleteTextView actvPlaces;
+    public InputMethodManager imm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,10 +131,15 @@ public class TripListActivity extends AppCompatActivity {
             }
         });
 
+        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
         // Setup drawer view
         setupDrawerContent(nvView);
-
-
+        setupPlacesAutoComplete();
     }
 
     @Override
@@ -136,7 +165,9 @@ public class TripListActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -185,5 +216,139 @@ public class TripListActivity extends AppCompatActivity {
         ndTrips.closeDrawers();
     }
 
+    private void setupPlacesAutoComplete() {
 
+        actvPlaces = (AutoCompleteTextView) findViewById(R.id.actv_search_places);
+        // Register a listener that receives callbacks when a suggestion has been selected
+        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
+                null);
+        actvPlaces.setAdapter(mAdapter);
+
+        // Set up the 'clear text' button that clears the text in the autocomplete view
+//        ImageButton btnClear = (ImageButton) findViewById(R.id.btnClear);
+//        btnClear.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                actvPlaces.setText("");
+//            }
+//        });
+
+    }
+
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+             Retrieve the place ID of the selected item from the Adapter.
+             The adapter stores each PlaceModel suggestion in a AutocompletePrediction from which we
+             read the place ID and title.
+              */
+            final AutocompletePrediction item = mAdapter.getItem(position);
+            final String placeId = item.getPlaceId();
+            final CharSequence primaryText = item.getPrimaryText(null);
+
+
+            /*
+             Issue a request to the Places Geo Data API to retrieve a PlaceModel object with additional
+             details about the place.
+              */
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+//                Log.e(TAG, "PlaceModel query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            // Get the PlaceModel object from the buffer.
+            final Place place = places.get(0);
+            PlaceModel newPlace = new PlaceModel();
+            LatLng location = place.getLatLng();
+            newPlace.name = place.getName().toString();
+            actvPlaces.setText("");
+//            aPlaces.add(newPlace);
+//            Log.i(TAG, "PlaceModel details received: " + place.getName());
+            String[] splited = location.toString().split("\\s+");
+            String latlng = splited[1].replaceAll("\\(|\\)","");
+            String[] latlngSplit = latlng.split(",");
+            findNearbyPlaces(latlngSplit[0], latlngSplit[1], 10);
+            Log.d("DEBUG", latlngSplit[0]);
+            places.release();
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        }
+    };
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this,
+                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void findNearbyPlaces(String lat, String longit, Integer distance){
+        // we'll want everything within, say, 10km distance
+        Integer totalDistance = distance;
+        Double latitude = Double.parseDouble(lat);
+        Double longitude = Double.parseDouble(longit);
+        // earth's radius in km = ~6371
+        Integer radius = 6371;
+
+        // latitude boundaries
+        Double maxlat = latitude + Math.toDegrees(totalDistance / radius);
+        Double minlat = latitude - Math.toDegrees(totalDistance / radius);
+
+        // longitude boundaries (longitude gets smaller when latitude increases)
+        Double maxlng = longitude + Math.toDegrees(totalDistance / radius / Math.cos(Math.toRadians(latitude)));
+        Double minlng = longitude - Math.toDegrees(totalDistance / radius / Math.cos(Math.toRadians(latitude)));
+
+        DatabaseReference places = FirebaseDatabase.getInstance().getReference("places");
+
+        Log.d("minLat", minlat.toString());
+        Log.d("maxLat", maxlat.toString());
+        //Two queries and then compare and display places that are in both
+        places.orderByChild("longitude").startAt(minlng).endAt(maxlng).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        Log.d("PLACE ID", dataSnapshot.getValue().toString());
+//                        User user = dataSnapshot.getValue(User.class);
+                        String dataThings = dataSnapshot.getKey();
+
+                        // ...
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                  }
+                });
+        places.orderByChild("latitude").startAt(minlat).endAt(maxlat).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        Log.d("PLACE ID", dataSnapshot.getValue().toString());
+                        String dataThings = dataSnapshot.getKey();
+
+                        // ...
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+    }
 }

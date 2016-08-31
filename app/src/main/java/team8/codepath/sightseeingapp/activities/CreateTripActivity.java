@@ -1,11 +1,9 @@
 package team8.codepath.sightseeingapp.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -16,14 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,6 +29,7 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -206,6 +202,15 @@ public class CreateTripActivity extends AppCompatActivity
             PlaceModel newPlace = new PlaceModel();
             newPlace.placeId = place.getId();
             newPlace.name = place.getName().toString();
+
+            //Get lat and long
+            LatLng location = place.getLatLng();
+            String[] splited = location.toString().split("\\s+");
+            String latlng = splited[1].replaceAll("\\(|\\)","");
+            String[] latlngSplit = latlng.split(",");
+            newPlace.latitude = latlngSplit[0];
+            newPlace.longitude = latlngSplit[1];
+
             actvPlaces.setText("");
             aPlaces.add(newPlace);
             Log.i(TAG, "PlaceModel details received: " + place.getName());

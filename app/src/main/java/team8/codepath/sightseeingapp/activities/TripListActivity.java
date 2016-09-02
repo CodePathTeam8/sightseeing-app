@@ -2,6 +2,7 @@ package team8.codepath.sightseeingapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +20,9 @@ import android.widget.ListView;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,7 +37,7 @@ import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
 import team8.codepath.sightseeingapp.models.TripModel;
 import team8.codepath.sightseeingapp.models.UserModel;
 
-public class TripListActivity extends AppCompatActivity {
+public class TripListActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     @BindView(R.id.fabCreateTrip)
     FloatingActionButton fabCreateTrip;
@@ -66,11 +70,17 @@ public class TripListActivity extends AppCompatActivity {
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
 
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("trips");
-        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference);
+        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);
         rvTrips.setLayoutManager(new LinearLayoutManager(this));
         rvTrips.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
 
         fabCreateTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,4 +169,8 @@ public class TripListActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

@@ -34,12 +34,18 @@ public abstract class PhotoTask extends AsyncTask<String, Void, PhotoTask.Attrib
         if (params.length != 1) {
             return null;
         }
-        final String placeId = params[0];
+        String placeId = params[0];
+
+        if (placeId == null){
+            placeId ="ChIJrw7QBK9YXIYRvBagEDvhVgg";
+        }
+
         //final String placeId = "ChIJrw7QBK9YXIYRvBagEDvhVgg";
         AttributedPhoto attributedPhoto = null;
 
         PlacePhotoMetadataResult result = Places.GeoDataApi
-                .getPlacePhotos(mGoogleApiClient, placeId).await();
+                .getPlacePhotos(mGoogleApiClient, placeId)
+                .await();
 
         if (result.getStatus().isSuccess()) {
             PlacePhotoMetadataBuffer photoMetadataBuffer = result.getPhotoMetadata();

@@ -26,23 +26,29 @@ public class TripModel {
     public String name;
     public String totalLength;
     public String bannerPhoto;
+    public String placeId;
     public ArrayList<String> places;
     public static JSONArray jsonArray;
     public String distance;
 
     public TripModel(){}
 
-    public TripModel(String id, String name, String totalLength, String bannerPhoto, ArrayList<String> places){
+    public TripModel(String id, String name, String placeId, String totalLength, String bannerPhoto, ArrayList<String> places){
         this.id = id;
         this.name = name;
         this.totalLength = totalLength;
         this.bannerPhoto = bannerPhoto;
+        this.placeId = placeId;
         if (places != null)
         this.places = places;
     }
 
     public String getBannerPhoto() {
         return bannerPhoto;
+    }
+
+    public String getPlaceId() {
+        return placeId;
     }
 
     public String getId() {
@@ -72,6 +78,7 @@ public class TripModel {
         result.put("name", name);
         result.put("totalLength", totalLength);
         result.put("bannerPhoto", bannerPhoto);
+        result.put("placeId", placeId);
         result.put("id", key);
         result.put("places", places);
         return result;

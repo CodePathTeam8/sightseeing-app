@@ -101,8 +101,8 @@ public class CreateTripActivity extends AppCompatActivity
                 // Temporary hardcoded to get the first banner photo
                 //tvPlacePhotoInfo.getText().toString();
                 //String bannerPhoto = aPlaces.getItem(0).bannerPhoto;
-                String bannerPhoto = "http://feliciarogersauthor.weebly.com/uploads/1/2/6/7/12672742/9911388_orig.jpg";
-                writeNewTrip(name, totalLength, bannerPhoto, places);
+                String placeId = places.get(0).placeId;
+                writeNewTrip(name, totalLength, placeId, places);
                 return true;
             }
         });
@@ -244,9 +244,9 @@ public class CreateTripActivity extends AppCompatActivity
 
 
 
-    private void writeNewTrip(String name, int totalLength, String bannerPhoto, ArrayList<PlaceModel> places) {
+    private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places) {
 
-        TripModel trip = new TripModel(tripID+"", name, totalLength +"", bannerPhoto, null);
+        TripModel trip = new TripModel(tripID+"", name, placeId, totalLength +"", null, null);
         Map<String, Object> childUpdates = new HashMap<>();
 
         // make a new child object under Trips, and get key for it.

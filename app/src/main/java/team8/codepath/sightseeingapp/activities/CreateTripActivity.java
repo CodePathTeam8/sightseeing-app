@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -66,6 +68,8 @@ public class CreateTripActivity extends AppCompatActivity
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference("trips");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
+    GeoFire geoFire = new GeoFire(ref);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +207,7 @@ public class CreateTripActivity extends AppCompatActivity
             newPlace.placeId = place.getId();
             newPlace.name = place.getName().toString();
 
+
             //Get lat and long
             LatLng location = place.getLatLng();
             String[] splited = location.toString().split("\\s+");
@@ -210,6 +215,9 @@ public class CreateTripActivity extends AppCompatActivity
             String[] latlngSplit = latlng.split(",");
             newPlace.latitude = latlngSplit[0];
             newPlace.longitude = latlngSplit[1];
+            Double latitude = Double.parseDouble(latlngSplit[0]);
+            Double longitude = Double.parseDouble(latlngSplit[1]);
+            geoFire.setLocation(newPlace.placeId, new GeoLocation(latitude, longitude));
 
             actvPlaces.setText("");
             aPlaces.add(newPlace);
@@ -267,7 +275,7 @@ public class CreateTripActivity extends AppCompatActivity
             for (int i = 0; i <= places.size()-1; i++) {
                 Map<String, Object> placeValues = places.get(i).toMap();
                 String childPlaceKey = databaseReference.child("places/" + key).push().getKey();
-                childUpdates.put("places/" + key + "/" + childPlaceKey, placeValues);
+                childUpdates.put("places/" + key + "/" + "place", placeValues);
                 placeID++;
             }
         };

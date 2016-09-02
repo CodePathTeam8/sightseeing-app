@@ -32,6 +32,7 @@ public class PlaceModel {
     public String placeId;
     public String latitude;
     public String longitude;
+    public String parentId;
 
     public PlaceModel(){
         addData();
@@ -60,6 +61,7 @@ public class PlaceModel {
     }
     public String getLatitude() { return latitude; }
     public String getLongitude() { return longitude; }
+    public String getParentId() { return parentId; }
 
 
 
@@ -105,7 +107,7 @@ public class PlaceModel {
             place.averageStay = jsonObject.getInt("averageStay");
             place.hours = jsonObject.getString("hours");
             place.placeId = jsonObject.getString("place_id");
-            mDatabase.child(uuid).setValue(place);
+            mDatabase.child("place").setValue(place);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -122,6 +124,7 @@ public class PlaceModel {
         result.put("placeId", placeId);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
+        result.put("parentId", parentId);
         return result;
     }
 

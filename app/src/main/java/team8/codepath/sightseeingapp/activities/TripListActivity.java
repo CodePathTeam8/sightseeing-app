@@ -25,6 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,11 +40,9 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -68,6 +70,7 @@ public class TripListActivity extends AppCompatActivity
     private TripsArrayAdapter aTrips;
     private ListView lvTrips;
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("trips");
+    private DatabaseReference geoDatabase = FirebaseDatabase.getInstance().getReference("geofire");
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView actvPlaces;
@@ -284,7 +287,9 @@ public class TripListActivity extends AppCompatActivity
             String[] splited = location.toString().split("\\s+");
             String latlng = splited[1].replaceAll("\\(|\\)","");
             String[] latlngSplit = latlng.split(",");
-            findNearbyPlaces(latlngSplit[0], latlngSplit[1], 10);
+            Double latitude = Double.parseDouble(latlngSplit[0]);
+            Double longitude = Double.parseDouble(latlngSplit[1]);
+            findNearbyPlaces( latitude, longitude, 10);
             Log.d("DEBUG", latlngSplit[0]);
             places.release();
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -298,57 +303,34 @@ public class TripListActivity extends AppCompatActivity
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void findNearbyPlaces(String lat, String longit, Integer distance){
-        // we'll want everything within, say, 10km distance
-        Integer totalDistance = distance;
-        Double latitude = Double.parseDouble(lat);
-        Double longitude = Double.parseDouble(longit);
-        // earth's radius in km = ~6371
-        Integer radius = 6371;
+    private void findNearbyPlaces(Double lat, Double longit, Integer distance){
+        GeoFire geoFire = new GeoFire(geoDatabase);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(lat, longit), distance);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+            }
 
-        // latitude boundaries
-        Double maxlat = latitude + Math.toDegrees(totalDistance / radius);
-        Double minlat = latitude - Math.toDegrees(totalDistance / radius);
+            @Override
+            public void onKeyExited(String key) {
+                System.out.println(String.format("Key %s is no longer in the search area", key));
+            }
 
-        // longitude boundaries (longitude gets smaller when latitude increases)
-        Double maxlng = longitude + Math.toDegrees(totalDistance / radius / Math.cos(Math.toRadians(latitude)));
-        Double minlng = longitude - Math.toDegrees(totalDistance / radius / Math.cos(Math.toRadians(latitude)));
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            }
 
-        DatabaseReference places = FirebaseDatabase.getInstance().getReference("places");
+            @Override
+            public void onGeoQueryReady() {
+                System.out.println("All initial data has been loaded and events have been fired!");
+            }
 
-        Log.d("minLat", minlat.toString());
-        Log.d("maxLat", maxlat.toString());
-        //Two queries and then compare and display places that are in both
-        places.orderByChild("longitude").startAt(minlng).endAt(maxlng).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user value
-                        Log.d("PLACE ID", dataSnapshot.getValue().toString());
-//                        User user = dataSnapshot.getValue(User.class);
-                        String dataThings = dataSnapshot.getKey();
-
-                        // ...
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                  }
-                });
-        places.orderByChild("latitude").startAt(minlat).endAt(maxlat).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user value
-                        Log.d("PLACE ID", dataSnapshot.getValue().toString());
-                        String dataThings = dataSnapshot.getKey();
-
-                        // ...
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                System.err.println("There was an error with this query: " + error);
+            }
+        });
     }
 }

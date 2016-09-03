@@ -21,6 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
     <include layout="@layout/content_create_trip" />
 
 </android.support.design.widget.CoordinatorLayout>

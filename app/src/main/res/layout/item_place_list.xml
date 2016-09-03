@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:weightSum="1">
 
     <FrameLayout
-        android:clickable="true"
+        android:clickable="false"
         android:layout_width="fill_parent"
         android:layout_height="100dp" >
 

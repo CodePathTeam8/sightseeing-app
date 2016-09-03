@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -43,15 +44,15 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
         TextView placeName = (TextView) convertView.findViewById(R.id.tvPlaceName);
         placeName.setText(name);
 
-        TextView placeHours = (TextView) convertView.findViewById(R.id.tvPlaceId);
-        placeHours.setText(placeId);
-
+        //TextView placeHours = (TextView) convertView.findViewById(R.id.tvPlaceId);
+        //placeHours.setText(placeId);
+        position++;
         TextView placePosition = (TextView) convertView.findViewById(R.id.tvPosition);
         placePosition.setText(position + "");
 
         final ImageView ivPlacePhoto = (ImageView) convertView.findViewById(R.id.ivPlacePhoto);
 
-        final TextView tvPlacePhotoInfo = (TextView) convertView.findViewById(R.id.tvPlacePhotoInfo);
+        //final TextView tvPlacePhotoInfo = (TextView) convertView.findViewById(R.id.tvPlacePhotoInfo);
 
         // Create a new AsyncTask that displays the bitmap and attribution once loaded.
 
@@ -67,14 +68,10 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
                 protected void onPostExecute(AttributedPhoto attributedPhoto) {
                     if (attributedPhoto != null) {
                         // Photo has been loaded, display it.
-                        ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);
-                        // Display the attribution as HTML content if set.
-                        if (attributedPhoto.attribution == null) {
-                            tvPlacePhotoInfo.setVisibility(View.GONE);
-                        } else {
-                            tvPlacePhotoInfo.setVisibility(View.VISIBLE);
-                            tvPlacePhotoInfo.setText(Html.fromHtml(attributedPhoto.bitmap.toString()));
-                        }
+                       ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);
+                    }
+                    else {
+                      Picasso.with(getContext()).load("static.pexels.com/photos/9579/pexels-photo.jpeg").into(ivPlacePhoto);
                     }
                 }
         }.execute(placeId);

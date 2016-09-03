@@ -1,10 +1,12 @@
 package team8.codepath.sightseeingapp.activities;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -95,12 +97,8 @@ public class CreateTripActivity extends AppCompatActivity
         createItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-
                 String name = etTripName.getText().toString();
                 int totalLength = npTripLength.getValue();
-                // Temporary hardcoded to get the first banner photo
-                //tvPlacePhotoInfo.getText().toString();
-                //String bannerPhoto = aPlaces.getItem(0).bannerPhoto;
                 String placeId = places.get(0).placeId;
                 writeNewTrip(name, totalLength, placeId, places);
                 return true;
@@ -122,14 +120,30 @@ public class CreateTripActivity extends AppCompatActivity
         btnClear = (ImageButton) findViewById(R.id.btnClear);
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
         ivPlacePhoto = (ImageView) findViewById(R.id.ivPlacePhoto);
-        tvPlacePhotoInfo = (TextView) findViewById(R.id.tvPlacePhotoInfo);//.findViewById(R.id.languageHeader)
-
 
         // Setup list of Places within trip
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
         places = new ArrayList<>();
         aPlaces = new PlaceListArrayAdapter(this, places, mGoogleApiClient);
         lvPlaces.setAdapter(aPlaces);
+        lvPlaces.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id){
+                final int position = pos;
+                new AlertDialog.Builder(CreateTripActivity.this)
+                        .setTitle("Confirmation")
+                        .setMessage("Remove place?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                PlaceModel placeToDelete = aPlaces.getItem(position);
+                                aPlaces.remove(placeToDelete);
+                                aPlaces.notifyDataSetChanged();
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+                return true;
+            }
+        });
 
 
         // Setup Number Picker for Trip Length
@@ -147,8 +161,7 @@ public class CreateTripActivity extends AppCompatActivity
         // Register a listener that receives callbacks when a suggestion has been selected
         actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
 
-        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
-        // the entire world.
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
                 null);
         actvPlaces.setAdapter(mAdapter);
@@ -166,15 +179,11 @@ public class CreateTripActivity extends AppCompatActivity
 
 
 
+    // Once a user has selected a Place from autocomplete
     private AdapterView.OnItemClickListener mAutocompleteClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-             Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each PlaceModel suggestion in a AutocompletePrediction from which we
-             read the place ID and title.
-              */
             final AutocompletePrediction item = mAdapter.getItem(position);
             final String placeId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
@@ -194,10 +203,7 @@ public class CreateTripActivity extends AppCompatActivity
 
 
 
-    /**
-     * Callback for results from a Places Geo Data API query that shows the first place result in
-     * the details view on screen.
-     */
+    // Callback from successfully retrieving Google Place.
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
@@ -221,27 +227,16 @@ public class CreateTripActivity extends AppCompatActivity
         }
     };
 
-    /**
-     * Called when the Activity could not connect to Google Play services and the auto manager
-     * could resolve the error automatically.
-     * In this case the API is not available and notify the user.
-     *
-     * @param connectionResult can be inspected to determine the cause of the failure
-     */
+
+    // Connection to Google API Fails
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
         Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
                 + connectionResult.getErrorCode());
-
-        // TODO(Developer): Check error code and notify the user of error state and resolution.
         Toast.makeText(this,
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 
     private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places) {

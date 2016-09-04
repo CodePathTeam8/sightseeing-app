@@ -24,16 +24,15 @@ public class TripModel {
 
     public String id;
     public String name;
-    public String totalLength;
+    public int totalLength;
     public String bannerPhoto;
     public String placeId;
     public ArrayList<String> places;
-    public static JSONArray jsonArray;
     public String distance;
 
     public TripModel(){}
 
-    public TripModel(String id, String name, String placeId, String totalLength, String bannerPhoto, ArrayList<String> places){
+    public TripModel(String id, String name, String placeId, int totalLength, String bannerPhoto, ArrayList<String> places){
         this.id = id;
         this.name = name;
         this.totalLength = totalLength;
@@ -59,8 +58,20 @@ public class TripModel {
         return name;
     }
 
-    public String getTotalLength() {
-        return totalLength+"";
+    public String getHumanReadableTotalLength() {
+        // If it's discrete # of days
+        if (totalLength >= 24 && totalLength % 24 == 0){
+        }
+        else {
+            int daysCount = totalLength / 24;
+            int hoursCount = ((daysCount * 24) - totalLength);
+            if (hoursCount < 0 )
+                hoursCount = hoursCount * -1;
+            if (daysCount > 0){
+            }
+            humanReadableTripLength += hoursCount + " hours";
+        }
+        return humanReadableTripLength;
     }
 
     public String getDistance() {

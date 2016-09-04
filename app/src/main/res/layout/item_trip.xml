@@ -80,17 +80,6 @@
                     android:layout_gravity="center_horizontal"
                     android:text="10" />
 
-                <TextView
-                    android:id="@+id/tvHours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_toEndOf="@+id/tvTripLength"
-                    android:layout_toRightOf="@+id/tvTripLength"
-                    android:paddingLeft="3dp"
-                    android:text="hours" />
-
 
             </RelativeLayout>
         </LinearLayout>

@@ -64,7 +64,8 @@ public class CreateTripActivity extends AppCompatActivity
     private ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
     private ListView lvPlaces;
-    private NumberPicker npTripLength;
+    private NumberPicker npTripLengthHours;
+    private NumberPicker npTripLengthDays;
 
     int tripID = 0;
     int placeID = 0;
@@ -98,7 +99,7 @@ public class CreateTripActivity extends AppCompatActivity
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 String name = etTripName.getText().toString();
-                int totalLength = npTripLength.getValue();
+                int totalLength = getTripLength();
                 String placeId = places.get(0).placeId;
                 writeNewTrip(name, totalLength, placeId, places);
                 return true;
@@ -147,11 +148,16 @@ public class CreateTripActivity extends AppCompatActivity
 
 
         // Setup Number Picker for Trip Length
-        npTripLength = (NumberPicker) findViewById(R.id.npTripLength);
-        npTripLength.setMinValue(1);
-        npTripLength.setMaxValue(48);
-        npTripLength.setWrapSelectorWheel(true);
-        npTripLength.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        npTripLengthDays = (NumberPicker) findViewById(R.id.npTripLengthDays);
+        npTripLengthDays.setMinValue(0);
+        npTripLengthDays.setMaxValue(7);
+        npTripLengthDays.setWrapSelectorWheel(true);
+        npTripLengthDays.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        npTripLengthHours = (NumberPicker) findViewById(R.id.npTripLengthHours);
+        npTripLengthHours.setMinValue(0);
+        npTripLengthHours.setMaxValue(23);
+        npTripLengthHours.setWrapSelectorWheel(true);
+        npTripLengthHours.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
     }
 
 
@@ -241,7 +247,7 @@ public class CreateTripActivity extends AppCompatActivity
 
     private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places) {
 
-        TripModel trip = new TripModel(tripID+"", name, placeId, totalLength +"", null, null);
+        TripModel trip = new TripModel(tripID+"", name, placeId, totalLength, null, null);
         Map<String, Object> childUpdates = new HashMap<>();
 
         // make a new child object under Trips, and get key for it.
@@ -264,5 +270,14 @@ public class CreateTripActivity extends AppCompatActivity
         databaseReference.updateChildren(childUpdates);
         tripID ++;
         finish();
+    }
+
+    public int getTripLength(){
+        int totalHours;
+        int daysCount = npTripLengthDays.getValue();
+        int hoursCount = npTripLengthHours.getValue();
+        totalHours = daysCount > 0 ? (daysCount * 24) : 0;
+        totalHours += hoursCount;
+        return totalHours;
     }
 }

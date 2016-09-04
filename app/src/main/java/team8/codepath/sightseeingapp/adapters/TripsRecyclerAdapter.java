@@ -106,7 +106,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
         viewHolder.name.setText(trip.getName());
         //viewHolder.distance.setText(trip.getDistance());
-        viewHolder.length.setText("Length: " + trip.getTotalLength());
+        viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -121,7 +121,7 @@
 
             <LinearLayout
                 android:layout_marginTop="10dp"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
@@ -132,15 +132,42 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Trip Length"
-                    android:id="@+id/tvTripLength" />
+                    android:text="Aprox. Trip Length"
+                    android:id="@+id/tvTripLength"
+                    android:layout_gravity="center_vertical"
+                    android:paddingEnd="10dp"
+                    android:password="false" />
 
 
                 <NumberPicker
-                    android:id="@+id/npTripLength"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/npTripLengthDays"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="days"
+                    android:id="@+id/tvTripDays"
+                    android:layout_gravity="center_vertical"
+                    android:paddingEnd="10dp"
+                    android:password="false"
+                    android:singleLine="true" />
+
+
+
+                <NumberPicker
+                    android:id="@+id/npTripLengthHours"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hours"
+                    android:id="@+id/tvTripHours"
+                    android:layout_gravity="center_vertical" />
+
+
 
             </LinearLayout>
 

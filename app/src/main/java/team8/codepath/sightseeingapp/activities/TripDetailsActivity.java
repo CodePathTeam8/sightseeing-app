@@ -72,7 +72,7 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
         TripModel trip = (TripModel) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
         name = trip.getName();
         distance = trip.getDistance();
-        time = trip.getTotalLength();
+        time = trip.getHumanReadableTotalLength();
 
         TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);

@@ -27,6 +27,7 @@ public class TripModel {
     public int totalLength;
     public String bannerPhoto;
     public String placeId;
+    public String humanReadableTripLength ="";
     public ArrayList<String> places;
     public String distance;
 
@@ -61,6 +62,7 @@ public class TripModel {
     public String getHumanReadableTotalLength() {
         // If it's discrete # of days
         if (totalLength >= 24 && totalLength % 24 == 0){
+           humanReadableTripLength = (totalLength / 24 + " days");
         }
         else {
             int daysCount = totalLength / 24;
@@ -68,6 +70,7 @@ public class TripModel {
             if (hoursCount < 0 )
                 hoursCount = hoursCount * -1;
             if (daysCount > 0){
+                humanReadableTripLength += daysCount + " days ";
             }
             humanReadableTripLength += hoursCount + " hours";
         }

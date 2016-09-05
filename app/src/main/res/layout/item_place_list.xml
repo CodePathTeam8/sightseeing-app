@@ -3,117 +3,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:weightSum="1">
-
-    <FrameLayout
-        android:clickable="false"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp" >
-
-        <ImageView
-            android:clickable="true"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/background_fb_btn"
-            android:scaleType="centerCrop"
-            android:id="@+id/ivPlacePhoto" />
+    android:weightSum="1"
+    android:baselineAligned="true"
+    android:background="#0000000a"
+    android:padding="5dp">
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:background="@drawable/gradient_bg" >
+            android:layout_width="fill_parent"
+            android:layout_height="100dp" >
 
-            <TextView
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="#27b8bd"
-                android:id="@+id/tvPosition"
-                android:textSize="30dp"
-                android:layout_gravity="left|center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingStart="15dp"/>
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/background_fb_btn"
+                android:scaleType="centerCrop"
+                android:id="@+id/ivPlacePhoto" />
 
-            <TextView
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                tools:text="Andrews Ice Cream"
-                android:id="@+id/tvPlaceName"
-                android:textSize="18dp"
-                android:textColor="#ffffff"
-                android:layout_gravity="center" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="#27b8bd"
+                    android:id="@+id/tvPosition"
+                    android:textSize="30dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    tools:text="Andrews Ice Cream"
+                    android:id="@+id/tvPlaceName"
+                    android:textSize="18dp"
+                    android:textColor="#ffffff"
+                    android:layout_gravity="center"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:background="#64000000"
+                    android:autoText="true" />
+
 
         </FrameLayout>
-
-    </FrameLayout>
-
 
 </LinearLayout>
 
 
-
-<!--
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1">
-
-    <FrameLayout
-        android:clickable="true"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp" >
-
-        <ImageView
-            android:clickable="true"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/background_fb_btn"
-            android:scaleType="centerCrop"
-            android:id="@+id/ivPlacePhoto" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:background="@drawable/gradient_bg" >
-
-            <TextView
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="#27b8bd"
-                android:id="@+id/tvPosition"
-                android:textSize="30dp"
-                android:layout_gravity="left|center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingStart="15dp"/>
-
-            <TextView
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                tools:text="Andrews Ice Cream"
-                android:id="@+id/tvPlaceName"
-                android:textSize="18dp"
-                android:textColor="#ffffff"
-                android:layout_gravity="center" />
-
-        </FrameLayout>
-
-    </FrameLayout>
-
-
-</LinearLayout>-->

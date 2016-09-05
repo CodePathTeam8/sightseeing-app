@@ -2,6 +2,7 @@ package team8.codepath.sightseeingapp.activities;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.media.Image;
 import android.net.Uri;
@@ -61,7 +62,6 @@ public class CreateTripActivity extends AppCompatActivity
     EditText etTripName;
     ImageButton btnClear;
     ImageView ivPlacePhoto;
-    TextView tvPlacePhotoInfo;
 
     private ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
@@ -136,6 +136,7 @@ public class CreateTripActivity extends AppCompatActivity
         places = new ArrayList<>();
         aPlaces = new PlaceListArrayAdapter(this, places, mGoogleApiClient);
         lvPlaces.setAdapter(aPlaces);
+
         lvPlaces.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id){

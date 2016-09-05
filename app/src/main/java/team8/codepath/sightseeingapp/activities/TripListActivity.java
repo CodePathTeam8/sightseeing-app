@@ -10,6 +10,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,9 +21,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -29,7 +29,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -43,22 +43,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
-import team8.codepath.sightseeingapp.adapters.TripsArrayAdapter;
+import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.models.UserModel;
 
-public class TripListActivity extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener {
+public class TripListActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     @BindView(R.id.fabCreateTrip)
     FloatingActionButton fabCreateTrip;
@@ -66,8 +64,10 @@ public class TripListActivity extends AppCompatActivity
     DrawerLayout ndTrips;
     @BindView(R.id.nvView)
     NavigationView nvView;
+    @BindView(R.id.rvTrips)
+    RecyclerView rvTrips;
     private ArrayList<TripModel> trips;
-    private TripsArrayAdapter aTrips;
+    private TripsRecyclerAdapter aTrips;
     private ListView lvTrips;
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("trips");
     private DatabaseReference geoDatabase = FirebaseDatabase.getInstance().getReference("geofire");
@@ -75,6 +75,8 @@ public class TripListActivity extends AppCompatActivity
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView actvPlaces;
     public InputMethodManager imm;
+    private FirebaseRecyclerAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,48 +84,26 @@ public class TripListActivity extends AppCompatActivity
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
 
+        SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+        UserModel currentUser = app.getUser();
+
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
+
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-        lvTrips = (ListView) findViewById(R.id.lvTrips);
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("trips");
-        final FirebaseListAdapter<TripModel> mAdapter = new FirebaseListAdapter<TripModel>(this, TripModel.class, R.layout.item_trip, ref) {
-            @Override
-            protected void populateView(View view, TripModel trip, int position) {
-                ImageView ivTripBanner = (ImageView) view.findViewById(R.id.ivTripBanner);
-                TextView tvTripName = (TextView) view.findViewById(R.id.tvTripName);
-                TextView tvTripDistance = (TextView) view.findViewById(R.id.tvTripDistance);
-                TextView tvTripLength = (TextView) view.findViewById(R.id.tvTripLength);
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
 
-                ivTripBanner.setImageResource(android.R.color.transparent); // clear out old image for recycled view
-                Picasso.with(getApplicationContext()).load(trip.getBannerPhoto()).into(ivTripBanner);
-                tvTripName.setText(trip.getName());
-                tvTripDistance.setText(trip.getDistance());
-                tvTripLength.setText(trip.getTotalLength());
-
-
-            }
-
-
-        };
-        lvTrips.setAdapter(mAdapter);
-
-        mAdapter.notifyDataSetChanged();
-
-        lvTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), TripDetailsActivity.class);
-                TripModel trip = mAdapter.getItem(position);
-                Log.d("Trip", trip.toString());
-
-                intent.putExtra("trip", Parcels.wrap(trip));
-                startActivity(intent);
-            }
-        });
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("trips");
+        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);
+        rvTrips.setLayoutManager(new LinearLayoutManager(this));
+        rvTrips.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
 
         fabCreateTrip.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +183,7 @@ public class TripListActivity extends AppCompatActivity
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
-        switch(menuItem.getItemId()) {
+        switch (menuItem.getItemId()) {
 
             case R.id.navLogout:
                 FirebaseAuth.getInstance().signOut();
@@ -332,5 +312,9 @@ public class TripListActivity extends AppCompatActivity
                 System.err.println("There was an error with this query: " + error);
             }
         });
-    }
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//    }
+}
 }

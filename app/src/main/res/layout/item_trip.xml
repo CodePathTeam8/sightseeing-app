@@ -1,89 +1,88 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- A CardView that contains a TextView -->
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
+    android:id="@+id/cvTrip"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="1">
+    android:layout_gravity="center"
+    card_view:cardElevation="4dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    card_view:cardUseCompatPadding="true">
 
-    <ImageView
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ivTripBanner"
-        android:adjustViewBounds="true"
-        tools:src="@android:drawable/btn_star_big_on" />
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:padding="5dp">
+        android:weightSum="1">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/ivTripBanner"
+            tools:src="@android:drawable/btn_star_big_on"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Ice Cream Tour"
-            android:id="@+id/tvTripName"
-            android:layout_gravity="left|center_horizontal"
-            android:textSize="20dp" />
+            android:adjustViewBounds="true" />
 
 
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center_horizontal">
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:weightSum="1">
 
             <TextView
+                android:id="@+id/tvTripName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.1 miles"
-                android:id="@+id/tvTripDistance"
                 android:layout_gravity="left|center_horizontal"
-                android:paddingRight="0dp" />
+                android:text="Ice Cream Tour"
+                android:textSize="20dp" />
 
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="away"
-                android:id="@+id/tvAway"
-                android:layout_gravity="center_horizontal"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/tvTripDistance"
-                android:layout_toEndOf="@+id/tvTripDistance"/>
+                android:layout_gravity="left|center_horizontal">
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tvTripDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_horizontal"
+                    android:paddingRight="0dp"
+                    android:text="3.1 miles" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|center_horizontal">
+                <TextView
+                    android:id="@+id/tvAway"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_toEndOf="@+id/tvTripDistance"
+                    android:layout_toRightOf="@+id/tvTripDistance"/>
 
+            </RelativeLayout>
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10"
-                android:id="@+id/tvTripLength"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="hours"
-                android:id="@+id/tvHours"
-                android:layout_gravity="center_horizontal"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/tvTripLength"
-                android:layout_toEndOf="@+id/tvTripLength"
-                android:paddingLeft="3dp" />
+                android:layout_gravity="left|center_horizontal">
 
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tvTripLength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="10" />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
+</android.support.v7.widget.CardView>

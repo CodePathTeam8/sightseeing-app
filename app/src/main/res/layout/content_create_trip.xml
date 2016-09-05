@@ -21,14 +21,18 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:baselineAligned="false">
 
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:background="#fff"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -47,8 +51,11 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="66dp"
-                android:layout_gravity="center_horizontal">
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#fff"
+                android:baselineAligned="true"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -105,30 +112,62 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="303dp"
-                android:id="@+id/lvPlaces" />
+                android:layout_height="200dp"
+                android:id="@+id/lvPlaces"
+                android:fastScrollAlwaysVisible="false" />
 
 
 
 
             <LinearLayout
-                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#fff"
+                android:baselineAligned="true"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Trip Length"
-                    android:id="@+id/tvTripLength" />
+                    android:text="Aprox. Trip Length"
+                    android:id="@+id/tvTripLength"
+                    android:layout_gravity="center_vertical"
+                    android:paddingEnd="10dp"
+                    android:password="false" />
 
 
                 <NumberPicker
-                    android:id="@+id/npTripLength"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/npTripLengthDays"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="days"
+                    android:id="@+id/tvTripDays"
+                    android:layout_gravity="center_vertical"
+                    android:paddingEnd="10dp"
+                    android:password="false"
+                    android:singleLine="true" />
+
+
+
+                <NumberPicker
+                    android:id="@+id/npTripLengthHours"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hours"
+                    android:id="@+id/tvTripHours"
+                    android:layout_gravity="center_vertical" />
+
+
 
             </LinearLayout>
 

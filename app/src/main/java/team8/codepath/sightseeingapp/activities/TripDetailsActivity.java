@@ -1,5 +1,13 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -19,7 +27,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +62,7 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
 
     public static final String TAG = "PLACES API";
     protected GoogleApiClient mGoogleApiClient;
+    private int counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +103,10 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
 
         final FirebaseListAdapter<PlaceModel> mAdapter = new FirebaseListAdapter<PlaceModel>(this, PlaceModel.class, R.layout.item_place, dataPlaces) {
             @Override
-            protected void populateView(View view, final PlaceModel place, int position) {
+            protected void populateView(View view, final PlaceModel place, final int position) {
                 TextView tvPlaceName = (TextView) view.findViewById(R.id.tvPlaceName);
                 tvPlaceName.setText(place.getName());
-                Log.d("DEBUG", place.getPlaceId());
+                Log.d(TAG, place.getPlaceId());
 
                 Places.GeoDataApi.getPlaceById(mGoogleApiClient, place.getPlaceId())
                         .setResultCallback(new ResultCallback<PlaceBuffer>() {
@@ -107,12 +118,15 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
                                     Log.i(TAG, "Place found: " + myPlace.getName());
 
                                     LatLng placeLatLng = myPlace.getLatLng();
+
                                     mMap.addMarker(new MarkerOptions()
                                             .position(placeLatLng)
-                                            .title(myPlace.getName().toString()));
+                                            .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.marker, String.valueOf(position+1)))));
 
                                     mMap.moveCamera(CameraUpdateFactory.newLatLng(placeLatLng));
                                     mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
+
+
 
 
                                 } else {
@@ -143,6 +157,40 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
 
         mAdapter.notifyDataSetChanged();
 
+    }
+
+    private Bitmap writeTextOnDrawable(int drawableId, String text) {
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId)
+                .copy(Bitmap.Config.ARGB_8888, true);
+
+        Typeface tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.GRAY);
+        paint.setTypeface(tf);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(convertToPixels(this, 10));
+
+        Rect textRect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textRect);
+
+        Canvas canvas = new Canvas(bm);
+
+        if(textRect.width() >= (canvas.getWidth() - 4))
+            paint.setTextSize(convertToPixels(this, 7));
+
+        int xPos = (canvas.getWidth() / 2) - 2;
+        int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2)) ;
+
+        canvas.drawText(text, xPos, yPos, paint);
+
+        return  bm;
+    }
+
+    private float convertToPixels(Context context, int nDP) {
+        final float conversionScale = context.getResources().getDisplayMetrics().density;
+        return (int) ((nDP * conversionScale) + 0.5f) ;
     }
 
 

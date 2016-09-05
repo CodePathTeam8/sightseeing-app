@@ -26,6 +26,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -67,6 +69,8 @@ public class CreateTripActivity extends AppCompatActivity
     private NumberPicker npTripLengthHours;
     private NumberPicker npTripLengthDays;
 
+    public GeoFire geoFire;
+
     int tripID = 0;
     int placeID = 0;
 
@@ -86,6 +90,11 @@ public class CreateTripActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_trip);
         setupViews();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        DatabaseReference geoFireRef = FirebaseDatabase.getInstance().getReference("geofire");
+        geoFire = new GeoFire(geoFireRef);
+        geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973));
+
         setupPlacesAutoComplete();
     }
 
@@ -225,6 +234,8 @@ public class CreateTripActivity extends AppCompatActivity
             PlaceModel newPlace = new PlaceModel();
             newPlace.placeId = place.getId();
             newPlace.name = place.getName().toString();
+            newPlace.longitude = place.getLatLng().longitude;
+            newPlace.latitude = place.getLatLng().latitude;
             actvPlaces.setText("");
             aPlaces.add(newPlace);
             Log.i(TAG, "PlaceModel details received: " + place.getName());
@@ -260,9 +271,11 @@ public class CreateTripActivity extends AppCompatActivity
 
         if (places != null) {
             for (int i = 0; i <= places.size()-1; i++) {
-                Map<String, Object> placeValues = places.get(i).toMap();
+                PlaceModel newPlace = places.get(i);
+                Map<String, Object> placeValues = newPlace.toMap();
                 String childPlaceKey = databaseReference.child("places/" + key).push().getKey();
                 childUpdates.put("places/" + key + "/" + childPlaceKey, placeValues);
+                geoFire.setLocation(newPlace.getPlaceId(), new GeoLocation(newPlace.latitude, newPlace.longitude));
                 placeID++;
             }
         };

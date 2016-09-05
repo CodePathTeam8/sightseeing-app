@@ -32,6 +32,8 @@ public class PlaceModel {
     public int order;
     public static JSONArray jsonArray;
     public String placeId;
+    public double latitude;
+    public double longitude;
 
     public PlaceModel(){
     }
@@ -67,6 +69,8 @@ public class PlaceModel {
         result.put("order", order);
         result.put("placeId", placeId);
         result.put("bannerPhoto", bannerPhoto);
+        result.put("lattitude", latitude);
+        result.put("longitude", longitude);
         return result;
     }
 

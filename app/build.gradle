@@ -50,6 +50,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.4.0'
     compile 'com.google.android.gms:play-services-maps:9.4.0'
     compile 'com.google.android.gms:play-services-places:9.4.0'
+    compile 'com.firebase:geofire-android:2.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

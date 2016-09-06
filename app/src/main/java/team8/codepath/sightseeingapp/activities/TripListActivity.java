@@ -164,7 +164,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 break;
         }
 
-        // Close the navigation drawer
+        // Close the ic_navigation drawer
         ndTrips.closeDrawers();
     }
 

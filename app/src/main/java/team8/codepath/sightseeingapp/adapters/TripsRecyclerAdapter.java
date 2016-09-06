@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import org.parceler.Parcels;
 
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.activities.TripDetailActivity;
 import team8.codepath.sightseeingapp.activities.TripDetailsActivity;
 import team8.codepath.sightseeingapp.activities.TripListActivity;
 import team8.codepath.sightseeingapp.classes.PhotoTask;
@@ -110,7 +111,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), TripDetailsActivity.class);
+                Intent intent = new Intent(getContext(), TripDetailActivity.class);
 
                 intent.putExtra("trip", Parcels.wrap(trip));
                 getContext().startActivity(intent);

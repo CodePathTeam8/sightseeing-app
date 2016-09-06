@@ -24,6 +24,78 @@ public class PlaceModel {
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("places");
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAverageStay() {
+        return averageStay;
+    }
+
+    public void setAverageStay(int averageStay) {
+        this.averageStay = averageStay;
+    }
+
+    public String getBannerPhoto() {
+        return bannerPhoto;
+    }
+
+    public void setBannerPhoto(String bannerPhoto) {
+        this.bannerPhoto = bannerPhoto;
+    }
+
+    public String getHours() {
+        return hours;
+    }
+
+    public void setHours(String hours) {
+        this.hours = hours;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public int id;
     public String name;
     public int averageStay;
@@ -42,23 +114,6 @@ public class PlaceModel {
         this.name = name;
         this.placeId = placeId;
         this.bannerPhoto = bannerPhoto;
-    }
-    public String getName() {
-        return name;
-    }
-
-    public String getPlaceId() {return placeId;}
-    public int getAverageStay() {
-        return averageStay;
-    }
-    public int getPlaceOrder() {
-        return order;
-    }
-    public String getHours() {
-        return hours;
-    }
-    public String getBannerPhoto() {
-        return bannerPhoto;
     }
 
     @Exclude

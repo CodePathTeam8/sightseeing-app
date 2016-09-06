@@ -270,9 +270,17 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             String[] latlngSplit = latlng.split(",");
             Double latitude = Double.parseDouble(latlngSplit[0]);
             Double longitude = Double.parseDouble(latlngSplit[1]);
-            findNearbyPlaces( latitude, longitude, 20);
+//            findNearbyPlaces( latitude, longitude, 20);
             places.release();
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+            Intent i = new Intent(TripListActivity.this, SearchActivity.class);
+            i.putExtra("latitude", latitude);
+            i.putExtra("longitude", longitude);
+            i.putExtra("distance", 20);
+            startActivity(i);
+
+
         }
     };
 
@@ -342,8 +350,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("Inside child event", dataSnapshot.getValue().toString());
-                    newDbQuery.push().setValue(dataSnapshot.getValue());
-                    Log.d("mdatabase value", newDbQuery.toString());
                     newAdapter.notifyDataSetChanged();
                 }
 

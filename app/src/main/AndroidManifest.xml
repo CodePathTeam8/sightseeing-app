@@ -52,6 +52,10 @@
         <activity
             android:name=".activities.TripDetailActivity"
             android:label="@string/title_activity_create_trip"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme"></activity>
     </application>
 

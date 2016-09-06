@@ -40,9 +40,12 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -76,6 +79,8 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private AutoCompleteTextView actvPlaces;
     public InputMethodManager imm;
     private FirebaseRecyclerAdapter adapter;
+    DatabaseReference newDbQuery;
+    FirebaseRecyclerAdapter newAdapter;
 
 
     @Override
@@ -93,8 +98,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
@@ -115,10 +119,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         });
 
         imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
+
 
         // Setup drawer view
         setupDrawerContent(nvView);
@@ -269,8 +270,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             String[] latlngSplit = latlng.split(",");
             Double latitude = Double.parseDouble(latlngSplit[0]);
             Double longitude = Double.parseDouble(latlngSplit[1]);
-            findNearbyPlaces( latitude, longitude, 10);
-            Log.d("DEBUG", latlngSplit[0]);
+            findNearbyPlaces( latitude, longitude, 20);
             places.release();
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
@@ -286,10 +286,13 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private void findNearbyPlaces(Double lat, Double longit, Integer distance){
         GeoFire geoFire = new GeoFire(geoDatabase);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(lat, longit), distance);
+        final ArrayList<String> placeKeys = new ArrayList<>();
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                placeKeys.add(key);
+                Log.d("Found result", key);
             }
 
             @Override
@@ -305,6 +308,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             @Override
             public void onGeoQueryReady() {
                 System.out.println("All initial data has been loaded and events have been fired!");
+                findMatchingTrips(placeKeys);
             }
 
             @Override
@@ -312,9 +316,47 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 System.err.println("There was an error with this query: " + error);
             }
         });
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
-}
+
+
+
+    }
+
+    public void findMatchingTrips(ArrayList<String> placeKeys){
+        ArrayList<TripModel> trips = new ArrayList<TripModel>();
+        Query queryRef;
+
+        if(placeKeys.size() > 0){
+            String firstRef = "trips/" + placeKeys.get(0);
+            newDbQuery = FirebaseDatabase.getInstance().getReference(firstRef);
+            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient);
+            rvTrips.setAdapter(newAdapter);
+        }
+
+        for(int i=0; i<placeKeys.size() - 1; i++){
+            placeKeys.get(i);
+
+            //Insert query here to find a trip with placeId that matches
+            queryRef = mDatabase.orderByChild("placeId").equalTo(placeKeys.get(i)).limitToFirst(1);
+
+            queryRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("Inside child event", dataSnapshot.getValue().toString());
+                    newDbQuery.push().setValue(dataSnapshot.getValue());
+                    Log.d("mdatabase value", newDbQuery.toString());
+                    newAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+
+
+    }
 }

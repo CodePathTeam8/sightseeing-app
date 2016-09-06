@@ -7,12 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -119,36 +117,41 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         });
 
         imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-
+        actvPlaces = (AutoCompleteTextView) toolbar.findViewById(R.id.actv_search_places);
+        // Register a listener that receives callbacks when a suggestion has been selected
+        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
+        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
+                null);
+        actvPlaces.setAdapter(mAdapter);
 
         // Setup drawer view
         setupDrawerContent(nvView);
-        setupPlacesAutoComplete();
+        setupPlacesAutoComplete(toolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_trip_list, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                // make search call
-                searchView.clearFocus();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                // make search call
+//                searchView.clearFocus();
+//
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
 
         return super.onCreateOptionsMenu(menu);
 
@@ -200,11 +203,11 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         ndTrips.closeDrawers();
     }
 
-    private void setupPlacesAutoComplete() {
+    private void setupPlacesAutoComplete(Toolbar toolbar) {
 
-        actvPlaces = (AutoCompleteTextView) findViewById(R.id.actv_search_places);
+//        actvPlaces = (AutoCompleteTextView) toolbar.findViewById(R.id.actv_search_places);
         // Register a listener that receives callbacks when a suggestion has been selected
-        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
+//        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.

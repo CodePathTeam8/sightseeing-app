@@ -102,9 +102,8 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
     public void findMatchingTrips(ArrayList<String> placeKeys){
         Query queryRef;
 
-        for(int i=0; i<placeKeys.size() - 1; i++){
+        for(int i=0; i<placeKeys.size(); i++){
             placeKeys.get(i);
-
             //Insert query here to find a trip with placeId that matches
             queryRef = mDatabase.orderByChild("placeId").equalTo(placeKeys.get(i)).limitToFirst(1);
 

@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -55,7 +54,6 @@ public class CreateTripActivity extends AppCompatActivity
     EditText etTripName;
     ImageButton btnClear;
     ImageView ivPlacePhoto;
-    TextView tvPlacePhotoInfo;
 
     private ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
@@ -130,6 +128,7 @@ public class CreateTripActivity extends AppCompatActivity
         places = new ArrayList<>();
         aPlaces = new PlaceListArrayAdapter(this, places, mGoogleApiClient);
         lvPlaces.setAdapter(aPlaces);
+
         lvPlaces.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id){

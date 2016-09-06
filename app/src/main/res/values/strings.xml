@@ -9,5 +9,9 @@
     <string name="login_message">Continue with Facebook</string>
 
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="large_text">Material</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_logout">Logout</string>
 
 </resources>

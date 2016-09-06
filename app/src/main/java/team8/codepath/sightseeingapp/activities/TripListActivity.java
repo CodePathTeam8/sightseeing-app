@@ -164,6 +164,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             case android.R.id.home:
                 ndTrips.openDrawer(GravityCompat.START);
                 return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -197,9 +198,14 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 startActivity(i);
 
                 break;
+            case R.id.navProfile:
+
+                Intent p = new Intent(this, ProfileActivity.class);
+                startActivity(p);
+                break;
         }
 
-        // Close the navigation drawer
+        // Close the ic_navigation drawer
         ndTrips.closeDrawers();
     }
 

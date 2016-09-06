@@ -2,6 +2,7 @@ package team8.codepath.sightseeingapp.adapters;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +56,7 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
         //final TextView tvPlacePhotoInfo = (TextView) convertView.findViewById(R.id.tvPlacePhotoInfo);
 
         // Create a new AsyncTask that displays the bitmap and attribution once loaded.
-
-
+   //     placeName.bringToFront();
 
         new PhotoTask(200, 200, mGoogleApiClient) {
                 @Override
@@ -78,4 +78,6 @@ public class PlaceListArrayAdapter extends ArrayAdapter<PlaceModel> {
 
         return convertView;
     }
+
+
 }

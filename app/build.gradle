@@ -53,8 +53,8 @@ dependencies {
 
     compile 'com.firebase:geofire-android:2.1.0'
 
-
     compile 'com.github.qiugang:EditTag:v1.2.3'
-}
+    compile 'com.uber.sdk:rides-android:0.5.3'
 
+}
 apply plugin: 'com.google.gms.google-services'

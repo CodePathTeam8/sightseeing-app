@@ -89,11 +89,11 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
             Log.d("debug", "hi");
         }
 
-        new PhotoTask(200, 200, mGoogleApiClient) {
+        new PhotoTask(350, 350, mGoogleApiClient) {
             @Override
             protected void onPreExecute() {
                 // Display a temporary image to show while bitmap is loading.
-                //ivPlacePhoto.setImageResource(R.drawable.background_fb_btn);
+                bannerView.setImageResource(R.drawable.places_back);
             }
             @Override
             protected void onPostExecute(AttributedPhoto attributedPhoto) {

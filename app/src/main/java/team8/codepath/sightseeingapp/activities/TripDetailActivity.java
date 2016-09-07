@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -45,9 +46,9 @@ import team8.codepath.sightseeingapp.models.TripModel;
 
 public class TripDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    String name;
-    String distance;
-    String time;
+    String name = "";
+    String distance = "";
+    String time = "";
 
     private ArrayList<String> places;
     private PlacesArrayAdapter aPlaces;
@@ -122,6 +123,16 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
                 }
             }
         });
+
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(AppBarLayout appBarLayout) {
+                return false;
+            }
+        });
+        params.setBehavior(behavior);
 
         databaseReference = app.getPlacesReference().child(trip.getId().toString());
         adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab);

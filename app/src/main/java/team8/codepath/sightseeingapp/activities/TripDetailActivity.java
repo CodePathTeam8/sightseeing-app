@@ -4,9 +4,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +40,7 @@ import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
 import team8.codepath.sightseeingapp.adapters.PlacesRecyclerAdapter;
+import team8.codepath.sightseeingapp.classes.AppBarStateChangeListener;
 import team8.codepath.sightseeingapp.models.TripModel;
 
 public class TripDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -48,7 +52,6 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     private ArrayList<String> places;
     private PlacesArrayAdapter aPlaces;
     private ListView lvPlaces;
-    private GoogleMap mMap;
 
     private RecyclerView recyclerView;
     private DatabaseReference databaseReference;
@@ -58,7 +61,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     protected GoogleApiClient mGoogleApiClient;
 
     RideRequestButton requestButton;
-
+    private View mMap;
+    private SupportMapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +73,6 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
 
         SightseeingApplication app = (SightseeingApplication) getApplicationContext();
         recyclerView = (RecyclerView) findViewById(R.id.rvTrips);
-
-
-        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-
-        collapsingToolbarLayout.setTitle(" ");
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -89,7 +85,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
 
-        TextView tripName = (TextView) findViewById(R.id.tvTitle);
+        final TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);
 
         TextView tripDistance = (TextView) findViewById(R.id.tvDistance);
@@ -99,6 +95,33 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         tripTime.setText("Lenght: " + time);
 
         final TextView tvPlacesNumber = (TextView) findViewById(R.id.tvPlacesNumber);
+
+        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+
+        collapsingToolbarLayout.setTitle(trip.getName());
+        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        mMapFragment = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map));
+        mMap = mMapFragment.getView();
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if(state.name().equals("COLLAPSED")){
+                    mMap.animate().translationY(mMap.getHeight());
+                    tripName.animate().alpha(0.0f);
+                    tripName.setVisibility(View.GONE);
+
+                }else if(state.name().equals("EXPANDED")){
+                    mMap.animate().translationY(0);
+                    tripName.animate().alpha(1.0f);
+                    tripName.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         databaseReference = app.getPlacesReference().child(trip.getId().toString());
         adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab);

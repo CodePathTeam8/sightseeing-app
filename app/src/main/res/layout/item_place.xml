@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivIconNumber"
+        android:src="@drawable/marker"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvNumber"
+        tools:text="1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="2dp"
+        android:textSize="8dp"
+        android:layout_alignTop="@+id/tvPlaceName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Andrews Ice Cream"
-        android:id="@+id/tvPlaceName" />
+        android:id="@+id/tvPlaceName"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivIconNumber"
+        android:layout_toEndOf="@+id/ivIconNumber" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="M-F 9-5"
-        android:id="@+id/tvPlaceHours"
-        android:layout_marginLeft="25dp"
-        />
-</LinearLayout>
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/vpGallery"
+        android:layout_below="@id/ivIconNumber"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+    </android.support.v4.view.ViewPager>
+
+</RelativeLayout>

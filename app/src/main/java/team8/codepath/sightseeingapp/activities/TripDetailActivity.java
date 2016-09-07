@@ -1,6 +1,7 @@
 package team8.codepath.sightseeingapp.activities;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,13 +47,10 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     private ListView lvPlaces;
     private GoogleMap mMap;
 
-    private RecyclerView recyclerView;
 
     public static final String TAG = "PLACES API";
     protected GoogleApiClient mGoogleApiClient;
 
-    private DatabaseReference databaseReference;
-    private FirebaseRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +70,11 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)

@@ -1,6 +1,7 @@
 package team8.codepath.sightseeingapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,8 +9,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,11 +50,12 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     FragmentManager mSupportFragmentManager;
     public static final String TAG = "PLACES API";
     protected GoogleApiClient googleApiClient;
+    private int counter = 0;
+    private String firstPlaceLatLong = "";
 
     private Context getContext() {
         return context;
     }
-
 
     public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient) {
         super(PlaceModel.class, modelLayout, PlacesRecyclerAdapter.ItemViewHolder.class, ref);
@@ -87,7 +92,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                     public void onResult(PlaceBuffer places) {
                         if (places.getStatus().isSuccess() && places.getCount() > 0) {
                             final Place myPlace = places.get(0);
-                            Log.i(TAG, "Place found: " + myPlace.getName());
+                            Log.i(TAG, "Place found: " + myPlace.getName() + " lat, long" + myPlace.getLatLng());
 
                             LatLng placeLatLng = myPlace.getLatLng();
 
@@ -98,6 +103,9 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(placeLatLng));
                             mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
 
+                            if(counter == 0)
+                                firstPlaceLatLong = String.valueOf(myPlace.getLatLng());
+
 
                         } else {
                             Log.e(TAG, "Place not found");
@@ -105,6 +113,24 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                         places.release();
                     }
                 });
+
+        counter++;
+        holder.tvNumber.setText(String.valueOf(counter));
+
+        Log.d(TAG, String.valueOf(counter));
+
+        int[] mResources = {
+                R.drawable.favourite,
+                R.drawable.ic_app,
+                R.drawable.ic_profile,
+                R.drawable.marker,
+                R.drawable.pin,
+                R.drawable.price
+        };
+        
+        //Set the Gallery
+        GalleryPagerAdapter mGalleryPagerAdapter = new GalleryPagerAdapter(getContext(), mResources);
+        holder.vpGallery.setAdapter(mGalleryPagerAdapter);
 
 
     }
@@ -115,10 +141,14 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
             View.OnLongClickListener {
 
         TextView tvPlaceName;
+        ViewPager vpGallery;
+        TextView tvNumber;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             tvPlaceName = (TextView) itemView.findViewById(R.id.tvPlaceName);
+            vpGallery = (ViewPager) itemView.findViewById(R.id.vpGallery);
+            tvNumber = (TextView) itemView.findViewById(R.id.tvNumber);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -139,6 +169,25 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         public boolean onLongClick(View view) {
             return true;
         }
+    }
+
+
+    public void setDirectionsToFirstPlace(FloatingActionButton fab){
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Uri geoLocation = Uri.parse("geo:" + firstPlaceLatLong);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                    getContext().startActivity(intent);
+                }
+            }
+        });
+
     }
 
     private class MapReadyCallback extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {

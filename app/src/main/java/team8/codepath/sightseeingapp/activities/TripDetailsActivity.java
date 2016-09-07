@@ -40,9 +40,11 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
 import team8.codepath.sightseeingapp.models.PlaceModel;
@@ -58,6 +60,7 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
     private ArrayList<String> places;
     private PlacesArrayAdapter aPlaces;
     private ListView lvPlaces;
+    private List<String> tripTags;
     private GoogleMap mMap;
 
     public static final String TAG = "PLACES API";
@@ -84,15 +87,21 @@ public class TripDetailsActivity extends FragmentActivity implements OnMapReadyC
         name = trip.getName();
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
+        tripTags = trip.getTripTags();
 
         TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);
+
+
+        EditTag etViewTripTags = (EditTag) findViewById(R.id.etViewTripTags);
+        etViewTripTags.setTagList(tripTags);
+        etViewTripTags.setEditable(false);
 
         TextView tripDistance = (TextView) findViewById(R.id.tvDistance);
         tripDistance.setText(distance);
 
         TextView tripTime = (TextView) findViewById(R.id.tvTime);
-        tripTime.setText("Lenght: " + time);
+        tripTime.setText("Length: " + time);
 
         //ImageView tripImage = (ImageView) findViewById(R.id.ivMap);
         //Picasso.with(getApplicationContext()).load(trip.getBannerPhoto()).into(tripImage);

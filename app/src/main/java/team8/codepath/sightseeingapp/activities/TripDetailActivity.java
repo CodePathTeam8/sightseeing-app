@@ -27,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
@@ -44,6 +46,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     private PlacesArrayAdapter aPlaces;
     private ListView lvPlaces;
     private GoogleMap mMap;
+    private List<String> tripTags;
 
     private RecyclerView recyclerView;
 
@@ -88,15 +91,22 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         name = trip.getName();
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
+        tripTags = trip.getTripTags();
 
         TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);
+
+        EditTag etViewTripTags = (EditTag) findViewById(R.id.etViewTripTags);
+        if (tripTags!=null) {
+            etViewTripTags.setTagList(tripTags);
+            etViewTripTags.setEditable(false);
+        }
 
         TextView tripDistance = (TextView) findViewById(R.id.tvDistance);
         tripDistance.setText(distance);
 
         TextView tripTime = (TextView) findViewById(R.id.tvTime);
-        tripTime.setText("Lenght: " + time);
+        tripTime.setText("Length: " + time);
 
         final TextView tvPlacesNumber = (TextView) findViewById(R.id.tvPlacesNumber);
 

@@ -13,6 +13,7 @@ import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,25 +31,29 @@ public class TripModel {
     public String humanReadableTripLength ="";
     public ArrayList<String> places;
     public String distance;
+    public List<String> tripTags;
 
     public TripModel(){}
 
-    public TripModel(String id, String name, String placeId, int totalLength, String bannerPhoto, ArrayList<String> places){
+    public TripModel(String id, String name, String placeId, int totalLength, String bannerPhoto, ArrayList<String> places, List<String> tripTags){
         this.id = id;
         this.name = name;
         this.totalLength = totalLength;
         this.bannerPhoto = bannerPhoto;
         this.placeId = placeId;
+        this.tripTags = tripTags;
         if (places != null)
         this.places = places;
     }
 
-    public String getBannerPhoto() {
-        return bannerPhoto;
-    }
+
 
     public String getPlaceId() {
         return placeId;
+    }
+
+    public List<String> getTripTags() {
+        return tripTags;
     }
 
     public String getId() {
@@ -61,6 +66,7 @@ public class TripModel {
 
     public String getHumanReadableTotalLength() {
         // If it's discrete # of days
+        humanReadableTripLength = "";
         if (totalLength >= 24 && totalLength % 24 == 0){
            humanReadableTripLength = (totalLength / 24 + " days");
         }
@@ -94,6 +100,7 @@ public class TripModel {
         result.put("bannerPhoto", bannerPhoto);
         result.put("placeId", placeId);
         result.put("id", key);
+        result.put("tripTags", tripTags);
         result.put("places", places);
         return result;
     }

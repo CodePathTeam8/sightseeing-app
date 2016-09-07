@@ -47,12 +47,42 @@
             android:textSize="20sp"
             tools:text="1.1 miles away" />
 
+
+<!--        <LinearLayout
+            android:id="@+id/linlayout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">-->
+
+
+            <TextView
+                android:id="@+id/tvTagsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tvDistance"
+                android:textSize="20sp"
+                tools:text="Tags: " />
+
+        <me.originqiu.library.EditTag
+            android:id="@+id/etViewTripTags"
+            android:layout_below="@+id/tvDistance"
+            android:layout_width="match_parent"
+            android:layout_toRightOf="@+id/tvTagsLabel"
+            android:layout_height="wrap_content"/>
+<!--
+    </LinearLayout>
+-->
+
         <View
             android:id="@+id/vTitle"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/tvDistance"
+            android:layout_below="@+id/etViewTripTags"
             android:background="#B0BEC5" />
+
+
 
         <LinearLayout
             android:id="@+id/llIcons"
@@ -135,6 +165,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvPOI" />
+
+
     </RelativeLayout>
+
 
 </android.support.v4.widget.NestedScrollView>

@@ -35,8 +35,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
@@ -60,6 +62,7 @@ public class CreateTripActivity extends AppCompatActivity
     private ListView lvPlaces;
     private NumberPicker npTripLengthHours;
     private NumberPicker npTripLengthDays;
+    public EditTag etTripTags;
 
     public GeoFire geoFire;
 
@@ -102,7 +105,8 @@ public class CreateTripActivity extends AppCompatActivity
                 String name = etTripName.getText().toString();
                 int totalLength = getTripLength();
                 String placeId = places.get(0).placeId;
-                writeNewTrip(name, totalLength, placeId, places);
+                List<String> tripTags = etTripTags.getTagList();
+                writeNewTrip(name, totalLength, placeId, places, tripTags);
                 return true;
             }
         });
@@ -121,6 +125,8 @@ public class CreateTripActivity extends AppCompatActivity
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
+        etTripTags = (EditTag) findViewById(R.id.etTripTags);
+        etTripTags.setEditable(true);
         ivPlacePhoto = (ImageView) findViewById(R.id.ivPlacePhoto);
 
         // Setup list of Places within trip
@@ -249,9 +255,9 @@ public class CreateTripActivity extends AppCompatActivity
     }
 
 
-    private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places) {
+    private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places, List<String> tripTags) {
 
-        TripModel trip = new TripModel(tripID+"", name, placeId, totalLength, null, null);
+        TripModel trip = new TripModel(tripID+"", name, placeId, totalLength, null, null, tripTags);
         Map<String, Object> childUpdates = new HashMap<>();
 
         // make a new child object under Trips, and get key for it.

@@ -2,6 +2,7 @@ package team8.codepath.sightseeingapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -127,6 +129,8 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         // Setup drawer view
         setupDrawerContent(nvView);
         setupPlacesAutoComplete(toolbar);
+
+        setProfileInfo();
     }
 
     @Override
@@ -229,6 +233,21 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 //                actvPlaces.setText("");
 //            }
 //        });
+
+    }
+
+    public void setProfileInfo(){
+
+        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
+        View header=navigationView.getHeaderView(0);
+
+        TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
+        TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
+
+        tvUserName.setText(prefs.getString("name", "User Name"));
+        tvEmail.setText(prefs.getString("email", "Email"));
 
     }
 

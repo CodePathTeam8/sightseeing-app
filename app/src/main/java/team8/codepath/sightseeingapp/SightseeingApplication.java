@@ -17,7 +17,8 @@ import team8.codepath.sightseeingapp.utils.Constants;
 
 public class SightseeingApplication extends Application{
 
-    UserModel currentUser;
+    public UserModel currentUser;
+
     private DatabaseReference tripsReference;
     private DatabaseReference placesReference;
 

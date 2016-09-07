@@ -1,6 +1,8 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -108,10 +110,14 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG, location);
                                     Log.d(TAG, user.getEmail());
                                     Log.d(TAG, user.getLocationName());
-                                    UserModel user2 = app.getUser();
 
-                                    Log.d(TAG, user2.getEmail());
-
+                                    SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
+                                    editor.putString("name", user.getName());
+                                    editor.putString("email", user.getEmail());
+                                    editor.putString("gender", user.getGender());
+                                    editor.putString("locationId", user.getLocationId());
+                                    editor.putString("locationName", user.getLocationName());
+                                    editor.commit();
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

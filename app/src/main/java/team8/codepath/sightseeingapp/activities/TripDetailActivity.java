@@ -47,6 +47,9 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     private ListView lvPlaces;
     private GoogleMap mMap;
 
+    private RecyclerView recyclerView;
+    private DatabaseReference databaseReference;
+    private FirebaseRecyclerAdapter adapter;
 
     public static final String TAG = "PLACES API";
     protected GoogleApiClient mGoogleApiClient;
@@ -70,11 +73,13 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
+        });
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)

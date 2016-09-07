@@ -52,15 +52,19 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     protected GoogleApiClient googleApiClient;
     private int counter = 0;
     private String firstPlaceLatLong = "";
+    FloatingActionButton mfab;
 
     private Context getContext() {
         return context;
     }
 
-    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient) {
+    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab) {
         super(PlaceModel.class, modelLayout, PlacesRecyclerAdapter.ItemViewHolder.class, ref);
         mSupportFragmentManager = supportFragmentManager;
         googleApiClient = mGoogleApiClient;
+
+        this.mfab = fab;
+
     }
 
     @Override
@@ -73,6 +77,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         SupportMapFragment mapFragment = (SupportMapFragment) mSupportFragmentManager
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(new MapReadyCallback());
+
 
 
         return new ItemViewHolder(view);
@@ -103,9 +108,34 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(placeLatLng));
                             mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
 
-                            if(counter == 0)
+                            if(counter == 0){
                                 firstPlaceLatLong = String.valueOf(myPlace.getLatLng());
+                                mfab.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
+                                        /*Uri geoLocation = Uri.parse("geo:" + firstPlaceLatLong);
+
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setData(geoLocation);
+                                        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                                            getContext().startActivity(intent);
+                                        }*/
+                                        // Create a Uri from an intent string. Use the result to create an Intent.
+                                        Uri gmmIntentUri = Uri.parse("google.streetview:cbll=46.414382,10.013988");
+
+                                        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                        // Make the Intent explicit by setting the Google Maps package
+                                        mapIntent.setPackage("com.google.android.apps.maps");
+
+                                        // Attempt to start an activity that can handle the Intent
+                                        getContext().startActivity(mapIntent);
+                                    }
+                                });
+                            }
+
+                            counter++;
 
                         } else {
                             Log.e(TAG, "Place not found");
@@ -114,10 +144,8 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                     }
                 });
 
-        counter++;
         holder.tvNumber.setText(String.valueOf(counter));
 
-        Log.d(TAG, String.valueOf(counter));
 
         int[] mResources = {
                 R.drawable.favourite,

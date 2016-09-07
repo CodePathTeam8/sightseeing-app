@@ -73,13 +73,6 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
@@ -103,7 +96,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         final TextView tvPlacesNumber = (TextView) findViewById(R.id.tvPlacesNumber);
 
         databaseReference = app.getPlacesReference().child(trip.getId().toString());
-        adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient);
+        adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

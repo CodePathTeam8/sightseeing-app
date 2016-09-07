@@ -48,4 +48,12 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
 
+    <com.uber.sdk.android.rides.RideRequestButton
+        android:id="@+id/btnRequest"
+        android:layout_below="@+id/rlContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        />
+
 </android.support.design.widget.CoordinatorLayout>

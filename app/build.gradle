@@ -52,6 +52,9 @@ dependencies {
     compile 'com.google.android.gms:play-services-places:9.4.0'
 
     compile 'com.firebase:geofire-android:2.1.0'
+
+    compile 'com.uber.sdk:rides-android:0.5.3'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

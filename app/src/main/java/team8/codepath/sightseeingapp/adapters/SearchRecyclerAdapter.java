@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.activities.TripDetailActivity;
 import team8.codepath.sightseeingapp.activities.TripDetailsActivity;
 import team8.codepath.sightseeingapp.classes.PhotoTask;
 import team8.codepath.sightseeingapp.models.TripModel;
@@ -91,7 +92,7 @@ public class SearchRecyclerAdapter extends
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, TripDetailsActivity.class);
+                Intent intent = new Intent(context, TripDetailActivity.class);
 
                 intent.putExtra("trip", Parcels.wrap(trip));
                 context.startActivity(intent);

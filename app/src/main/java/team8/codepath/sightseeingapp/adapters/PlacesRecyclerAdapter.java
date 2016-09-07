@@ -84,7 +84,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     }
 
     @Override
-    protected void populateViewHolder(ItemViewHolder holder, PlaceModel place, final int position) {
+    protected void populateViewHolder(final ItemViewHolder holder, PlaceModel place, final int position) {
         String itemDescription = place.getName();
         holder.tvPlaceName.setText(itemDescription);
 
@@ -114,29 +114,20 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                                     @Override
                                     public void onClick(View view) {
 
-                                        /*Uri geoLocation = Uri.parse("geo:" + firstPlaceLatLong);
+                                        firstPlaceLatLong = firstPlaceLatLong.replace("lat/lng: (", "");
+                                        firstPlaceLatLong = firstPlaceLatLong.replace(")", "");
 
-                                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                                        intent.setData(geoLocation);
-                                        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-                                            getContext().startActivity(intent);
-                                        }*/
-                                        // Create a Uri from an intent string. Use the result to create an Intent.
-                                        Uri gmmIntentUri = Uri.parse("google.streetview:cbll=46.414382,10.013988");
-
-                                        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + firstPlaceLatLong);
                                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                        // Make the Intent explicit by setting the Google Maps package
                                         mapIntent.setPackage("com.google.android.apps.maps");
-
-                                        // Attempt to start an activity that can handle the Intent
                                         getContext().startActivity(mapIntent);
                                     }
                                 });
                             }
 
                             counter++;
-
+                            holder.tvNumber.setText(String.valueOf(counter));
+                            
                         } else {
                             Log.e(TAG, "Place not found");
                         }
@@ -144,7 +135,6 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                     }
                 });
 
-        holder.tvNumber.setText(String.valueOf(counter));
 
 
         int[] mResources = {

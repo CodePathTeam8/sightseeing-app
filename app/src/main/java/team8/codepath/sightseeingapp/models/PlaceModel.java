@@ -5,16 +5,10 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import team8.codepath.sightseeingapp.classes.PhotoTask;
 
 /**
  * Created by floko_000 on 8/18/2016.

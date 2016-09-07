@@ -49,6 +49,7 @@
             android:name=".activities.CreateTripActivity"
             android:label="@string/title_activity_create_trip"
             android:theme="@style/AppTheme" />
+        <activity android:name=".activities.SearchActivity"></activity>
         <activity
             android:name=".activities.TripDetailActivity"
             android:label="@string/title_activity_create_trip"

@@ -1,31 +1,49 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -33,7 +51,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
+import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
+import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
 import team8.codepath.sightseeingapp.models.UserModel;
 
@@ -51,7 +71,14 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private TripsRecyclerAdapter aTrips;
     private ListView lvTrips;
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("trips");
+    private DatabaseReference geoDatabase = FirebaseDatabase.getInstance().getReference("geofire");
+    protected GoogleApiClient mGoogleApiClient;
+    private PlaceAutocompleteAdapter mAdapter;
+    private AutoCompleteTextView actvPlaces;
+    public InputMethodManager imm;
     private FirebaseRecyclerAdapter adapter;
+    DatabaseReference newDbQuery;
+    FirebaseRecyclerAdapter newAdapter;
 
 
     @Override
@@ -69,8 +96,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
@@ -90,36 +116,45 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             }
         });
 
+        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        actvPlaces = (AutoCompleteTextView) toolbar.findViewById(R.id.actv_search_places);
+        // Register a listener that receives callbacks when a suggestion has been selected
+        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
+        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
+                null);
+        actvPlaces.setAdapter(mAdapter);
+
         // Setup drawer view
         setupDrawerContent(nvView);
-
-
+        setupPlacesAutoComplete(toolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_trip_list, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                // make search call
+//                searchView.clearFocus();
+//
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                // make search call
-                searchView.clearFocus();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -174,9 +209,169 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         ndTrips.closeDrawers();
     }
 
+    private void setupPlacesAutoComplete(Toolbar toolbar) {
+
+//        actvPlaces = (AutoCompleteTextView) toolbar.findViewById(R.id.actv_search_places);
+        // Register a listener that receives callbacks when a suggestion has been selected
+//        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
+                null);
+        actvPlaces.setAdapter(mAdapter);
+
+        // Set up the 'clear text' button that clears the text in the autocomplete view
+//        ImageButton btnClear = (ImageButton) findViewById(R.id.btnClear);
+//        btnClear.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                actvPlaces.setText("");
+//            }
+//        });
+
+    }
+
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+             Retrieve the place ID of the selected item from the Adapter.
+             The adapter stores each PlaceModel suggestion in a AutocompletePrediction from which we
+             read the place ID and title.
+              */
+            final AutocompletePrediction item = mAdapter.getItem(position);
+            final String placeId = item.getPlaceId();
+            final CharSequence primaryText = item.getPrimaryText(null);
+
+
+            /*
+             Issue a request to the Places Geo Data API to retrieve a PlaceModel object with additional
+             details about the place.
+              */
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+//                Log.e(TAG, "PlaceModel query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            // Get the PlaceModel object from the buffer.
+            final Place place = places.get(0);
+            PlaceModel newPlace = new PlaceModel();
+            LatLng location = place.getLatLng();
+            newPlace.name = place.getName().toString();
+            actvPlaces.setText("");
+//            aPlaces.add(newPlace);
+//            Log.i(TAG, "PlaceModel details received: " + place.getName());
+            String[] splited = location.toString().split("\\s+");
+            String latlng = splited[1].replaceAll("\\(|\\)","");
+            String[] latlngSplit = latlng.split(",");
+            Double latitude = Double.parseDouble(latlngSplit[0]);
+            Double longitude = Double.parseDouble(latlngSplit[1]);
+//            findNearbyPlaces( latitude, longitude, 20);
+            places.release();
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+            Intent i = new Intent(TripListActivity.this, SearchActivity.class);
+            i.putExtra("latitude", latitude);
+            i.putExtra("longitude", longitude);
+            i.putExtra("distance", 20);
+            startActivity(i);
+
+
+        }
+    };
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this,
+                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void findNearbyPlaces(Double lat, Double longit, Integer distance){
+        GeoFire geoFire = new GeoFire(geoDatabase);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(lat, longit), distance);
+        final ArrayList<String> placeKeys = new ArrayList<>();
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                placeKeys.add(key);
+                Log.d("Found result", key);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                System.out.println(String.format("Key %s is no longer in the search area", key));
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                System.out.println("All initial data has been loaded and events have been fired!");
+                findMatchingTrips(placeKeys);
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                System.err.println("There was an error with this query: " + error);
+            }
+        });
+
+
+
+    }
+
+    public void findMatchingTrips(ArrayList<String> placeKeys){
+        ArrayList<TripModel> trips = new ArrayList<TripModel>();
+        Query queryRef;
+
+        if(placeKeys.size() > 0){
+            String firstRef = "trips/" + placeKeys.get(0);
+            newDbQuery = FirebaseDatabase.getInstance().getReference(firstRef);
+            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient);
+            rvTrips.setAdapter(newAdapter);
+        }
+
+        for(int i=0; i<placeKeys.size() - 1; i++){
+            placeKeys.get(i);
+
+            //Insert query here to find a trip with placeId that matches
+            queryRef = mDatabase.orderByChild("placeId").equalTo(placeKeys.get(i)).limitToFirst(1);
+
+            queryRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("Inside child event", dataSnapshot.getValue().toString());
+                    newAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+
 
     }
 }

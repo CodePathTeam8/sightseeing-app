@@ -20,7 +20,6 @@ import java.util.List;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.activities.TripDetailActivity;
-import team8.codepath.sightseeingapp.activities.TripDetailsActivity;
 import team8.codepath.sightseeingapp.classes.PhotoTask;
 import team8.codepath.sightseeingapp.models.TripModel;
 

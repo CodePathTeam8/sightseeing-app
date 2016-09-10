@@ -82,6 +82,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
 
+    SightseeingApplication app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +90,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
 
-        SightseeingApplication app = (SightseeingApplication) getApplicationContext();
-        UserModel currentUser = app.getUser();
+        app = (SightseeingApplication) getApplicationContext();
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -238,16 +238,16 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
     public void setProfileInfo(){
 
-        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
+        UserModel user = app.getUserInfo();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
 
         TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
 
-        tvUserName.setText(prefs.getString("name", "User Name"));
-        tvEmail.setText(prefs.getString("email", "Email"));
+        tvUserName.setText(user.getName());
+        tvEmail.setText(user.getEmail());
 
     }
 

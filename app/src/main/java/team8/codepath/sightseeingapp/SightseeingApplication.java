@@ -1,6 +1,7 @@
 package team8.codepath.sightseeingapp;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -16,8 +17,6 @@ import team8.codepath.sightseeingapp.models.UserModel;
 import team8.codepath.sightseeingapp.utils.Constants;
 
 public class SightseeingApplication extends Application{
-
-    public UserModel currentUser;
 
     private DatabaseReference tripsReference;
     private DatabaseReference placesReference;
@@ -62,11 +61,32 @@ public class SightseeingApplication extends Application{
         return placesReference;
     }
 
-    public void setUser(UserModel user){
-         currentUser = user;
+    public void setUserInfo(UserModel user) {
+
+        SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
+        editor.putString("name", user.getName());
+        editor.putString("email", user.getEmail());
+        editor.putString("gender", user.getGender());
+        editor.putString("locationId", user.getLocationId());
+        editor.putString("locationName", user.getLocationName());
+        editor.commit();
     }
 
-    public UserModel getUser(){
-        return currentUser;
+    public UserModel getUserInfo(){
+        return getUserPreferencesAsModel();
     }
+
+    public UserModel getUserPreferencesAsModel(){
+        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
+
+        UserModel user = new UserModel();
+        user.setName(prefs.getString("name", "User Name"));
+        user.setEmail(prefs.getString("email", "Email"));
+        user.setGender(prefs.getString("gender", "Gender"));
+        user.setLocationId(prefs.getString("locationId", "location id"));
+        user.setLocationName(prefs.getString("locationName", "location name"));
+
+        return user;
+    }
+
 }

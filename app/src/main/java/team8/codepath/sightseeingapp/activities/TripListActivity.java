@@ -1,12 +1,18 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +40,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -69,9 +76,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     NavigationView nvView;
     @BindView(R.id.rvTrips)
     RecyclerView rvTrips;
-    private ArrayList<TripModel> trips;
-    private TripsRecyclerAdapter aTrips;
-    private ListView lvTrips;
     private static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("trips");
     private DatabaseReference geoDatabase = FirebaseDatabase.getInstance().getReference("geofire");
     protected GoogleApiClient mGoogleApiClient;
@@ -79,6 +83,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private AutoCompleteTextView actvPlaces;
     public InputMethodManager imm;
     private FirebaseRecyclerAdapter adapter;
+    Location mLastLocation;
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
 
@@ -101,6 +106,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
+                .addApi(LocationServices.API)
                 .build();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("trips");
@@ -126,10 +132,21 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 null);
         actvPlaces.setAdapter(mAdapter);
 
+        // Check for location information
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+        } else {
+            Toast.makeText(this, "Enable GPS for results near you",
+                    Toast.LENGTH_LONG).show();
+        }
+
         // Setup drawer view
         setupDrawerContent(nvView);
         setupPlacesAutoComplete(toolbar);
-
         setProfileInfo();
     }
 
@@ -137,28 +154,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_trip_list, menu);
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
-//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-//
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//
-//                // make search call
-//                searchView.clearFocus();
-//
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
-
         return super.onCreateOptionsMenu(menu);
-
     }
 
     @Override
@@ -208,44 +204,24 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 startActivity(p);
                 break;
         }
-
         // Close the ic_navigation drawer
         ndTrips.closeDrawers();
     }
 
     private void setupPlacesAutoComplete(Toolbar toolbar) {
-
-//        actvPlaces = (AutoCompleteTextView) toolbar.findViewById(R.id.actv_search_places);
-        // Register a listener that receives callbacks when a suggestion has been selected
-//        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
-
-        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
-        // the entire world.
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
                 null);
         actvPlaces.setAdapter(mAdapter);
-
-        // Set up the 'clear text' button that clears the text in the autocomplete view
-//        ImageButton btnClear = (ImageButton) findViewById(R.id.btnClear);
-//        btnClear.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                actvPlaces.setText("");
-//            }
-//        });
-
     }
 
     public void setProfileInfo(){
 
         SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
         View header=navigationView.getHeaderView(0);
-
         TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
-
         tvUserName.setText(prefs.getString("name", "User Name"));
         tvEmail.setText(prefs.getString("email", "Email"));
 
@@ -281,34 +257,19 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         public void onResult(PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
-//                Log.e(TAG, "PlaceModel query did not complete. Error: " + places.getStatus().toString());
                 places.release();
                 return;
             }
             // Get the PlaceModel object from the buffer.
             final Place place = places.get(0);
-            PlaceModel newPlace = new PlaceModel();
             LatLng location = place.getLatLng();
-            newPlace.name = place.getName().toString();
-            actvPlaces.setText("");
-//            aPlaces.add(newPlace);
-//            Log.i(TAG, "PlaceModel details received: " + place.getName());
-            String[] splited = location.toString().split("\\s+");
-            String latlng = splited[1].replaceAll("\\(|\\)","");
-            String[] latlngSplit = latlng.split(",");
-            Double latitude = Double.parseDouble(latlngSplit[0]);
-            Double longitude = Double.parseDouble(latlngSplit[1]);
-//            findNearbyPlaces( latitude, longitude, 20);
             places.release();
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
             Intent i = new Intent(TripListActivity.this, SearchActivity.class);
-            i.putExtra("latitude", latitude);
-            i.putExtra("longitude", longitude);
+            i.putExtra("latitude", location.latitude);
+            i.putExtra("longitude", location.longitude);
             i.putExtra("distance", 20);
             startActivity(i);
-
-
         }
     };
 
@@ -358,7 +319,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     }
 
     public void findMatchingTrips(ArrayList<String> placeKeys){
-        ArrayList<TripModel> trips = new ArrayList<TripModel>();
         Query queryRef;
 
         if(placeKeys.size() > 0){
@@ -370,17 +330,14 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
         for(int i=0; i<placeKeys.size() - 1; i++){
             placeKeys.get(i);
-
             //Insert query here to find a trip with placeId that matches
             queryRef = mDatabase.orderByChild("placeId").equalTo(placeKeys.get(i)).limitToFirst(1);
-
             queryRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("Inside child event", dataSnapshot.getValue().toString());
                     newAdapter.notifyDataSetChanged();
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 

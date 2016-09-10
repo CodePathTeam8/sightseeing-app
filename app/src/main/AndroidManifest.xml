@@ -27,7 +27,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.TripListActivity" />
-        <activity android:name=".activities.TripDetailsActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

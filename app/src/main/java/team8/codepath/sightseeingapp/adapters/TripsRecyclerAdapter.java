@@ -2,12 +2,9 @@ package team8.codepath.sightseeingapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +15,12 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
 import com.google.firebase.database.DatabaseReference;
-import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.activities.TripDetailActivity;
-import team8.codepath.sightseeingapp.activities.TripDetailsActivity;
-import team8.codepath.sightseeingapp.activities.TripListActivity;
 import team8.codepath.sightseeingapp.classes.PhotoTask;
 import team8.codepath.sightseeingapp.models.TripModel;
 

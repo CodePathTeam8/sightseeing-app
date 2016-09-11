@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize Facebook Login button
         callbackManager = CallbackManager.Factory.create();
 
-        btnFacebookLogin.setReadPermissions(Arrays.asList("public_profile", "email", "user_location", "user_friends"));
+        btnFacebookLogin.setReadPermissions(Arrays.asList("public_profile", "email", "user_location", "user_friends", "user_likes"));
         btnFacebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                         });
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,location");
+                parameters.putString("fields", "id,name,email,gender,location,bio");
                 request.setParameters(parameters);
                 request.executeAsync();
 

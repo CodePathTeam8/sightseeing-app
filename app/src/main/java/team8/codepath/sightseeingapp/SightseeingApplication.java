@@ -69,6 +69,7 @@ public class SightseeingApplication extends Application{
         editor.putString("gender", user.getGender());
         editor.putString("locationId", user.getLocationId());
         editor.putString("locationName", user.getLocationName());
+        editor.putString("bio", user.getBio());
         editor.commit();
     }
 
@@ -85,6 +86,7 @@ public class SightseeingApplication extends Application{
         user.setGender(prefs.getString("gender", "Gender"));
         user.setLocationId(prefs.getString("locationId", "location id"));
         user.setLocationName(prefs.getString("locationName", "location name"));
+        user.setBio(prefs.getString("bio", ""));
 
         return user;
     }

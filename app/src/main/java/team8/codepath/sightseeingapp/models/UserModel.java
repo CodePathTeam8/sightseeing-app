@@ -13,6 +13,7 @@ public class UserModel {
     private String gender;
     private String locationId;
     private String locationName;
+    private String bio;
 
     public String getId() {
         return id;
@@ -60,6 +61,14 @@ public class UserModel {
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public static UserModel fromJSON(JSONObject jsonObject){

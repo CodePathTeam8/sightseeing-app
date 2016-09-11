@@ -2,9 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="team8.codepath.sightseeingapp.activities.TripDetailActivity">
+
+    <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_heart_outline_24"
+        android:title="@string/action_favorite"
+        app:showAsAction="ifRoom"/>
 </menu>

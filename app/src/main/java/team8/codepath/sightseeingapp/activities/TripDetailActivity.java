@@ -1,47 +1,37 @@
 package team8.codepath.sightseeingapp.activities;
 
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.uber.sdk.android.core.UberButton;
-import com.uber.sdk.android.rides.RideParameters;
-import com.uber.sdk.android.rides.RideRequestButton;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
-import team8.codepath.sightseeingapp.adapters.PlacesArrayAdapter;
 import team8.codepath.sightseeingapp.adapters.PlacesRecyclerAdapter;
 import team8.codepath.sightseeingapp.classes.AppBarStateChangeListener;
 import team8.codepath.sightseeingapp.models.TripModel;
@@ -52,20 +42,9 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     String distance = "";
     String time = "";
 
-    private ArrayList<String> places;
-    private PlacesArrayAdapter aPlaces;
-    private ListView lvPlaces;
-    private List<String> tripTags;
-    private RecyclerView recyclerView;
-    private DatabaseReference databaseReference;
-    private FirebaseRecyclerAdapter adapter;
-
-    public static final String TAG = "PLACES API";
     protected GoogleApiClient mGoogleApiClient;
 
-    RideRequestButton requestButton;
     private View mMap;
-    private SupportMapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +54,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         setSupportActionBar(toolbar);
 
         SightseeingApplication app = (SightseeingApplication) getApplicationContext();
-        recyclerView = (RecyclerView) findViewById(R.id.rvTrips);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvTrips);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -83,17 +62,17 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        TripModel trip = (TripModel) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
+        TripModel trip = Parcels.unwrap(getIntent().getParcelableExtra("trip"));
         name = trip.getName();
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
-        tripTags = trip.getTripTags();
+        List<String> tripTags = trip.getTripTags();
 
         final TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);
 
         EditTag etViewTripTags = (EditTag) findViewById(R.id.etViewTripTags);
-        if (tripTags!=null) {
+        if (tripTags !=null) {
             etViewTripTags.setTagList(tripTags);
             etViewTripTags.setEditable(false);
         }
@@ -114,7 +93,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mMapFragment = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map));
+        SupportMapFragment mMapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         mMap = mMapFragment.getView();
 
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
@@ -137,14 +116,14 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
         behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
             @Override
-            public boolean canDrag(AppBarLayout appBarLayout) {
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
                 return false;
             }
         });
         params.setBehavior(behavior);
 
-        databaseReference = app.getPlacesReference().child(trip.getId().toString());
-        adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab);
+        DatabaseReference databaseReference = app.getPlacesReference().child(trip.getId().toString());
+        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -182,4 +161,10 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_trip_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 }

@@ -48,7 +48,7 @@
             android:name=".activities.CreateTripActivity"
             android:label="@string/title_activity_create_trip"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.SearchActivity"></activity>
+        <activity android:name=".activities.SearchActivity" />
         <activity
             android:name=".activities.TripDetailActivity"
             android:label="@string/title_activity_create_trip"
@@ -56,7 +56,16 @@
         <activity
             android:name=".activities.ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.FavoritesActivity"
+            android:label="@string/title_activity_favorites"
+            android:parentActivityName=".activities.TripListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="team8.codepath.sightseeingapp.activities.TripListActivity" />
+        </activity>
     </application>
 
 </manifest>

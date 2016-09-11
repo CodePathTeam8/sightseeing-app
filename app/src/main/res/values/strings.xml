@@ -13,5 +13,8 @@
     <string name="large_text">Material</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_logout">Logout</string>
+    <string name="profile_member_since">Member since</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_languages">Languages</string>
 
 </resources>

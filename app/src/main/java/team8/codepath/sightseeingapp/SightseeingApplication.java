@@ -64,12 +64,14 @@ public class SightseeingApplication extends Application{
     public void setUserInfo(UserModel user) {
 
         SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
+        editor.putString("id", user.getId());
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
         editor.putString("gender", user.getGender());
         editor.putString("locationId", user.getLocationId());
         editor.putString("locationName", user.getLocationName());
         editor.putString("bio", user.getBio());
+        editor.putString("languages", user.getLanguages());
         editor.commit();
     }
 
@@ -81,12 +83,14 @@ public class SightseeingApplication extends Application{
         SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
 
         UserModel user = new UserModel();
+        user.setId(prefs.getString("id", ""));
         user.setName(prefs.getString("name", "User Name"));
         user.setEmail(prefs.getString("email", "Email"));
         user.setGender(prefs.getString("gender", "Gender"));
         user.setLocationId(prefs.getString("locationId", "location id"));
         user.setLocationName(prefs.getString("locationName", "location name"));
         user.setBio(prefs.getString("bio", ""));
+        user.setLanguages(prefs.getString("languages", "English"));
 
         return user;
     }

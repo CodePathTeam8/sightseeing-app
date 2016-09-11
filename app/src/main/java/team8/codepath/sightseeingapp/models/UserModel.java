@@ -1,6 +1,8 @@
 package team8.codepath.sightseeingapp.models;
 
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +16,7 @@ public class UserModel {
     private String locationId;
     private String locationName;
     private String bio;
+    private String languages;
 
     public String getId() {
         return id;
@@ -71,6 +74,14 @@ public class UserModel {
         this.bio = bio;
     }
 
+    public String getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(String languages) {
+        this.languages = languages;
+    }
+
     public static UserModel fromJSON(JSONObject jsonObject){
         UserModel user = new UserModel();
 
@@ -81,6 +92,14 @@ public class UserModel {
             user.gender = jsonObject.getString("gender");
             user.locationId = jsonObject.getJSONObject("location").getString("id");
             user.locationName = jsonObject.getJSONObject("location").getString("name");
+
+            int size = jsonObject.getJSONObject("languages").length();
+            String languages = "";
+            for (int i = 0; i < size; i++){
+                languages += jsonObject.getJSONArray("languages").getJSONObject(i).getString("name");
+            }
+
+            user.languages = languages;
 
         } catch (JSONException e) {
             e.printStackTrace();

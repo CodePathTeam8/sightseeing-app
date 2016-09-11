@@ -13,12 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.facebook.login.widget.ProfilePictureView
             android:id="@+id/ivProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_app" />
+            android:layout_marginTop="10dp" />
 
         <TextView
             android:id="@+id/tvUserName"
@@ -26,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/ivProfile"
             android:gravity="center"
-            android:text="User Name"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            tools:text="User Name" />
 
         <TextView
             android:id="@+id/tvLocationName"
@@ -35,9 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvUserName"
             android:layout_centerHorizontal="true"
-            android:text="US"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="US" />
 
         <TextView
             android:id="@+id/tvBio"
@@ -47,7 +47,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:gravity="center"
-            android:text="Medium Text"
+            tools:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
@@ -64,16 +64,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Member since" />
+                android:text="@string/profile_member_since" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:gravity="right"
-                android:text="November 17, 2015"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
+                android:gravity="end"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Aug 21, 2016" />
 
         </LinearLayout>
 
@@ -83,8 +82,7 @@
             android:layout_height="1dp"
             android:layout_below="@+id/llMembership"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:background="#B0BEC5" />
-
+            android:background="@color/colorGray" />
 
         <LinearLayout
             android:id="@+id/llEmail"
@@ -99,16 +97,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Email" />
+                android:text="@string/profile_email" />
 
             <TextView
                 android:id="@+id/tvEmail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:gravity="right"
-                android:text="hello@gmail.com"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:gravity="end"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:text="hello@gmail.com" />
 
         </LinearLayout>
 
@@ -118,7 +116,41 @@
             android:layout_height="1dp"
             android:layout_below="@+id/llEmail"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:background="#B0BEC5" />
+            android:background="@color/colorGray" />
+
+        <LinearLayout
+            android:id="@+id/llLanguages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vEmail"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/profile_languages" />
+
+            <TextView
+                android:id="@+id/tvLanguages"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="end"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:text="English" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vLanguages"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/llEmail"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:background="@color/colorGray" />
 
     </RelativeLayout>
 

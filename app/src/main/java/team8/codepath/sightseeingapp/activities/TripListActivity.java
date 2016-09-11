@@ -58,6 +58,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.http.HEAD;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
@@ -87,6 +88,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
 
+    SightseeingApplication app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +96,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
 
-        SightseeingApplication app = (SightseeingApplication) getApplicationContext();
-        UserModel currentUser = app.getUser();
+        app = (SightseeingApplication) getApplicationContext();
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -224,6 +225,9 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
         tvUserName.setText(prefs.getString("name", "User Name"));
         tvEmail.setText(prefs.getString("email", "Email"));
+        UserModel user = app.getUserInfo();
+        tvUserName.setText(user.getName());
+        tvEmail.setText(user.getEmail());
 
     }
 

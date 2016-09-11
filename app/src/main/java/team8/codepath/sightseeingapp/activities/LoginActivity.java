@@ -95,33 +95,10 @@ public class LoginActivity extends AppCompatActivity {
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
 
-                                try {
+                                UserModel user = UserModel.fromJSON(object);
+                                app.setUserInfo(user);
 
-                                    UserModel user = UserModel.fromJSON(object);
-
-                                    app.setUser(user);
-
-                                    String email = object.getString("email");
-                                    String location = object.getJSONObject("location").getString("id");
-
-                                    Log.d(TAG, email);
-                                    Log.d(TAG, location);
-                                    Log.d(TAG, user.getEmail());
-                                    Log.d(TAG, user.getLocationName());
-
-                                    SharedPreferences.Editor editor = getSharedPreferences("USER", MODE_PRIVATE).edit();
-                                    editor.putString("name", user.getName());
-                                    editor.putString("email", user.getEmail());
-                                    editor.putString("gender", user.getGender());
-                                    editor.putString("locationId", user.getLocationId());
-                                    editor.putString("locationName", user.getLocationName());
-                                    editor.commit();
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
                             }
                         });
 

@@ -34,6 +34,7 @@ public class SightseeingApplication extends Application{
 
         tripsReference = database.getReference(Constants.FIREBASE_LOCATION_LIST_TRIPS);
         placesReference = database.getReference(Constants.FIREBASE_LOCATION_LIST_PLACES);
+        placesReference = database.getReference(Constants.FIREBASE_LOCATION_LIST_USERS);
 
         //Configuration Builder - Uber
         SessionConfiguration config = new SessionConfiguration.Builder()
@@ -58,6 +59,10 @@ public class SightseeingApplication extends Application{
     }
 
     public DatabaseReference getPlacesReference() {
+        return placesReference;
+    }
+
+    public DatabaseReference getUsersReference() {
         return placesReference;
     }
 

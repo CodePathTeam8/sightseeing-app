@@ -24,6 +24,20 @@
         android:id="@+id/spinner"
         android:layout_gravity="center_horizontal" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTimeLabel"
+        android:text="Maximum Time(hours)"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:hint="Number of Hours"
+        android:id="@+id/etHours"
+        android:layout_gravity="center_horizontal" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

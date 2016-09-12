@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import team8.codepath.sightseeingapp.R;
@@ -22,6 +23,7 @@ public class FilterFragment extends DialogFragment {
     private Spinner spinner;
     private SharedPreferences.Editor edit;
     private SharedPreferences pref;
+    private EditText hours;
 
     public FilterFragment(){
 
@@ -60,7 +62,13 @@ public class FilterFragment extends DialogFragment {
             spinner.setSelection(adapter.getPosition(storedDistance));
         }
 
-        //save new preferances and dismiss dialog
+        hours = (EditText) view.findViewById(R.id.etHours);
+        if(pref.contains("hours")){
+            String theLength = pref.getString("hours", "3");
+            hours.setText(theLength);
+        }
+
+        //save new preferences and dismiss dialog
         btn = (Button) view.findViewById(R.id.btnSave);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +81,7 @@ public class FilterFragment extends DialogFragment {
     public void addSharedPreferences(){
         String distance = spinner.getSelectedItem().toString();
         edit.putString("distance", distance);
+        edit.putString("hours", hours.getText().toString());
         edit.commit();
         dismiss();
     }

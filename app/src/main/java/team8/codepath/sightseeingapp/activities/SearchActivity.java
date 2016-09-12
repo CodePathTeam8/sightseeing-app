@@ -1,6 +1,8 @@
 package team8.codepath.sightseeingapp.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +37,7 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
     ArrayList<TripModel> trips = new ArrayList<TripModel>();
     SearchRecyclerAdapter adapter;
     Integer totalLength;
+    private SharedPreferences pref;
 
 
     @Override
@@ -51,7 +54,7 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
         rvSearchTrips.setAdapter(adapter);
         rvSearchTrips.setLayoutManager(new LinearLayoutManager(this));
 
-
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         Double latitude = getIntent().getDoubleExtra("latitude", 00);
         Log.d("latitude in search", latitude.toString());
@@ -115,8 +118,12 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
                         TripModel trip = messageSnapshot.getValue(TripModel.class);
-                        trips.add(trip);
-                        adapter.notifyDataSetChanged();
+                        if(pref.contains("hours") && (pref.getString("hours", "1") != "")){
+                            addExtraFilters(trip);
+                        }else{
+                            trips.add(trip);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
 
                 }
@@ -137,5 +144,13 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    public void addExtraFilters(TripModel aTrip){
+        String hours = pref.getString("hours", "1");
+        if(aTrip.getTotalLength() <= Integer.valueOf(hours)){
+            trips.add(aTrip);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

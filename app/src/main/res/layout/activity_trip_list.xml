@@ -36,6 +36,14 @@
                     android:singleLine="true"
                     />
 
+                <ImageView
+                    android:id="@+id/miFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_filter_list_black_24dp"
+                    android:title="Filter"
+                    />
+
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>

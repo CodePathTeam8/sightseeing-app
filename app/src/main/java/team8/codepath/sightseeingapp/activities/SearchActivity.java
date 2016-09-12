@@ -56,12 +56,15 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
         Double latitude = getIntent().getDoubleExtra("latitude", 00);
         Log.d("latitude in search", latitude.toString());
         Double longitude = getIntent().getDoubleExtra("longitude", 00);
-        Integer distance = getIntent().getIntExtra("distance", 00);
+        String distance = getIntent().getStringExtra("distance");
 
-        findNearbyPlaces( latitude, longitude, distance);
+        //convert miles to km since geofire takes km for distance
+        Double distance_in_km = Double.valueOf(distance) * 1.60934;
+
+        findNearbyPlaces( latitude, longitude, Integer.valueOf(distance));
     }
 
-    private void findNearbyPlaces(Double lat, Double longit, Integer distance){
+    private void findNearbyPlaces(Double lat, Double longit, double distance){
         GeoFire geoFire = new GeoFire(geoDatabase);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(lat, longit), distance);
         final ArrayList<String> placeKeys = new ArrayList<>();

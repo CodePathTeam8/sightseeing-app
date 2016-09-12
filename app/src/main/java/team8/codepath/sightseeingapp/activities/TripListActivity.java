@@ -1,6 +1,5 @@
 package team8.codepath.sightseeingapp.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +8,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,7 +27,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,13 +59,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.http.HEAD;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
-import team8.codepath.sightseeingapp.models.PlaceModel;
-import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.fragments.FilterFragment;
 import team8.codepath.sightseeingapp.models.UserModel;
 
 public class TripListActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -87,6 +86,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     Location mLastLocation;
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
+    private SharedPreferences pref;
 
     SightseeingApplication app;
 
@@ -133,8 +133,19 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 null);
         actvPlaces.setAdapter(mAdapter);
 
+        ImageView filter = (ImageView) toolbar.findViewById(R.id.miFilter);
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchFilterFragment();
+            }
+        });
+
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+
         // Check for location information
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
             Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -165,7 +176,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             case android.R.id.home:
                 ndTrips.openDrawer(GravityCompat.START);
                 return true;
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -207,6 +217,12 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         }
         // Close the ic_navigation drawer
         ndTrips.closeDrawers();
+    }
+
+    private void launchFilterFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FilterFragment editNameDialogFragment = FilterFragment.newInstance();
+        editNameDialogFragment.show(fm, "fragment_filters");
     }
 
     private void setupPlacesAutoComplete(Toolbar toolbar) {
@@ -272,7 +288,12 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             Intent i = new Intent(TripListActivity.this, SearchActivity.class);
             i.putExtra("latitude", location.latitude);
             i.putExtra("longitude", location.longitude);
-            i.putExtra("distance", 20);
+            if(pref.contains("distance")){
+                String storedDistance = pref.getString("distance", "5");
+                i.putExtra("distance", storedDistance);
+            }else{
+                i.putExtra("distance", "5");
+            }
             startActivity(i);
         }
     };

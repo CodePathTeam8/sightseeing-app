@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
 import team8.codepath.sightseeingapp.models.UserModel;
 import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class FavoritesActivityFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -50,8 +52,9 @@ public class FavoritesActivityFragment extends Fragment implements GoogleApiClie
                 .addApi(LocationServices.API)
                 .build();
 
+        Log.d("ssss", Utilities.escapeEmail(user.getEmail()));
         DatabaseReference databaseReference = app.getUsersReference()
-                .child("isa_99960@hotmail,com")
+                .child(Utilities.escapeEmail(user.getEmail()))
                 .child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
 
         FirebaseRecyclerAdapter adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);

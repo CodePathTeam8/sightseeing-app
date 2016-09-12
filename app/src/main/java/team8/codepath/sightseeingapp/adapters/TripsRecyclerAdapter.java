@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -113,12 +114,13 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView banner;
         public TextView name;
         public TextView distance;
         public TextView length;
         public CardView cvTrip;
+        public ImageButton ivFavorite;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -127,8 +129,18 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
             distance = (TextView) itemView.findViewById(R.id.tvTripDistance);
             length = (TextView) itemView.findViewById(R.id.tvTripLength);
             cvTrip = (CardView) itemView.findViewById(R.id.cvTrip);
+            ivFavorite = (ImageButton) itemView.findViewById(R.id.ivFavorite);
+
+            ivFavorite.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+            int viewId = view.getId();
+            if (viewId == R.id.ivFavorite) {
+                Log.d("CLICK", "click click");
+            }
+        }
     }
 
     @Override

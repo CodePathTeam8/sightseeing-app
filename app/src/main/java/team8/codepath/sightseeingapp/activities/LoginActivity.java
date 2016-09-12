@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
+    UserModel userModel = new UserModel();
 
 
     @Override
@@ -66,6 +66,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    if(user.getEmail() == null || user.getEmail().equals(""))
+                        user.updateEmail(userModel.getEmail());
 
                     if(user.getUid()!= null)
                         onLoginSuccess();
@@ -96,14 +99,14 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
 
-                                UserModel user = UserModel.fromJSON(object);
-                                app.setUserInfo(user);
+                                userModel = UserModel.fromJSON(object);
+                                app.setUserInfo(userModel);
 
                             }
                         });
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,location,bio");
+                parameters.putString("fields", "id,name,email,gender,location,bio,languages");
                 request.setParameters(parameters);
                 request.executeAsync();
 

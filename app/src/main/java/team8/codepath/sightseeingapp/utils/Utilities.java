@@ -12,6 +12,15 @@ import android.graphics.Typeface;
 
 public final class Utilities {
 
+
+    public static String escapeEmail(String email) {
+        return email.replace(".", ",");
+    }
+
+    public static String unescapeEmail(String email) {
+        return email.replace(",", ".");
+    }
+
     public static Bitmap writeTextOnDrawable(Context context, int drawableId, String text) {
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), drawableId)
                 .copy(Bitmap.Config.ARGB_8888, true);

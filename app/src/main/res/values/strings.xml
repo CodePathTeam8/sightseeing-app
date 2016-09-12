@@ -16,5 +16,10 @@
     <string name="profile_member_since">Member since</string>
     <string name="profile_email">Email</string>
     <string name="profile_languages">Languages</string>
+    <string name="title_activity_favorites">FavoritesActivity</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_new_trip">Create trip</string>
+    <string name="nav_home">Home</string>
+    <string name="action_favorite">Favorite</string>
 
 </resources>

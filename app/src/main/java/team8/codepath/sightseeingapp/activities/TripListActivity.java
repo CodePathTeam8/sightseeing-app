@@ -201,6 +201,25 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private void selectDrawerItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
 
+            case R.id.navHome:
+                ndTrips.closeDrawers();
+                break;
+
+            case R.id.navProfile:
+                Intent p = new Intent(this, ProfileActivity.class);
+                startActivity(p);
+                break;
+
+            case R.id.navFavorites:
+                Intent f = new Intent(this, FavoritesActivity.class);
+                startActivity(f);
+                break;
+
+            case R.id.navNewTrip:
+                Intent t = new Intent(this, CreateTripActivity.class);
+                startActivity(t);
+                break;
+
             case R.id.navLogout:
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
@@ -209,11 +228,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 startActivity(i);
 
                 break;
-            case R.id.navProfile:
 
-                Intent p = new Intent(this, ProfileActivity.class);
-                startActivity(p);
-                break;
         }
         // Close the ic_navigation drawer
         ndTrips.closeDrawers();

@@ -13,11 +13,11 @@ import android.graphics.Typeface;
 public final class Utilities {
 
 
-    public static String escapeEmail(String email) {
+    public static String encodeEmail(String email) {
         return email.replace(".", ",");
     }
 
-    public static String unescapeEmail(String email) {
+    public static String decodeEmail(String email) {
         return email.replace(",", ".");
     }
 

@@ -52,9 +52,8 @@ public class FavoritesActivityFragment extends Fragment implements GoogleApiClie
                 .addApi(LocationServices.API)
                 .build();
 
-        Log.d("ssss", Utilities.escapeEmail(user.getEmail()));
         DatabaseReference databaseReference = app.getUsersReference()
-                .child(Utilities.escapeEmail(user.getEmail()))
+                .child(Utilities.encodeEmail(user.getEmail()))
                 .child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
 
         FirebaseRecyclerAdapter adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);

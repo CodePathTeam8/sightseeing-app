@@ -6,6 +6,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 
 public class UserModel {
 
@@ -17,6 +19,17 @@ public class UserModel {
     private String locationName;
     private String bio;
     private String languages;
+
+    private HashMap<String, Object> timestampJoined;
+
+    public UserModel() {
+    }
+
+    public UserModel(String name, String email, HashMap<String, Object> timestampJoined) {
+        this.name = name;
+        this.email = email;
+        this.timestampJoined = timestampJoined;
+    }
 
     public String getId() {
         return id;
@@ -80,6 +93,14 @@ public class UserModel {
 
     public void setLanguages(String languages) {
         this.languages = languages;
+    }
+
+    public HashMap<String, Object> getTimestampJoined() {
+        return timestampJoined;
+    }
+
+    public void setTimestampJoined(HashMap<String, Object> timestampJoined) {
+        this.timestampJoined = timestampJoined;
     }
 
     public static UserModel fromJSON(JSONObject jsonObject){

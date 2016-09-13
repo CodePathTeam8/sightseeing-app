@@ -1,8 +1,6 @@
 package team8.codepath.sightseeingapp.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -24,17 +22,20 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ServerValue;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -70,8 +71,10 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getEmail() == null || user.getEmail().equals(""))
                         user.updateEmail(userModel.getEmail());
 
-                    if(user.getUid()!= null)
+                    if(user.getUid()!= null){
+                        setAuthenticatedUserFacebook(firebaseAuth);
                         onLoginSuccess();
+                    }
 
                 } else {
                     // User is signed out
@@ -124,6 +127,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setAuthenticatedUserFacebook(FirebaseAuth firebaseAuth) {
+
+        String userEncondedEmail = Utilities.encodeEmail(firebaseAuth.getCurrentUser().getEmail());
+        String userName = firebaseAuth.getCurrentUser().getDisplayName();
+
+        HashMap<String, Object> timestampJoined = new HashMap<>();
+        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+        SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+
+        //Save user in firebase
+        UserModel user = new UserModel(userName, userEncondedEmail, timestampJoined);
+        app.getUsersReference().child(userEncondedEmail).setValue(user);
     }
 
     @Override

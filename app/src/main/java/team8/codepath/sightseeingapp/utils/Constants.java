@@ -7,4 +7,5 @@ public class Constants {
     public static final String FIREBASE_LOCATION_LIST_FAVORITES = "favorites";
 
     public static final String EMPTY_STRING = "";
+    public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
 }

@@ -111,10 +111,18 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
                 getContext().startActivity(intent);
             }
         });
+
+
+        viewHolder.ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Click", "click");
+            }
+        });
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView banner;
         public TextView name;
         public TextView distance;
@@ -130,16 +138,6 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
             length = (TextView) itemView.findViewById(R.id.tvTripLength);
             cvTrip = (CardView) itemView.findViewById(R.id.cvTrip);
             ivFavorite = (ImageButton) itemView.findViewById(R.id.ivFavorite);
-
-            ivFavorite.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int viewId = view.getId();
-            if (viewId == R.id.ivFavorite) {
-                Log.d("CLICK", "click click");
-            }
         }
     }
 

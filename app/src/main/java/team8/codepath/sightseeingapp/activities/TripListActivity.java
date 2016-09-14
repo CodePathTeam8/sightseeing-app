@@ -91,7 +91,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
     private SharedPreferences pref;
-
     SightseeingApplication app;
     UserModel user;
     ArrayList<TripModel> userFavorites = new ArrayList<>();
@@ -300,20 +299,11 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-             Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each PlaceModel suggestion in a AutocompletePrediction from which we
-             read the place ID and title.
-              */
+            //Retrieve the place ID of the selected item from the Adapter.
             final AutocompletePrediction item = mAdapter.getItem(position);
             final String placeId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
-
-
-            /*
-             Issue a request to the Places Geo Data API to retrieve a PlaceModel object with additional
-             details about the place.
-              */
+            //Issue a request to the Places Geo Data API to retrieve a PlaceModel
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);

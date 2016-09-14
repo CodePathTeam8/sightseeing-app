@@ -1,13 +1,16 @@
 package team8.codepath.sightseeingapp.fragments;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +79,8 @@ public class FilterFragment extends DialogFragment {
                 addSharedPreferences();
             }
         });
+
+
     }
 
     public void addSharedPreferences(){
@@ -84,5 +89,15 @@ public class FilterFragment extends DialogFragment {
         edit.putString("hours", hours.getText().toString());
         edit.commit();
         dismiss();
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request a window without the title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 }

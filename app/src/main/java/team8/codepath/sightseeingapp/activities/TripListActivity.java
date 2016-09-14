@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,9 +93,12 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
     private SharedPreferences pref;
+    ActionBarDrawerToggle drawerToggle;
+    Toolbar toolbar;
+
     SightseeingApplication app;
     UserModel user;
-    ArrayList<TripModel> userFavorites = new ArrayList<>();
+    DatabaseReference dbReferenceFavs;
 
 
     @Override
@@ -102,15 +107,18 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
 
+        setTitle("");
+
         app = (SightseeingApplication) getApplicationContext();
         user = app.getUserInfo();
 
-        // Find the toolbar view inside the activity layout
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        //User favorites
+        dbReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(user.getEmail())).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
 
-        //Get the user favorite trips
-        userFavorites = gerUserFavorites(user.getEmail());
+        // Find the toolbar view inside the activity layout
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerToggle = setupDrawerToggle();
+        ndTrips.addDrawerListener(drawerToggle);
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
@@ -121,7 +129,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 .build();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("trips");
-        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);
+        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient, dbReferenceFavs);
         rvTrips.setLayoutManager(new LinearLayoutManager(this));
         rvTrips.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -171,33 +179,12 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setupPlacesAutoComplete(toolbar);
         setProfileInfo();
 
-
-
     }
 
-    private ArrayList<TripModel> gerUserFavorites(String email) {
-
-        final ArrayList<TripModel> userFavs = new ArrayList<>();
-        DatabaseReference databaseReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(email)).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
-
-        databaseReferenceFavs.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    /*TripModel trip = child.getValue(TripModel.class);
-                    userFavs.add(trip);*/
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        return userFavs;
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, ndTrips, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -209,6 +196,10 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 ndTrips.openDrawer(GravityCompat.START);
@@ -221,6 +212,13 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -388,7 +386,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         if(placeKeys.size() > 0){
             String firstRef = "trips/" + placeKeys.get(0);
             newDbQuery = FirebaseDatabase.getInstance().getReference(firstRef);
-            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient);
+            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient, dbReferenceFavs);
             rvTrips.setAdapter(newAdapter);
         }
 

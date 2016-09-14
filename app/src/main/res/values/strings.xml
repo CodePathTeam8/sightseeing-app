@@ -5,12 +5,9 @@
     <string name="fb_login_protocol_scheme">fb1031583523556756</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_create_trip">Create Trip</string>
-    <string name="welcome_message">Welcome to Sightseeing app</string>
-    <string name="login_message">Continue with Facebook</string>
+    <string name="welcome_message">Welcome to Sightseer app</string>
 
-    <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="title_activity_profile">ProfileActivity</string>
-    <string name="large_text">Material</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_logout">Logout</string>
     <string name="profile_member_since">Member since</string>
@@ -22,4 +19,8 @@
     <string name="nav_home">Home</string>
     <string name="action_favorite">Favorite</string>
 
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="search_hint">Where are you going?</string>
+    <string name="search_filter">Filter</string>
 </resources>

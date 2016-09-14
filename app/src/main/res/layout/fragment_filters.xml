@@ -1,49 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Search Filters"
         android:id="@+id/tvSearchFilterTitle"
-        android:layout_gravity="center_horizontal"
-        android:textSize="20sp" />
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="15dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Distance (mi)"
-        android:id="@+id/tvDistance"
-        android:layout_gravity="center_horizontal" />
+        android:background="#FFFFFF"
+        android:layout_below="@+id/tvSearchFilterTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="25dp">
 
-    <Spinner
-        android:layout_width="147dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance (mi)"
+            android:id="@+id/tvDistance"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/tvSearchFilterTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingRight="5dp"
+            android:textSize="15sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvTimeLabel"
-        android:text="Maximum Time(hours)"
-        android:layout_gravity="center_horizontal" />
+        <Spinner
+            android:layout_width="147dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignTop="@+id/tvDistance"
+            android:layout_alignRight="@+id/etHours"
+            android:layout_alignEnd="@+id/etHours"
+            android:background="@color/button_material_light" />
 
-    <EditText
-        android:layout_width="148dp"
-        android:layout_height="wrap_content"
-        android:hint="Number of Hours"
-        android:id="@+id/etHours"
-        android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTimeLabel"
+            android:text="Time (hours)"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="5dp"
+            android:textSize="15sp"
+            android:layout_below="@+id/spinner"
+            android:layout_alignLeft="@+id/tvDistance"
+            android:layout_alignStart="@+id/tvDistance"
+            android:layout_marginTop="15dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/btnSave"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="25dp"
-        />
-</LinearLayout>
+        <EditText
+            android:layout_width="148dp"
+            android:layout_height="wrap_content"
+            android:hint="Number of Hours"
+            android:id="@+id/etHours"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignTop="@+id/tvTimeLabel"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:id="@+id/btnSave"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/etHours"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
+    </RelativeLayout>
+
+</RelativeLayout>

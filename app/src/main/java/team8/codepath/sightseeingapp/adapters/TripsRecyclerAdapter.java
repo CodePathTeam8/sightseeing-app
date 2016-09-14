@@ -50,20 +50,16 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-
-
         // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.item_trip, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(contactView);
         return viewHolder;
-
     }
 
     @Override
     protected void populateViewHolder(ViewHolder viewHolder, TripModel model, int position) {
-
     }
 
     @Override
@@ -74,15 +70,8 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
         // Populate subviews
         bannerView.setImageResource(android.R.color.transparent); // clear out old image for recycled view
-        // Picasso.with(getContext()).load(trip.getBannerPhoto()).into(bannerView);
-//        loadPlaceImage(trip.getPlaceId());
 
         String PhotoPlaceId = trip.getPlaceId();
-
-        if(PhotoPlaceId == null){
-            Log.d("debug", "hi");
-        }
-
         new PhotoTask(350, 350, mGoogleApiClient) {
             @Override
             protected void onPreExecute() {
@@ -100,13 +89,11 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         }.execute(PhotoPlaceId);
 
         viewHolder.name.setText(trip.getName());
-        //viewHolder.distance.setText(trip.getDistance());
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), TripDetailActivity.class);
-
                 intent.putExtra("trip", Parcels.wrap(trip));
                 getContext().startActivity(intent);
             }
@@ -136,10 +123,6 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
         @Override
         public void onClick(View view) {
-            int viewId = view.getId();
-            if (viewId == R.id.ivFavorite) {
-                Log.d("CLICK", "click click");
-            }
         }
     }
 

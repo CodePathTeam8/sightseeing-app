@@ -6,25 +6,25 @@
 
 **Required** functionality:
 
-* [ ] User can **sign in using Twitter or Facebook** OAuth login
-* [ ] User can **search for a trip** by specifying a query and launching a search. Search displays a list of results.
-  * [ ] User can see picture, trip name, distance.
-* [ ] User can tap a trip to **open a detailed trip view**
-  * [ ] User can see the map with the points of interest.
-  * [ ] User can see the list of the places/points of interest.
+* [x] User can **sign in using Facebook** OAuth login
+* [x] User can **search for a trip** by specifying a query and launching a search. Search displays a list of results.
+  * [x] User can see picture, trip name, distance.
+* [x] User can tap a trip to **open a detailed trip view**
+  * [x] User can see the map with the points of interest.
+  * [x] User can see the list of the places/points of interest.
   * [ ] User can see the estimated amount of time
-* [ ] User can **create trips** 
- * [ ] User can insert Name of trip, points of interest.
- * [ ] User needs to add at least 2 points of interest
-* [ ] User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView)  by scrolling to the bottom
+* [x] User can **create trips** 
+ * [x] User can insert Name of trip, points of interest.
+ * [x] User needs to add at least 2 points of interest
+* [x] User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView)  by scrolling to the bottom
 
 **Optional** features:
 
 * [ ] User can search by trip length
 * [ ] User can search by tags: e.g. #icecream #museums #beer #walking
 * [ ] User can Click on pin to view details of place.
-* [ ] User can Call an Uber to the 1st place using [Uber Ride API](https://developer.uber.com/docs/rides/ride-requests)
-* [ ] User can Share a trip with friends
+* [x] User can Call an Uber to the 1st place using [Uber Ride API](https://developer.uber.com/docs/rides/ride-requests)
+* [x] User can Share a trip with friends
 * [ ] User can see details like duration of trip, tagging, rating, description/comment / helpful hints in the Detail view.
 
 ## Application Wireframes 

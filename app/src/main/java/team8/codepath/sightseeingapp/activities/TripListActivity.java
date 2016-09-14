@@ -56,6 +56,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,7 +65,10 @@ import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
 import team8.codepath.sightseeingapp.fragments.FilterFragment;
+import team8.codepath.sightseeingapp.models.TripModel;
 import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class TripListActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -89,6 +93,9 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private SharedPreferences pref;
 
     SightseeingApplication app;
+    UserModel user;
+    DatabaseReference dbReferenceFavs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +104,15 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         ButterKnife.bind(this);
 
         app = (SightseeingApplication) getApplicationContext();
+        user = app.getUserInfo();
+
+        //User favorites
+        dbReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(user.getEmail())).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
+
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
@@ -111,7 +123,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 .build();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("trips");
-        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);
+        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient, dbReferenceFavs);
         rvTrips.setLayoutManager(new LinearLayoutManager(this));
         rvTrips.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -160,7 +172,11 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setupDrawerContent(nvView);
         setupPlacesAutoComplete(toolbar);
         setProfileInfo();
+
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -249,17 +265,13 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
     public void setProfileInfo(){
 
-        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
         TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
-        tvUserName.setText(prefs.getString("name", "User Name"));
-        tvEmail.setText(prefs.getString("email", "Email"));
-        UserModel user = app.getUserInfo();
+
         tvUserName.setText(user.getName());
         tvEmail.setText(user.getEmail());
-
     }
 
     private AdapterView.OnItemClickListener mAutocompleteClickListener
@@ -364,7 +376,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         if(placeKeys.size() > 0){
             String firstRef = "trips/" + placeKeys.get(0);
             newDbQuery = FirebaseDatabase.getInstance().getReference(firstRef);
-            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient);
+            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient, dbReferenceFavs);
             rvTrips.setAdapter(newAdapter);
         }
 

@@ -42,8 +42,6 @@ public class SearchRecyclerAdapter extends
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-
-
         // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.item_trip, parent, false);
 

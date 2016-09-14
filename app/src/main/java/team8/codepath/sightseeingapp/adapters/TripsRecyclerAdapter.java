@@ -9,15 +9,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.activities.TripDetailActivity;
@@ -32,10 +38,36 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
     private Context mContext;
     GoogleApiClient mGoogleApiClient;
+    DatabaseReference mDatabaseReferenceFavs;
+    ArrayList<String> userFavorites = new ArrayList<>();
 
-    public TripsRecyclerAdapter(int modelLayout, DatabaseReference ref,  GoogleApiClient googleApiClient) {
+
+    public TripsRecyclerAdapter(int modelLayout, DatabaseReference ref,  GoogleApiClient googleApiClient, DatabaseReference favsRef) {
         super(TripModel.class, modelLayout, TripsRecyclerAdapter.ViewHolder.class, ref);
         mGoogleApiClient = googleApiClient;
+        mDatabaseReferenceFavs = favsRef;
+        setUserFavorites(favsRef);
+    }
+
+    private void setUserFavorites(DatabaseReference favsRef) {
+
+        favsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                userFavorites.clear();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    TripModel trip = child.getValue(TripModel.class);
+                    userFavorites.add(trip.getId());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     // Easy access to the context object in the recyclerview
@@ -49,39 +81,29 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-
-
         // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.item_trip, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
-
+        return new ViewHolder(contactView);
     }
 
     @Override
     protected void populateViewHolder(ViewHolder viewHolder, TripModel model, int position) {
-
     }
 
     @Override
-    public void onBindViewHolder(TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
         final TripModel trip = getItem(position);
+
+        final boolean isFavorite = (userFavorites.contains(trip.getId()));
 
         final ImageView bannerView = viewHolder.banner;
 
         // Populate subviews
         bannerView.setImageResource(android.R.color.transparent); // clear out old image for recycled view
-        // Picasso.with(getContext()).load(trip.getBannerPhoto()).into(bannerView);
-//        loadPlaceImage(trip.getPlaceId());
 
         String PhotoPlaceId = trip.getPlaceId();
-
-        if(PhotoPlaceId == null){
-            Log.d("debug", "hi");
-        }
-
         new PhotoTask(350, 350, mGoogleApiClient) {
             @Override
             protected void onPreExecute() {
@@ -99,19 +121,45 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         }.execute(PhotoPlaceId);
 
         viewHolder.name.setText(trip.getName());
-        //viewHolder.distance.setText(trip.getDistance());
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
+
+        viewHolder.ivFavorite.setImageBitmap(null);
+        if(isFavorite)
+            favoriteTrip(viewHolder.ivFavorite);
+        else
+            unfavoriteTrip(viewHolder.ivFavorite);
+
+        viewHolder.ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isFavorite){
+                    mDatabaseReferenceFavs.child(trip.getId()).removeValue();
+                    unfavoriteTrip(viewHolder.ivFavorite);
+                }
+                else{
+                    mDatabaseReferenceFavs.child(trip.getId()).setValue(trip);
+                    favoriteTrip(viewHolder.ivFavorite);
+                }
+            }
+        });
+
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), TripDetailActivity.class);
-
                 intent.putExtra("trip", Parcels.wrap(trip));
                 getContext().startActivity(intent);
             }
         });
     }
 
+    private void favoriteTrip(ImageButton ivFavorite) {
+        ivFavorite.setImageResource(R.drawable.ic_heart_white_34);
+    }
+
+    private void unfavoriteTrip(ImageButton ivFavorite) {
+        ivFavorite.setImageResource(R.drawable.ic_heart_outline_34);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView banner;
@@ -119,6 +167,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         public TextView distance;
         public TextView length;
         public CardView cvTrip;
+        public ImageButton ivFavorite;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -127,16 +176,12 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
             distance = (TextView) itemView.findViewById(R.id.tvTripDistance);
             length = (TextView) itemView.findViewById(R.id.tvTripLength);
             cvTrip = (CardView) itemView.findViewById(R.id.cvTrip);
-        }
+            ivFavorite = (ImageButton) itemView.findViewById(R.id.ivFavorite);
 
+        }
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-
-
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 
 }

@@ -20,6 +20,7 @@ public class SightseeingApplication extends Application{
 
     private DatabaseReference tripsReference;
     private DatabaseReference placesReference;
+    private DatabaseReference usersReference;
 
     @Override
     public void onCreate() {
@@ -34,6 +35,7 @@ public class SightseeingApplication extends Application{
 
         tripsReference = database.getReference(Constants.FIREBASE_LOCATION_LIST_TRIPS);
         placesReference = database.getReference(Constants.FIREBASE_LOCATION_LIST_PLACES);
+        usersReference = database.getReference(Constants.FIREBASE_LOCATION_LIST_USERS);
 
         //Configuration Builder - Uber
         SessionConfiguration config = new SessionConfiguration.Builder()
@@ -59,6 +61,10 @@ public class SightseeingApplication extends Application{
 
     public DatabaseReference getPlacesReference() {
         return placesReference;
+    }
+
+    public DatabaseReference getUsersReference() {
+        return usersReference;
     }
 
     public void setUserInfo(UserModel user) {

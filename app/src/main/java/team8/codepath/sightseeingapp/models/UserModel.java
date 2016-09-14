@@ -1,10 +1,12 @@
 package team8.codepath.sightseeingapp.models;
 
 
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class UserModel {
@@ -17,6 +19,18 @@ public class UserModel {
     private String locationName;
     private String bio;
     private String languages;
+    private ArrayList<TripModel> favorites = new ArrayList<>();
+
+    private HashMap<String, Object> timestampJoined;
+
+    public UserModel() {
+    }
+
+    public UserModel(String name, String email, HashMap<String, Object> timestampJoined) {
+        this.name = name;
+        this.email = email;
+        this.timestampJoined = timestampJoined;
+    }
 
     public String getId() {
         return id;
@@ -82,6 +96,22 @@ public class UserModel {
         this.languages = languages;
     }
 
+    public HashMap<String, Object> getTimestampJoined() {
+        return timestampJoined;
+    }
+
+    public void setTimestampJoined(HashMap<String, Object> timestampJoined) {
+        this.timestampJoined = timestampJoined;
+    }
+
+    public ArrayList<TripModel> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(ArrayList<TripModel> favorites) {
+        this.favorites = favorites;
+    }
+
     public static UserModel fromJSON(JSONObject jsonObject){
         UserModel user = new UserModel();
 
@@ -92,14 +122,7 @@ public class UserModel {
             user.gender = jsonObject.getString("gender");
             user.locationId = jsonObject.getJSONObject("location").getString("id");
             user.locationName = jsonObject.getJSONObject("location").getString("name");
-
-            int size = jsonObject.getJSONObject("languages").length();
-            String languages = "";
-            for (int i = 0; i < size; i++){
-                languages += jsonObject.getJSONArray("languages").getJSONObject(i).getString("name");
-            }
-
-            user.languages = languages;
+            user.languages = "";
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -16,9 +16,14 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.activities.TripDetailActivity;
@@ -33,11 +38,38 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
     private Context mContext;
     GoogleApiClient mGoogleApiClient;
+    DatabaseReference mDatabaseReferenceFavs;
+    ArrayList<String> userFavorites = new ArrayList<>();
 
-    public TripsRecyclerAdapter(int modelLayout, DatabaseReference ref,  GoogleApiClient googleApiClient) {
+
+    public TripsRecyclerAdapter(int modelLayout, DatabaseReference ref,  GoogleApiClient googleApiClient, DatabaseReference favsRef) {
         super(TripModel.class, modelLayout, TripsRecyclerAdapter.ViewHolder.class, ref);
         mGoogleApiClient = googleApiClient;
+        mDatabaseReferenceFavs = favsRef;
+        setUserFavorites(favsRef);
     }
+
+    private void setUserFavorites(DatabaseReference favsRef) {
+
+        favsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Log.d("TAG", child.toString());
+                    TripModel trip = child.getValue(TripModel.class);
+                    userFavorites.add(trip.getId());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     // Easy access to the context object in the recyclerview
     private Context getContext() {
@@ -66,6 +98,8 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
     public void onBindViewHolder(TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
         final TripModel trip = getItem(position);
 
+        boolean isFavorite = (userFavorites.contains(trip.getId()));
+
         final ImageView bannerView = viewHolder.banner;
 
         // Populate subviews
@@ -90,6 +124,11 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
         viewHolder.name.setText(trip.getName());
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
+
+        if(isFavorite){
+            viewHolder.ivFavorite.setImageResource(R.drawable.ic_heart_white_34);
+        }
+
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

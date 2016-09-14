@@ -94,7 +94,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
     SightseeingApplication app;
     UserModel user;
-    ArrayList<TripModel> userFavorites = new ArrayList<>();
+    DatabaseReference dbReferenceFavs;
 
 
     @Override
@@ -106,12 +106,13 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         app = (SightseeingApplication) getApplicationContext();
         user = app.getUserInfo();
 
+        //User favorites
+        dbReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(user.getEmail())).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
+
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
 
-        //Get the user favorite trips
-        userFavorites = gerUserFavorites(user.getEmail());
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
@@ -122,7 +123,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 .build();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("trips");
-        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient);
+        adapter = new TripsRecyclerAdapter(R.layout.item_trip, databaseReference, mGoogleApiClient, dbReferenceFavs);
         rvTrips.setLayoutManager(new LinearLayoutManager(this));
         rvTrips.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -176,29 +177,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
     }
 
-    private ArrayList<TripModel> gerUserFavorites(String email) {
-
-        final ArrayList<TripModel> userFavs = new ArrayList<>();
-        DatabaseReference databaseReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(email)).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
-
-        databaseReferenceFavs.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    /*TripModel trip = child.getValue(TripModel.class);
-                    userFavs.add(trip);*/
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        return userFavs;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -398,7 +376,7 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         if(placeKeys.size() > 0){
             String firstRef = "trips/" + placeKeys.get(0);
             newDbQuery = FirebaseDatabase.getInstance().getReference(firstRef);
-            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient);
+            FirebaseRecyclerAdapter newAdapter = new TripsRecyclerAdapter(R.layout.item_trip, newDbQuery, mGoogleApiClient, dbReferenceFavs);
             rvTrips.setAdapter(newAdapter);
         }
 

@@ -56,6 +56,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,7 +65,10 @@ import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.TripsRecyclerAdapter;
 import team8.codepath.sightseeingapp.fragments.FilterFragment;
+import team8.codepath.sightseeingapp.models.TripModel;
 import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class TripListActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -89,6 +93,9 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     private SharedPreferences pref;
 
     SightseeingApplication app;
+    UserModel user;
+    ArrayList<TripModel> userFavorites = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +104,14 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         ButterKnife.bind(this);
 
         app = (SightseeingApplication) getApplicationContext();
+        user = app.getUserInfo();
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
+
+        //Get the user favorite trips
+        userFavorites = gerUserFavorites(user.getEmail());
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
@@ -160,6 +171,33 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setupDrawerContent(nvView);
         setupPlacesAutoComplete(toolbar);
         setProfileInfo();
+
+
+
+    }
+
+    private ArrayList<TripModel> gerUserFavorites(String email) {
+
+        final ArrayList<TripModel> userFavs = new ArrayList<>();
+        DatabaseReference databaseReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(email)).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
+
+        databaseReferenceFavs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    /*TripModel trip = child.getValue(TripModel.class);
+                    userFavs.add(trip);*/
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return userFavs;
     }
 
     @Override
@@ -249,17 +287,13 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
 
     public void setProfileInfo(){
 
-        SharedPreferences prefs = getSharedPreferences("USER", MODE_PRIVATE);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
         TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
-        tvUserName.setText(prefs.getString("name", "User Name"));
-        tvEmail.setText(prefs.getString("email", "Email"));
-        UserModel user = app.getUserInfo();
+
         tvUserName.setText(user.getName());
         tvEmail.setText(user.getEmail());
-
     }
 
     private AdapterView.OnItemClickListener mAutocompleteClickListener

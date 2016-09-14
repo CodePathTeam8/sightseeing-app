@@ -22,7 +22,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
@@ -48,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     UserModel userModel = new UserModel();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         final SightseeingApplication app = (SightseeingApplication) getApplicationContext();
-
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -68,10 +69,10 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    if(user.getEmail() == null || user.getEmail().equals(""))
+                    if (user.getEmail() == null || user.getEmail().equals(""))
                         user.updateEmail(userModel.getEmail());
 
-                    if(user.getUid()!= null){
+                    if (user.getUid() != null) {
                         setAuthenticatedUserFacebook(firebaseAuth);
                         onLoginSuccess();
                     }
@@ -131,17 +132,29 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setAuthenticatedUserFacebook(FirebaseAuth firebaseAuth) {
 
-        String userEncondedEmail = Utilities.encodeEmail(firebaseAuth.getCurrentUser().getEmail());
+        final String userEncondedEmail = Utilities.encodeEmail(firebaseAuth.getCurrentUser().getEmail());
         String userName = firebaseAuth.getCurrentUser().getDisplayName();
 
         HashMap<String, Object> timestampJoined = new HashMap<>();
         timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-        SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+        final SightseeingApplication app = (SightseeingApplication) getApplicationContext();
 
         //Save user in firebase
-        UserModel user = new UserModel(userName, userEncondedEmail, timestampJoined);
-        app.getUsersReference().child(userEncondedEmail).setValue(user);
+        final UserModel user = new UserModel(userName, userEncondedEmail, timestampJoined);
+
+        app.getUsersReference().child(userEncondedEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    app.getUsersReference().child(userEncondedEmail).setValue(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     @Override
@@ -191,8 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        else{
+                        } else {
                             onLoginSuccess();
                         }
 

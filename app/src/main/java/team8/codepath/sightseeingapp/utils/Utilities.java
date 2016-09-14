@@ -21,6 +21,18 @@ public final class Utilities {
         return email.replace(",", ".");
     }
 
+    public static String getFirstName(String userName){
+        String firstName = "";
+        String[] userFirstLastName = userName.split(" ");
+
+        if(userFirstLastName.length > 0)
+            firstName = userFirstLastName[0];
+        else
+            firstName = userName;
+
+        return firstName;
+    }
+
     public static Bitmap writeTextOnDrawable(Context context, int drawableId, String text) {
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), drawableId)
                 .copy(Bitmap.Config.ARGB_8888, true);

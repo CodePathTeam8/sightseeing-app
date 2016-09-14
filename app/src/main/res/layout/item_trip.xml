@@ -35,7 +35,7 @@
             android:layout_alignParentTop="true"
             android:background="@android:color/transparent"
             android:padding="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_heart_outline_34" />
+            tools:src="@drawable/ic_heart_outline_34" />
 
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

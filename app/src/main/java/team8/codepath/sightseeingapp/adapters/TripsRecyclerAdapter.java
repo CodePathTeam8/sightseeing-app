@@ -51,12 +51,12 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
 
     private void setUserFavorites(DatabaseReference favsRef) {
 
-        favsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        favsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                userFavorites.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Log.d("TAG", child.toString());
                     TripModel trip = child.getValue(TripModel.class);
                     userFavorites.add(trip.getId());
                 }
@@ -69,7 +69,6 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         });
 
     }
-
 
     // Easy access to the context object in the recyclerview
     private Context getContext() {
@@ -86,8 +85,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         View contactView = inflater.inflate(R.layout.item_trip, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     @Override
@@ -95,10 +93,10 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
     }
 
     @Override
-    public void onBindViewHolder(TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
         final TripModel trip = getItem(position);
 
-        boolean isFavorite = (userFavorites.contains(trip.getId()));
+        final boolean isFavorite = (userFavorites.contains(trip.getId()));
 
         final ImageView bannerView = viewHolder.banner;
 
@@ -125,9 +123,25 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.name.setText(trip.getName());
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
 
-        if(isFavorite){
-            viewHolder.ivFavorite.setImageResource(R.drawable.ic_heart_white_34);
-        }
+        viewHolder.ivFavorite.setImageBitmap(null);
+        if(isFavorite)
+            favoriteTrip(viewHolder.ivFavorite);
+        else
+            unfavoriteTrip(viewHolder.ivFavorite);
+
+        viewHolder.ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isFavorite){
+                    mDatabaseReferenceFavs.child(trip.getId()).removeValue();
+                    unfavoriteTrip(viewHolder.ivFavorite);
+                }
+                else{
+                    mDatabaseReferenceFavs.child(trip.getId()).setValue(trip);
+                    favoriteTrip(viewHolder.ivFavorite);
+                }
+            }
+        });
 
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,8 +153,15 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         });
     }
 
+    private void favoriteTrip(ImageButton ivFavorite) {
+        ivFavorite.setImageResource(R.drawable.ic_heart_white_34);
+    }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private void unfavoriteTrip(ImageButton ivFavorite) {
+        ivFavorite.setImageResource(R.drawable.ic_heart_outline_34);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView banner;
         public TextView name;
         public TextView distance;
@@ -157,20 +178,10 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
             cvTrip = (CardView) itemView.findViewById(R.id.cvTrip);
             ivFavorite = (ImageButton) itemView.findViewById(R.id.ivFavorite);
 
-            ivFavorite.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
         }
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-
-
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 
 }

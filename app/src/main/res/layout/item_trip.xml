@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginLeft="12dp"
-    android:layout_marginRight="12dp"
-    android:layout_marginTop="12dp"
-    card_view:cardElevation="6dp"
+    android:layout_marginLeft="@dimen/activity_horizontal_small_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_small_margin"
+    android:layout_marginTop="@dimen/activity_vertical_small_margin"
+    card_view:cardElevation="@dimen/cardview_default_elevation"
     card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/ivTripBanner"
-            android:layout_width="fill_parent"
-            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_height"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             tools:src="@android:drawable/btn_star_big_on" />
@@ -37,21 +37,20 @@
             android:padding="@dimen/activity_horizontal_margin"
             tools:src="@drawable/ic_heart_outline_34" />
 
-
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ivTripBanner"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="@dimen/activity_small_padding">
 
             <TextView
                 android:id="@+id/tvTripName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_horizontal"
-                android:textSize="20sp"
+                android:textSize="@dimen/big_text_size"
                 tools:text="Ice Cream Tour" />
 
             <RelativeLayout
@@ -61,10 +60,11 @@
 
                 <TextView
                     android:id="@+id/tvTripDistance"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_horizontal"
-                    android:paddingRight="0dp"
+                    android:paddingRight="@dimen/zero_padding"
                     tools:text="3.1 miles" />
 
                 <TextView
@@ -75,13 +75,6 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_toEndOf="@+id/tvTripDistance"
                     android:layout_toRightOf="@+id/tvTripDistance" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_horizontal">
 
                 <TextView
                     android:id="@+id/tvTripLength"

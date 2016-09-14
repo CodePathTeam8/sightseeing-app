@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,6 +93,8 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     DatabaseReference newDbQuery;
     FirebaseRecyclerAdapter newAdapter;
     private SharedPreferences pref;
+    ActionBarDrawerToggle drawerToggle;
+    Toolbar toolbar;
 
     SightseeingApplication app;
     UserModel user;
@@ -103,6 +107,8 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setContentView(R.layout.activity_trip_list);
         ButterKnife.bind(this);
 
+        setTitle("");
+
         app = (SightseeingApplication) getApplicationContext();
         user = app.getUserInfo();
 
@@ -110,9 +116,9 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         dbReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(user.getEmail())).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
 
         // Find the toolbar view inside the activity layout
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
-
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerToggle = setupDrawerToggle();
+        ndTrips.addDrawerListener(drawerToggle);
 
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
@@ -173,8 +179,10 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         setupPlacesAutoComplete(toolbar);
         setProfileInfo();
 
+    }
 
-
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, ndTrips, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
 
@@ -188,6 +196,10 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 ndTrips.openDrawer(GravityCompat.START);
@@ -200,6 +212,13 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {

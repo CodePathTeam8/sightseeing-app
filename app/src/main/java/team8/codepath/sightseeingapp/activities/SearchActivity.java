@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -56,6 +58,10 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSearch);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         Double latitude = getIntent().getDoubleExtra("latitude", 00);
         Log.d("latitude in search", latitude.toString());
         Double longitude = getIntent().getDoubleExtra("longitude", 00);
@@ -64,7 +70,13 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
         //convert miles to km since geofire takes km for distance
         Double distance_in_km = Double.valueOf(distance) * 1.60934;
 
-        findNearbyPlaces( latitude, longitude, Integer.valueOf(distance));
+        findNearbyPlaces( latitude, longitude, distance_in_km);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return true;
     }
 
     private void findNearbyPlaces(Double lat, Double longit, double distance){

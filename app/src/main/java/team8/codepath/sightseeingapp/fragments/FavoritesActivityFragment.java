@@ -48,6 +48,7 @@ public class FavoritesActivityFragment extends Fragment implements GoogleApiClie
         getActivity().setTitle(Utilities.getFirstName(user.getName()) + "'s favorites");
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .enableAutoManage(getActivity(), 0, this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(LocationServices.API)
                 .build();

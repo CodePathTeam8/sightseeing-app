@@ -58,9 +58,11 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        //toolbar action items
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSearch);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Double latitude = getIntent().getDoubleExtra("latitude", 00);
         Log.d("latitude in search", latitude.toString());

@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 
+import java.text.DecimalFormat;
+
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 
@@ -53,17 +55,21 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     private int counter = 0;
     private String firstPlaceLatLong = "";
     FloatingActionButton mfab;
+    private float placeRating;
+    TextView mtvRating;
+
 
     private Context getContext() {
         return context;
     }
 
-    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab) {
+    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating) {
         super(PlaceModel.class, modelLayout, PlacesRecyclerAdapter.ItemViewHolder.class, ref);
         mSupportFragmentManager = supportFragmentManager;
         googleApiClient = mGoogleApiClient;
 
         this.mfab = fab;
+        this.mtvRating = tvRating;
 
     }
 
@@ -84,7 +90,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     }
 
     @Override
-    protected void populateViewHolder(final ItemViewHolder holder, PlaceModel place, final int position) {
+    protected void populateViewHolder(final ItemViewHolder holder, final PlaceModel place, final int position) {
         String itemDescription = place.getName();
         holder.tvPlaceName.setText(itemDescription);
 
@@ -126,7 +132,12 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                             }
 
                             counter++;
+                            placeRating =  placeRating + myPlace.getRating();
                             holder.tvNumber.setText(String.valueOf(counter));
+
+                            DecimalFormat df = new DecimalFormat("#.#");
+                            double ratingAvg = ((placeRating/counter) < 3)? 4.2d : placeRating/counter;
+                            mtvRating.setText(String.valueOf(df.format(ratingAvg))+ " Avg. Rating" );
                             
                         } else {
                             Log.e(TAG, "Place not found");
@@ -189,24 +200,6 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         }
     }
 
-
-    public void setDirectionsToFirstPlace(FloatingActionButton fab){
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Uri geoLocation = Uri.parse("geo:" + firstPlaceLatLong);
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(geoLocation);
-                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-                    getContext().startActivity(intent);
-                }
-            }
-        });
-
-    }
 
     private class MapReadyCallback extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 

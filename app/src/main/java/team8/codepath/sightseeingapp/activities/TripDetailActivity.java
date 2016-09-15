@@ -29,6 +29,8 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
@@ -43,6 +45,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     String time = "";
 
     protected GoogleApiClient mGoogleApiClient;
+    @BindView(R.id.tvRating)
+    TextView tvRating;
 
     private View mMap;
 
@@ -50,6 +54,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_detail);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -72,7 +77,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         tripName.setText(name);
 
         EditTag etViewTripTags = (EditTag) findViewById(R.id.etViewTripTags);
-        if (tripTags !=null) {
+        if (tripTags != null) {
             etViewTripTags.setTagList(tripTags);
             etViewTripTags.setEditable(false);
         }
@@ -99,12 +104,12 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                if(state.name().equals("COLLAPSED")){
+                if (state.name().equals("COLLAPSED")) {
                     mMap.animate().translationY(mMap.getHeight());
                     tripName.animate().alpha(0.0f);
                     tripName.setVisibility(View.GONE);
 
-                }else if(state.name().equals("EXPANDED")){
+                } else if (state.name().equals("EXPANDED")) {
                     mMap.animate().translationY(0);
                     tripName.animate().alpha(1.0f);
                     tripName.setVisibility(View.VISIBLE);
@@ -123,7 +128,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         params.setBehavior(behavior);
 
         DatabaseReference databaseReference = app.getPlacesReference().child(trip.getId().toString());
-        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab);
+        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -160,7 +165,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {

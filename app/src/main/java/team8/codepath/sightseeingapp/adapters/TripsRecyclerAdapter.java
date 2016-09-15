@@ -2,6 +2,7 @@ package team8.codepath.sightseeingapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.activities.TripDetailActivity;
@@ -40,6 +42,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
     GoogleApiClient mGoogleApiClient;
     DatabaseReference mDatabaseReferenceFavs;
     ArrayList<String> userFavorites = new ArrayList<>();
+    HashMap images = new HashMap();
 
 
     public TripsRecyclerAdapter(int modelLayout, DatabaseReference ref,  GoogleApiClient googleApiClient, DatabaseReference favsRef) {
@@ -47,6 +50,40 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         mGoogleApiClient = googleApiClient;
         mDatabaseReferenceFavs = favsRef;
         setUserFavorites(favsRef);
+        loadTripsImages(ref);
+    }
+
+    private void loadTripsImages(DatabaseReference ref) {
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                images.clear();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                    final TripModel trip = child.getValue(TripModel.class);
+
+                    String PhotoPlaceId = trip.getPlaceId();
+                    new PhotoTask(400, 400, mGoogleApiClient) {
+                        @Override
+                        protected void onPreExecute() {}
+                        @Override
+                        protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                            if (attributedPhoto != null) {
+                                images.put(trip.getId(), attributedPhoto.bitmap);
+                            }
+                        }
+                    }.execute(PhotoPlaceId);
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void setUserFavorites(DatabaseReference favsRef) {
@@ -103,22 +140,33 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         // Populate subviews
         bannerView.setImageResource(android.R.color.transparent); // clear out old image for recycled view
 
-        String PhotoPlaceId = trip.getPlaceId();
-        new PhotoTask(350, 350, mGoogleApiClient) {
-            @Override
-            protected void onPreExecute() {
-                // Display a temporary image to show while bitmap is loading.
-                bannerView.setImageResource(R.drawable.places_back);
-            }
-            @Override
-            protected void onPostExecute(AttributedPhoto attributedPhoto) {
-                if (attributedPhoto != null) {
-                    // Photo has been loaded, display it.
-                    bannerView.setImageBitmap(attributedPhoto.bitmap);
+        if(images.isEmpty()){
 
+            String PhotoPlaceId = trip.getPlaceId();
+            new PhotoTask(400, 400, mGoogleApiClient) {
+                @Override
+                protected void onPreExecute() {
+                    // Display a temporary image to show while bitmap is loading.
+                    bannerView.setImageResource(R.drawable.places_back);
                 }
-            }
-        }.execute(PhotoPlaceId);
+                @Override
+                protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                    if (attributedPhoto != null) {
+                        // Photo has been loaded, display it.
+                        bannerView.setImageBitmap(attributedPhoto.bitmap);
+
+                    }
+                }
+            }.execute(PhotoPlaceId);
+            Log.i("favss", "api");
+
+        }
+        else{
+            Bitmap imageBitMap = (Bitmap) images.get(trip.getId());
+            bannerView.setImageBitmap(imageBitMap);
+            Log.i("favss", "bitmap");
+
+        }
 
         viewHolder.name.setText(trip.getName());
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());

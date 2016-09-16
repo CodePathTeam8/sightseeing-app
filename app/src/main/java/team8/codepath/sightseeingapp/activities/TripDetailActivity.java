@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -47,6 +48,10 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     protected GoogleApiClient mGoogleApiClient;
     @BindView(R.id.tvRating)
     TextView tvRating;
+    @BindView(R.id.tvPriceAvg)
+    TextView tvPriceAvg;
+    @BindView(R.id.llPrice)
+    LinearLayout llPrice;
 
     private View mMap;
 
@@ -128,7 +133,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         params.setBehavior(behavior);
 
         DatabaseReference databaseReference = app.getPlacesReference().child(trip.getId().toString());
-        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating);
+        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating, tvPriceAvg, llPrice);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

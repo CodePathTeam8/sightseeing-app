@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,20 +57,25 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     private String firstPlaceLatLong = "";
     FloatingActionButton mfab;
     private float placeRating;
+    private float priceAvg;
     TextView mtvRating;
+    TextView mtvPriceAvg;
+    LinearLayout mllPrice;
 
 
     private Context getContext() {
         return context;
     }
 
-    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating) {
+    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating, TextView tvPriceAvg, LinearLayout llPrice) {
         super(PlaceModel.class, modelLayout, PlacesRecyclerAdapter.ItemViewHolder.class, ref);
         mSupportFragmentManager = supportFragmentManager;
         googleApiClient = mGoogleApiClient;
 
         this.mfab = fab;
         this.mtvRating = tvRating;
+        this.mtvPriceAvg = tvPriceAvg;
+        this.mllPrice = llPrice;
 
     }
 
@@ -83,7 +89,6 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         SupportMapFragment mapFragment = (SupportMapFragment) mSupportFragmentManager
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(new MapReadyCallback());
-
 
 
         return new ItemViewHolder(view);
@@ -114,7 +119,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(placeLatLng));
                             mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
 
-                            if(counter == 0){
+                            if (counter == 0) {
                                 firstPlaceLatLong = String.valueOf(myPlace.getLatLng());
                                 mfab.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -132,21 +137,29 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                             }
 
                             counter++;
-                            placeRating =  placeRating + myPlace.getRating();
+                            placeRating = placeRating + myPlace.getRating();
+                            priceAvg += myPlace.getPriceLevel();
                             holder.tvNumber.setText(String.valueOf(counter));
 
                             DecimalFormat df = new DecimalFormat("#.#");
-                            double ratingAvg = ((placeRating/counter) < 3)? 4.2d : placeRating/counter;
-                            mtvRating.setText(String.valueOf(df.format(ratingAvg))+ " Avg. Rating" );
-                            
+                            double ratingAvg = ((placeRating / counter) < 3) ? 4.2d : placeRating / counter;
+                            mtvRating.setText(String.valueOf(df.format(ratingAvg)) + " Avg. Rating");
+
+                            double priceAverage = ((priceAvg / counter) < 1) ? 1.5d : priceAvg / counter;
+                            if (priceAverage > 2)
+                                mllPrice.findViewById(R.id.ivDollarCheap).setVisibility(View.VISIBLE);
+
+                            if (priceAverage > 4)
+                                mllPrice.findViewById(R.id.ivDollarExpensive).setVisibility(View.VISIBLE);
+
+                            mtvPriceAvg.setText(String.valueOf(df.format(priceAverage)) + " Avg. Price");
+
                         } else {
                             Log.e(TAG, "Place not found");
                         }
                         places.release();
                     }
                 });
-
-
 
         int[] mResources = {
                 R.drawable.favourite,
@@ -156,7 +169,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                 R.drawable.pin,
                 R.drawable.price
         };
-        
+
         //Set the Gallery
         GalleryPagerAdapter mGalleryPagerAdapter = new GalleryPagerAdapter(getContext(), mResources);
         holder.vpGallery.setAdapter(mGalleryPagerAdapter);
@@ -222,8 +235,6 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         }
 
     }
-
-
 
 
     private Bitmap writeTextOnDrawable(int drawableId, String text) {

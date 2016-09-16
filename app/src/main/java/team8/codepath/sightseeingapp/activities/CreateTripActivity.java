@@ -40,10 +40,14 @@ import java.util.Map;
 
 import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class CreateTripActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener{
@@ -73,10 +77,19 @@ public class CreateTripActivity extends AppCompatActivity
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference("trips");
+    DatabaseReference databaseReferenceCreated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SightseeingApplication app = (SightseeingApplication)getApplicationContext();
+        UserModel user = app.getUserInfo();
+
+        databaseReferenceCreated = app.getUsersReference()
+                .child(Utilities.encodeEmail(user.getEmail()))
+                .child(Constants.FIREBASE_LOCATION_LIST_CREATED);
+
         imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
@@ -280,6 +293,9 @@ public class CreateTripActivity extends AppCompatActivity
         };
 
         databaseReference.updateChildren(childUpdates);
+
+        //save created by - User reference
+        databaseReferenceCreated.child(key).setValue(tripValues);
         tripID ++;
         finish();
     }

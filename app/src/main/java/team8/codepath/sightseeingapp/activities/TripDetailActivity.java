@@ -38,6 +38,9 @@ import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlacesRecyclerAdapter;
 import team8.codepath.sightseeingapp.classes.AppBarStateChangeListener;
 import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class TripDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -54,6 +57,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     LinearLayout llPrice;
 
     private View mMap;
+    DatabaseReference databaseReferenceRecent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +69,13 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         setSupportActionBar(toolbar);
 
         SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+        UserModel user = app.getUserInfo();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvTrips);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        databaseReferenceRecent = app.getUsersReference()
+                .child(Utilities.encodeEmail(user.getEmail()))
+                .child(Constants.FIREBASE_LOCATION_LIST_RECENT);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
@@ -77,6 +87,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
         List<String> tripTags = trip.getTripTags();
+        //Recently viewed
+        databaseReferenceRecent.child(trip.getId()).setValue(trip);
 
         final TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);

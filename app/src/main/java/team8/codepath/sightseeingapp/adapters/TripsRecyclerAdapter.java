@@ -133,7 +133,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
     public void onBindViewHolder(final TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
         final TripModel trip = getItem(position);
 
-        final boolean isFavorite = (userFavorites.contains(trip.getId()));
+        final boolean[] isFavorite = {(userFavorites.contains(trip.getId()))};
 
         final ImageView bannerView = viewHolder.banner;
 
@@ -158,13 +158,13 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
                     }
                 }
             }.execute(PhotoPlaceId);
-            Log.i("favss", "api");
+            Log.i("LOADING IMAGE...", "api");
 
         }
         else{
             Bitmap imageBitMap = (Bitmap) images.get(trip.getId());
             bannerView.setImageBitmap(imageBitMap);
-            Log.i("favss", "bitmap");
+            Log.i("LOADING IMAGE...", "bitmap hashmap");
 
         }
 
@@ -172,7 +172,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
 
         viewHolder.ivFavorite.setImageBitmap(null);
-        if(isFavorite)
+        if(isFavorite[0])
             favoriteTrip(viewHolder.ivFavorite);
         else
             unfavoriteTrip(viewHolder.ivFavorite);
@@ -180,13 +180,15 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.ivFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isFavorite){
+                if(isFavorite[0]){
                     mDatabaseReferenceFavs.child(trip.getId()).removeValue();
                     unfavoriteTrip(viewHolder.ivFavorite);
+                    isFavorite[0] = false;
                 }
                 else{
                     mDatabaseReferenceFavs.child(trip.getId()).setValue(trip);
                     favoriteTrip(viewHolder.ivFavorite);
+                    isFavorite[0] = true;
                 }
             }
         });

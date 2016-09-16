@@ -3,6 +3,10 @@ package team8.codepath.sightseeingapp.activities;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,6 +46,8 @@ import me.originqiu.library.EditTag;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
+import team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripNameFragment;
+import team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripPlacesFragment;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
 
@@ -84,11 +90,14 @@ public class CreateTripActivity extends AppCompatActivity
                 .build();
         setContentView(R.layout.activity_create_trip);
         setupViews();
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         DatabaseReference geoFireRef = FirebaseDatabase.getInstance().getReference("geofire");
         geoFire = new GeoFire(geoFireRef);
         geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973));
+
+
 
         setupPlacesAutoComplete();
     }
@@ -121,6 +130,9 @@ public class CreateTripActivity extends AppCompatActivity
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
+        ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
+       vpPager.setAdapter(new CreateTripPagerAdapter(getSupportFragmentManager()));
+
 
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);
@@ -292,4 +304,43 @@ public class CreateTripActivity extends AppCompatActivity
         totalHours += hoursCount;
         return totalHours;
     }
+
+    // Tab Slider Setup
+    // This will make the create trip look like it is multiple pages
+    public class CreateTripPagerAdapter extends FragmentPagerAdapter {
+
+    private String tabTitles[] = {"Name your trip", "Add the places"};
+
+    // Adapter gets teh manager insert of remove fragment from activity
+    public CreateTripPagerAdapter(FragmentManager fm){
+        super(fm);
+    }
+
+    // Order and creation of fragments within the pager
+    @Override
+    public Fragment getItem(int position) {
+        if (position == 0){
+            return new CreateTripNameFragment();
+        }
+        else if (position ==1){
+            return new CreateTripPlacesFragment();
+        }
+        else
+            return null;
+    }
+
+    // Return Tab Title
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return tabTitles[position];
+    }
+
+    // Returns number of tabs
+    @Override
+    public int getCount() {
+        return tabTitles.length;
+    }
+}
+
+
 }

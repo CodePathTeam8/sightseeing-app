@@ -16,10 +16,25 @@
     tools:showIn="@layout/activity_create_trip">
 
 
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        app:pstsShouldExpand="true"
+        app:pstsTextAllCaps="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white" />
+
+
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -118,9 +133,6 @@
             android:id="@+id/lvPlaces"
             android:fastScrollAlwaysVisible="false" />
 
-
-
-
         <LinearLayout
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
@@ -156,8 +168,6 @@
                 android:password="false"
                 android:singleLine="true" />
 
-
-
             <NumberPicker
                 android:id="@+id/npTripLengthHours"
                 android:layout_width="50dp"
@@ -169,12 +179,7 @@
                 android:id="@+id/tvTripHours"
                 android:layout_gravity="center_vertical" />
 
-
-
         </LinearLayout>
-
-
-
 
         <LinearLayout
             android:orientation="vertical"
@@ -186,13 +191,6 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp">
-
-<!--            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tag your trip"
-                android:id="@+id/tvTripTags" />-->
-
 
             <me.originqiu.library.EditTag
                 android:id="@+id/etTripTags"

@@ -24,4 +24,6 @@
     <string name="search_hint">Where are you going?</string>
     <string name="search_filter">Filter</string>
     <string name="search_results">Search Results</string>
+    <string name="title_activity_user_trips">UserTripsActivity</string>
+    <string name="nav_user_trips">Trips</string>
 </resources>

@@ -245,6 +245,11 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
                 startActivity(p);
                 break;
 
+            case R.id.navUserTrips:
+                Intent u = new Intent(this, UserTripsActivity.class);
+                startActivity(u);
+                break;
+
             case R.id.navFavorites:
                 Intent f = new Intent(this, FavoritesActivity.class);
                 startActivity(f);

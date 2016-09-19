@@ -73,7 +73,8 @@ public class CreateTripPlacesFragment extends Fragment implements GoogleApiClien
             @Override
             public void onClick(View v)
             {
-                mainActivity.alPlaces = places;
+                mainActivity.places = places;
+                mainActivity.newTrip.placeId = places.get(0).placeId;
                 viewPager.setCurrentItem(2);
             }
         });

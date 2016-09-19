@@ -71,7 +71,7 @@ public class CreateTripActivity extends AppCompatActivity
     ImageButton btnClear;
     ImageView ivPlacePhoto;
 
-    public ArrayList<PlaceModel> alPlaces;
+    public ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
     private ListView lvPlaces;
     private NumberPicker npTripLengthHours;
@@ -144,7 +144,6 @@ public class CreateTripActivity extends AppCompatActivity
         createItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                newTrip.places = alPlaces;
                 Log.d("debug", newTrip.toString());
                 Log.d("debug", newTrip.toString());
 /*                Fragment fragmentTripLength = fragmentPagerAdapter.getItem(2);
@@ -154,8 +153,8 @@ public class CreateTripActivity extends AppCompatActivity
 
             //    int totalLength = getTripLength();
                 //String placeId = places.get(0).placeId;
-                //List<String> tripTags = etTripTags.getTagList();
-                //writeNewTrip(name, totalLength, placeId, places, tripTags);*/
+                //List<String> tripTags = etTripTags.getTagList();*/
+                writeNewTrip(newTrip.name, newTrip.totalLength, newTrip.placeId,  newTrip.places, newTrip.tripTags);
                 return true;
             }
         });

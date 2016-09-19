@@ -41,6 +41,7 @@ public class FavoritesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(FavoritesActivity.this, CreateTripActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

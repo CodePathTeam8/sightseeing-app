@@ -50,6 +50,9 @@
 
     <com.uber.sdk.android.rides.RideRequestButton
         android:id="@+id/btnRequest"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        android:paddingLeft="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rlContent"

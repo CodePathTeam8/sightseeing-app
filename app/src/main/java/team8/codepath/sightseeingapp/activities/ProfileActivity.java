@@ -99,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity implements OnMapReadyCall
             tvBio.setVisibility(View.GONE);
         }
         tvEmail.setText(user.getEmail());
-        tvLanguages.setText(user.getLanguages());
+        //tvLanguages.setText(user.getLanguages());
 
         //Set marker in User location
         LatLng userLatLong = getUserLatLong(user.getLocationName());
@@ -113,7 +113,8 @@ public class ProfileActivity extends AppCompatActivity implements OnMapReadyCall
 
         //Collapsing Toolbar options
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        collapsingToolbarLayout.setTitle(user.getName());
+        //collapsingToolbarLayout.setTitle(user.getName());
+        collapsingToolbarLayout.setTitle(" ");
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
         AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
         behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {

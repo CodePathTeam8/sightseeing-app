@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,10 +39,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
+import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestButton;
 
 import java.text.DecimalFormat;
 
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.classes.PhotoTask;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 
 
@@ -61,13 +65,14 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     TextView mtvRating;
     TextView mtvPriceAvg;
     LinearLayout mllPrice;
+    RideRequestButton mRequestButton;
 
 
     private Context getContext() {
         return context;
     }
 
-    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating, TextView tvPriceAvg, LinearLayout llPrice) {
+    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating, TextView tvPriceAvg, LinearLayout llPrice, RideRequestButton requestButton) {
         super(PlaceModel.class, modelLayout, PlacesRecyclerAdapter.ItemViewHolder.class, ref);
         mSupportFragmentManager = supportFragmentManager;
         googleApiClient = mGoogleApiClient;
@@ -76,6 +81,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         this.mtvRating = tvRating;
         this.mtvPriceAvg = tvPriceAvg;
         this.mllPrice = llPrice;
+        this.mRequestButton = requestButton;
 
     }
 
@@ -134,6 +140,23 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                                         getContext().startActivity(mapIntent);
                                     }
                                 });
+
+
+                                double lat = myPlace.getLatLng().latitude;
+                                double lng = myPlace.getLatLng().longitude;
+
+                                //Set uber pickup information
+                                RideParameters rideParams = new RideParameters.Builder()
+                                        // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
+                                        .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
+                                        // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
+                                        .setDropoffLocation(lat, lng, myPlace.getName().toString(), myPlace.getAddress().toString())
+                                        // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
+                                        .setPickupLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
+                                        .build();
+
+                                // set parameters for the RideRequestButton instance
+                                mRequestButton.setRideParameters(rideParams);
                             }
 
                             counter++;
@@ -154,6 +177,17 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
 
                             mtvPriceAvg.setText(String.valueOf(df.format(priceAverage)) + " Avg. Price");
 
+                            holder.ivPlacePhoto.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //Start google maps
+                                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(place.getName()));
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    getContext().startActivity(mapIntent);
+                                }
+                            });
+
                         } else {
                             Log.e(TAG, "Place not found");
                         }
@@ -161,19 +195,22 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                     }
                 });
 
-        int[] mResources = {
-                R.drawable.favourite,
-                R.drawable.ic_app,
-                R.drawable.ic_profile,
-                R.drawable.marker,
-                R.drawable.pin,
-                R.drawable.price
-        };
+        String PhotoPlaceId = place.getPlaceId();
+        new PhotoTask(400, 400, googleApiClient) {
+            @Override
+            protected void onPreExecute() {
+                // Display a temporary image to show while bitmap is loading.
+                holder.ivPlacePhoto.setImageResource(R.drawable.places_back);
+            }
+            @Override
+            protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                if (attributedPhoto != null) {
+                    // Photo has been loaded, display it.
+                    holder.ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);
 
-        //Set the Gallery
-        GalleryPagerAdapter mGalleryPagerAdapter = new GalleryPagerAdapter(getContext(), mResources);
-        holder.vpGallery.setAdapter(mGalleryPagerAdapter);
-
+                }
+            }
+        }.execute(PhotoPlaceId);
 
     }
 
@@ -183,14 +220,14 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
             View.OnLongClickListener {
 
         TextView tvPlaceName;
-        ViewPager vpGallery;
         TextView tvNumber;
+        ImageView ivPlacePhoto;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             tvPlaceName = (TextView) itemView.findViewById(R.id.tvPlaceName);
-            vpGallery = (ViewPager) itemView.findViewById(R.id.vpGallery);
             tvNumber = (TextView) itemView.findViewById(R.id.tvNumber);
+            ivPlacePhoto = (ImageView) itemView.findViewById(R.id.ivPlacePhoto);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

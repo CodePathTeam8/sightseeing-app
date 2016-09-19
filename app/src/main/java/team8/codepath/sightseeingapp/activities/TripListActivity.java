@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -175,6 +176,11 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         return new ActionBarDrawerToggle(this, ndTrips, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mGoogleApiClient.disconnect();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -288,9 +294,12 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         View header = navigationView.getHeaderView(0);
         TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
+        ProfilePictureView ivProfile = (ProfilePictureView) header.findViewById(R.id.ivProfile);
 
         tvUserName.setText(user.getName());
         tvEmail.setText(user.getEmail());
+        ivProfile.setProfileId(user.getId());
+
     }
 
     private AdapterView.OnItemClickListener mAutocompleteClickListener

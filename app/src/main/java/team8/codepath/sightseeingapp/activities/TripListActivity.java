@@ -187,6 +187,11 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         return new ActionBarDrawerToggle(this, ndTrips, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mGoogleApiClient.disconnect();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

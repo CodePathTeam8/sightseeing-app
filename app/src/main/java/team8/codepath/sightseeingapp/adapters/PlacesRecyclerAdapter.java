@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import java.text.DecimalFormat;
 
 import team8.codepath.sightseeingapp.R;
+import team8.codepath.sightseeingapp.classes.PhotoTask;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 
 
@@ -154,6 +156,17 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
 
                             mtvPriceAvg.setText(String.valueOf(df.format(priceAverage)) + " Avg. Price");
 
+                            holder.ivPlacePhoto.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //Start google maps
+                                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(place.getName()));
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    getContext().startActivity(mapIntent);
+                                }
+                            });
+
                         } else {
                             Log.e(TAG, "Place not found");
                         }
@@ -161,19 +174,22 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                     }
                 });
 
-        int[] mResources = {
-                R.drawable.favourite,
-                R.drawable.ic_app,
-                R.drawable.ic_profile,
-                R.drawable.marker,
-                R.drawable.pin,
-                R.drawable.price
-        };
+        String PhotoPlaceId = place.getPlaceId();
+        new PhotoTask(400, 400, googleApiClient) {
+            @Override
+            protected void onPreExecute() {
+                // Display a temporary image to show while bitmap is loading.
+                holder.ivPlacePhoto.setImageResource(R.drawable.places_back);
+            }
+            @Override
+            protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                if (attributedPhoto != null) {
+                    // Photo has been loaded, display it.
+                    holder.ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);
 
-        //Set the Gallery
-        GalleryPagerAdapter mGalleryPagerAdapter = new GalleryPagerAdapter(getContext(), mResources);
-        holder.vpGallery.setAdapter(mGalleryPagerAdapter);
-
+                }
+            }
+        }.execute(PhotoPlaceId);
 
     }
 
@@ -183,14 +199,14 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
             View.OnLongClickListener {
 
         TextView tvPlaceName;
-        ViewPager vpGallery;
         TextView tvNumber;
+        ImageView ivPlacePhoto;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             tvPlaceName = (TextView) itemView.findViewById(R.id.tvPlaceName);
-            vpGallery = (ViewPager) itemView.findViewById(R.id.vpGallery);
             tvNumber = (TextView) itemView.findViewById(R.id.tvNumber);
+            ivPlacePhoto = (ImageView) itemView.findViewById(R.id.ivPlacePhoto);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

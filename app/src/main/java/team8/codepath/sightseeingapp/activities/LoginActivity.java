@@ -180,9 +180,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
 
-        //Start service
-        Intent msgIntent = new Intent(this, ImagesIntentService.class);
-        startService(msgIntent);
 
         Intent i = new Intent(this, TripListActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

@@ -18,7 +18,7 @@
         android:id="@+id/tvNumber"
         tools:text="1"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="5dp"
         android:textSize="8dp"
         android:layout_alignTop="@+id/tvPlaceName"
         android:layout_alignParentLeft="true"
@@ -29,17 +29,31 @@
         android:layout_height="wrap_content"
         tools:text="Andrews Ice Cream"
         android:id="@+id/tvPlaceName"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivIconNumber"
         android:layout_toEndOf="@+id/ivIconNumber" />
 
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/vpGallery"
+    <ImageView
+        android:id="@+id/ivPlacePhoto"
+        android:layout_width="300dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/ivIconNumber"
+        android:layout_height="200dp" />
+
+    <View
+        android:id="@+id/vTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </android.support.v4.view.ViewPager>
+        android:layout_height="1dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/ivPlacePhoto"
+        android:background="#B0BEC5" />
 
 </RelativeLayout>

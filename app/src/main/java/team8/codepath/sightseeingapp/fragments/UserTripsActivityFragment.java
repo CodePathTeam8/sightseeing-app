@@ -75,4 +75,10 @@ public class UserTripsActivityFragment extends Fragment implements GoogleApiClie
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGoogleApiClient.disconnect();
+    }
 }

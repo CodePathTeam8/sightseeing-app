@@ -41,7 +41,7 @@ import team8.codepath.sightseeingapp.models.PlaceModel;
 public class CreateTripPlacesFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
 
-    private ArrayList<PlaceModel> places;
+    public ArrayList<PlaceModel> places;
     private PlaceListArrayAdapter aPlaces;
     private ListView lvPlaces;
     public GoogleApiClient mGoogleApiClient;
@@ -73,7 +73,7 @@ public class CreateTripPlacesFragment extends Fragment implements GoogleApiClien
             @Override
             public void onClick(View v)
             {
-                mainActivity.places = places;
+                mainActivity.newTrip.places = places;
                 mainActivity.newTrip.placeId = places.get(0).placeId;
                 viewPager.setCurrentItem(2);
             }
@@ -81,6 +81,7 @@ public class CreateTripPlacesFragment extends Fragment implements GoogleApiClien
 
         // Setup list of Places within trip
         lvPlaces = (ListView) v.findViewById(R.id.lvPlaces);
+
         places = new ArrayList<>();
         aPlaces = new PlaceListArrayAdapter(getContext(), places, mGoogleApiClient);
         lvPlaces.setAdapter(aPlaces);

@@ -27,13 +27,13 @@ public class TripModel {
     public String bannerPhoto;
     public String placeId;
     public String humanReadableTripLength ="";
-    public ArrayList<String> places;
+    public ArrayList<PlaceModel> places;
     public String distance;
     public List<String> tripTags;
 
     public TripModel(){}
 
-    public TripModel(String id, String name, String placeId, int totalLength, String bannerPhoto, ArrayList<String> places, List<String> tripTags){
+    public TripModel(String id, String name, String placeId, int totalLength, String bannerPhoto, ArrayList<PlaceModel> places, List<String> tripTags){
         this.id = id;
         this.name = name;
         this.totalLength = totalLength;
@@ -53,6 +53,7 @@ public class TripModel {
     public List<String> getTripTags() {
         return tripTags;
     }
+
 
     public String getId() {
         return id;
@@ -87,8 +88,8 @@ public class TripModel {
         return distance;
     }
 
-    public ArrayList<String> getPlaces() {
-        return places;
+    public ArrayList<PlaceModel> getPlaces() {
+       return places;
     }
 
 

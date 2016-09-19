@@ -132,7 +132,7 @@ public class CreateTripActivity extends AppCompatActivity
 
 
 
-//        setupPlacesAutoComplete();
+//   +     setupPlacesAutoComplete();
     }
 
 
@@ -160,7 +160,7 @@ public class CreateTripActivity extends AppCompatActivity
         });
         return super.onCreateOptionsMenu(menu);
     }
-
+//    private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places, List<String> tripTags) {
     @Override
     public void onBackPressed() {
         finish();

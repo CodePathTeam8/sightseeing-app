@@ -47,14 +47,105 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:gravity="center"
-            tools:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="Medium Text" />
+
+
+        <LinearLayout
+            android:id="@+id/llSummary"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvBio">
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/layout_bg"
+                android:layout_margin="@dimen/activity_horizontal_small_margin"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvFavorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvFavorite"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Favorite trip" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/layout_bg"
+                android:layout_margin="@dimen/activity_horizontal_small_margin"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvCreated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="2" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvCreated"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Trips created" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/layout_bg"
+                android:layout_margin="@dimen/activity_horizontal_small_margin"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvRecent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="2" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvRecent"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Recent Trips"  />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llMembership"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvBio"
+            android:layout_below="@+id/llSummary"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="35dp"
@@ -71,8 +162,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="end"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Aug 21, 2016" />
+                android:text="Aug 21, 2016"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 
@@ -139,8 +230,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="end"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="English" />
+                android:text="English"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 

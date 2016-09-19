@@ -140,7 +140,7 @@
                 android:layout_weight="2"
                 android:gravity="end"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                tools:text="English" />
+                android:text="English" />
 
         </LinearLayout>
 

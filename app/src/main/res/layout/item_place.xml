@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         tools:text="Andrews Ice Cream"
         android:id="@+id/tvPlaceName"
-        android:layout_marginTop="12dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="13dp"
+        android:textSize="16sp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivIconNumber"
         android:layout_toEndOf="@+id/ivIconNumber" />

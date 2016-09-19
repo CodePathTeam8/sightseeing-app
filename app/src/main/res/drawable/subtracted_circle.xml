@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/subtracted_circle.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="50dp"
+    android:width="50dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <group android:name="subtracted_circle">
+        <path
+            android:pathData="M 0,0 0,24 C 0,10.745166 10.745166,0 24,0 L 0,0 z M 24,0 C 37.254834,0 48,10.745166 48,24 L 48,0 24,0 z M 48,24 C 48,37.254834 37.254834,48 24,48 l 24,0 0,-24 z M 24,48 C 10.745166,48 0,37.254834 0,24 l 0,24 24,0 z"
+            android:strokeWidth="0"
+            android:fillColor="@color/background_floating_material_light"
+            android:strokeMiterLimit="4"/>
+    </group>
+</vector>

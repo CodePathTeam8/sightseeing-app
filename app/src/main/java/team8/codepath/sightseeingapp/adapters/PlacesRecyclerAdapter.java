@@ -39,6 +39,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
+import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestButton;
 
 import java.text.DecimalFormat;
 
@@ -63,13 +65,14 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     TextView mtvRating;
     TextView mtvPriceAvg;
     LinearLayout mllPrice;
+    RideRequestButton mRequestButton;
 
 
     private Context getContext() {
         return context;
     }
 
-    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating, TextView tvPriceAvg, LinearLayout llPrice) {
+    public PlacesRecyclerAdapter(int modelLayout, DatabaseReference ref, FragmentManager supportFragmentManager, GoogleApiClient mGoogleApiClient, FloatingActionButton fab, TextView tvRating, TextView tvPriceAvg, LinearLayout llPrice, RideRequestButton requestButton) {
         super(PlaceModel.class, modelLayout, PlacesRecyclerAdapter.ItemViewHolder.class, ref);
         mSupportFragmentManager = supportFragmentManager;
         googleApiClient = mGoogleApiClient;
@@ -78,6 +81,7 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
         this.mtvRating = tvRating;
         this.mtvPriceAvg = tvPriceAvg;
         this.mllPrice = llPrice;
+        this.mRequestButton = requestButton;
 
     }
 
@@ -136,6 +140,23 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                                         getContext().startActivity(mapIntent);
                                     }
                                 });
+
+
+                                double lat = myPlace.getLatLng().latitude;
+                                double lng = myPlace.getLatLng().longitude;
+
+                                //Set uber pickup information
+                                RideParameters rideParams = new RideParameters.Builder()
+                                        // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
+                                        .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
+                                        // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
+                                        .setDropoffLocation(lat, lng, myPlace.getName().toString(), myPlace.getAddress().toString())
+                                        // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
+                                        .setPickupLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
+                                        .build();
+
+                                // set parameters for the RideRequestButton instance
+                                mRequestButton.setRideParameters(rideParams);
                             }
 
                             counter++;

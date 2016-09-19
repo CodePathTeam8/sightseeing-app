@@ -80,6 +80,10 @@ public class TripModel {
             }
             humanReadableTripLength += hoursCount + " hours";
         }
+
+        if(humanReadableTripLength.equals("1 days"))
+            humanReadableTripLength = "1 day";
+
         return humanReadableTripLength;
     }
 

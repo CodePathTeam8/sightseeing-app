@@ -18,8 +18,10 @@ import android.transition.ChangeImageTransform;
 import android.transition.ChangeTransform;
 import android.transition.Explode;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,9 +34,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestButton;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,7 +70,12 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
 
     private View mMap;
     DatabaseReference databaseReferenceRecent;
-
+    Boolean isFavorite;
+    ArrayList<String> userFavorites = new ArrayList<>();
+    SightseeingApplication app;
+    UserModel user;
+    DatabaseReference dbReferenceFavs;
+    TripModel trip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +89,14 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
             getWindow().setExitTransition(new Explode());
 
         }
+
+        app = (SightseeingApplication) getApplicationContext();
+        user = app.getUserInfo();
+
+        //User favorites
+        dbReferenceFavs  = app.getUsersReference().child(Utilities.encodeEmail(user.getEmail())).child(Constants.FIREBASE_LOCATION_LIST_FAVORITES);
+        setUserFavorites(dbReferenceFavs);
+
 
         setContentView(R.layout.activity_trip_detail);
         ButterKnife.bind(this);
@@ -99,7 +117,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        TripModel trip = Parcels.unwrap(getIntent().getParcelableExtra("trip"));
+        trip = Parcels.unwrap(getIntent().getParcelableExtra("trip"));
+        isFavorite = userFavorites.contains(trip.getId());
         name = trip.getName();
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
@@ -152,6 +171,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         });
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        RideRequestButton requestButton = (RideRequestButton) findViewById(R.id.btnRequest);
+
         AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
         behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
             @Override
@@ -162,7 +183,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         params.setBehavior(behavior);
 
         DatabaseReference databaseReference = app.getPlacesReference().child(trip.getId().toString());
-        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating, tvPriceAvg, llPrice);
+        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating, tvPriceAvg, llPrice, requestButton);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -181,20 +202,6 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
             }
         });
 
-        /*requestButton = (RideRequestButton) findViewById(R.id.btnRequest);
-        RideParameters rideParams = new RideParameters.Builder()
-                // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
-                .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
-                // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
-                .setDropoffLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
-                // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
-                .setPickupLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
-                // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location.
-                .setDropoffLocation(37.795079, -122.4397805, "Embarcadero", "One Embarcadero Center, San Francisco")
-                .build();
-
-        // set parameters for the RideRequestButton instance
-        requestButton.setRideParameters(rideParams);*/
 
     }
 
@@ -206,5 +213,57 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_trip_detail, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+
+                if(isFavorite){
+                    dbReferenceFavs.child(trip.getId()).removeValue();
+                    unfavoriteTrip(item);
+                    isFavorite = false;
+                }
+                else{
+                    dbReferenceFavs.child(trip.getId()).setValue(trip);
+                    favoriteTrip(item);
+                    isFavorite = true;
+                }
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void favoriteTrip(MenuItem ivFavorite) {
+        ivFavorite.setIcon(R.drawable.ic_heart_white_24);
+    }
+
+    private void unfavoriteTrip(MenuItem ivFavorite) {
+        ivFavorite.setIcon(R.drawable.ic_heart_outline_24);
+    }
+
+    private void setUserFavorites(DatabaseReference favsRef) {
+
+        favsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                userFavorites.clear();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    TripModel trip = child.getValue(TripModel.class);
+                    userFavorites.add(trip.getId());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

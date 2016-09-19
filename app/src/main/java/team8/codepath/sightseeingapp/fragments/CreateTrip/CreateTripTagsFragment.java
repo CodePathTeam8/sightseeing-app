@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,25 +26,14 @@ public class CreateTripTagsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_create_trip_tags, container, false);
-
         etTripTags = (EditTag) v.findViewById(R.id.etTripTags);
         etTripTags.setEditable(true);
-
-
         final CreateTripActivity mainActivity = (CreateTripActivity) getActivity();
+        mainActivity.newTrip.tripTags = etTripTags.getTagList();
 
-        final ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
-        Button button = (Button) v.findViewById(R.id.button3);
-        button.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mainActivity.newTrip.tripTags = etTripTags.getTagList();
-            }
-        });
 
-        return v;
+
+       return v;
     }
 
     @Override

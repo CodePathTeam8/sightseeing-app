@@ -164,18 +164,6 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        // Check for location information
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-        } else {
-            Toast.makeText(this, "Enable GPS for results near you",
-                    Toast.LENGTH_LONG).show();
-        }
-
         // Setup drawer view
         setupDrawerContent(nvView);
         setupPlacesAutoComplete(toolbar);

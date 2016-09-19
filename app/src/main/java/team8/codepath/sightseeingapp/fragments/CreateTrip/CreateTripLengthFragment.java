@@ -19,7 +19,6 @@ public class CreateTripLengthFragment extends Fragment {
 
     private NumberPicker npTripLengthHours;
     private NumberPicker npTripLengthDays;
-    public EditTag etTripTags;
 
 
     @Override
@@ -50,6 +49,7 @@ public class CreateTripLengthFragment extends Fragment {
             public void onClick(View v)
             {
                 mainActivity.newTrip.totalLength = getTripLength();
+                mainActivity.createItem.setVisible(true);
                 viewPager.setCurrentItem(3);
             }
         });

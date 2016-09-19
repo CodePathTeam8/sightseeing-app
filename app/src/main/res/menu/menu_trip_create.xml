@@ -6,6 +6,7 @@
         android:title="Done"
         android:textColor="#fff"
         android:text="Done"
+        android:visible="false"
         app:showAsAction="ifRoom|collapseActionView"/>
 
 </menu>

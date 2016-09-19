@@ -1,13 +1,93 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripPlacesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Places" />
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#fff"
+        android:baselineAligned="true"
+        android:id="@+id/ll_places"
+        android:padding="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Places"
+
+            android:id="@+id/tvEnterPlaces" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1">
+
+            <AutoCompleteTextView
+                android:id="@+id/actv_places"
+                android:layout_width="243dp"
+                android:layout_height="wrap_content"
+                android:hint="Search for a place"
+                android:layout_gravity="center_horizontal"
+                android:singleLine="true"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/btnClear"
+                android:background="@null"
+                android:src="@drawable/backspace"
+                android:layout_weight="0.04" />
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/place_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/place_attribution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_below="@id/ll_places"
+        android:layout_height="300dp"
+        android:id="@+id/lvPlaces"
+        android:fastScrollAlwaysVisible="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:id="@+id/button"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="30dp" />
+
+</RelativeLayout>

@@ -4,10 +4,32 @@
     android:layout_height="match_parent"
     tools:context=".fragments.CreateTrip.CreateTripNameFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Name" />
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#fff"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trip Name"
+            android:id="@+id/tvTripName" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etTripName"
+            android:singleLine="true"
+            android:hint="Name your trip" />
+    </LinearLayout>
+
+
 
 </FrameLayout>

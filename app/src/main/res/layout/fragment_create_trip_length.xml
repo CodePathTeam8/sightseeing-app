@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripLengthFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#fff"
+        android:baselineAligned="true"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How long will the trip take?"
+            android:id="@+id/tvTripLength"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp"
+            android:password="false" />
+
+        <RelativeLayout
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+            <NumberPicker
+                android:id="@+id/npTripLengthDays"
+                android:layout_width="50dp"
+                android:layout_height="100dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="days"
+                android:id="@+id/tvTripDays"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="10dp"
+                android:password="false"
+                android:singleLine="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/npTripLengthDays"
+                android:layout_toEndOf="@+id/npTripLengthDays"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+            <NumberPicker
+                android:id="@+id/npTripLengthHours"
+                android:layout_width="50dp"
+                android:layout_height="100dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hours"
+                android:id="@+id/tvTripHours"
+                android:layout_gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@+id/npTripLengthHours"
+                android:layout_toEndOf="@+id/npTripLengthHours" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:id="@+id/button2"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="30dp" />
+
+</RelativeLayout>

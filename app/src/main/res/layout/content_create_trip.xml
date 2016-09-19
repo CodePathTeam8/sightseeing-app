@@ -31,7 +31,7 @@
 
 
 
-    <LinearLayout
+<!--    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -39,8 +39,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:weightSum="1"
-        android:baselineAligned="false">
+        android:baselineAligned="false">-->
 
+<!--
 
         <LinearLayout
             android:orientation="vertical"
@@ -63,9 +64,10 @@
                 android:id="@+id/etTripName"
                 android:hint="Name your trip" />
         </LinearLayout>
+-->
 
 
-        <LinearLayout
+<!--        <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -131,9 +133,9 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:id="@+id/lvPlaces"
-            android:fastScrollAlwaysVisible="false" />
+            android:fastScrollAlwaysVisible="false" />-->
 
-        <LinearLayout
+<!--        <LinearLayout
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -179,9 +181,9 @@
                 android:id="@+id/tvTripHours"
                 android:layout_gravity="center_vertical" />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
-        <LinearLayout
+<!--        <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,10 +199,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-        </LinearLayout>
+        </LinearLayout>-->
+<!--
 
 
     </LinearLayout>
+-->
 
 
 </RelativeLayout>

@@ -22,8 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,8 +49,10 @@ import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlaceAutocompleteAdapter;
 import team8.codepath.sightseeingapp.adapters.PlaceListArrayAdapter;
+import team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripLengthFragment;
 import team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripNameFragment;
 import team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripPlacesFragment;
+import team8.codepath.sightseeingapp.fragments.CreateTrip.CreateTripTagsFragment;
 import team8.codepath.sightseeingapp.models.PlaceModel;
 import team8.codepath.sightseeingapp.models.TripModel;
 import team8.codepath.sightseeingapp.models.UserModel;
@@ -67,12 +71,15 @@ public class CreateTripActivity extends AppCompatActivity
     ImageButton btnClear;
     ImageView ivPlacePhoto;
 
-    private ArrayList<PlaceModel> places;
+    public ArrayList<PlaceModel> alPlaces;
     private PlaceListArrayAdapter aPlaces;
     private ListView lvPlaces;
     private NumberPicker npTripLengthHours;
     private NumberPicker npTripLengthDays;
     public EditTag etTripTags;
+    public FragmentPagerAdapter fragmentPagerAdapter;
+
+    public TripModel newTrip;
 
     public GeoFire geoFire;
 
@@ -92,27 +99,40 @@ public class CreateTripActivity extends AppCompatActivity
         SightseeingApplication app = (SightseeingApplication)getApplicationContext();
         UserModel user = app.getUserInfo();
 
+        newTrip = new TripModel();
+
+
         databaseReferenceCreated = app.getUsersReference()
                 .child(Utilities.encodeEmail(user.getEmail()))
                 .child(Constants.FIREBASE_LOCATION_LIST_CREATED);
-
+/*
         imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
                 .addApi(Places.GEO_DATA_API)
-                .build();
+                .build();*/
         setContentView(R.layout.activity_create_trip);
-        setupViews();
+        // Find the toolbar view inside the activity layout
+        Toolbar toolbar = (Toolbar) findViewById(R.id.create_trip_toolbar);
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
+        setSupportActionBar(toolbar);
+        ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
+        vpPager.setAdapter(new CreateTripPagerAdapter(getSupportFragmentManager()));
+
+        fragmentPagerAdapter = (FragmentPagerAdapter) vpPager.getAdapter();
+
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabStrip.setViewPager(vpPager);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         DatabaseReference geoFireRef = FirebaseDatabase.getInstance().getReference("geofire");
         geoFire = new GeoFire(geoFireRef);
-        geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973));
 
 
 
-        setupPlacesAutoComplete();
+//        setupPlacesAutoComplete();
     }
 
 
@@ -124,11 +144,18 @@ public class CreateTripActivity extends AppCompatActivity
         createItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                newTrip.places = alPlaces;
+                Log.d("debug", newTrip.toString());
+                Log.d("debug", newTrip.toString());
+/*                Fragment fragmentTripLength = fragmentPagerAdapter.getItem(2);
+
+                EditText etTripName = (EditText) findViewById(R.id.etTripName);
                 String name = etTripName.getText().toString();
-                int totalLength = getTripLength();
-                String placeId = places.get(0).placeId;
-                List<String> tripTags = etTripTags.getTagList();
-                writeNewTrip(name, totalLength, placeId, places, tripTags);
+
+            //    int totalLength = getTripLength();
+                //String placeId = places.get(0).placeId;
+                //List<String> tripTags = etTripTags.getTagList();
+                //writeNewTrip(name, totalLength, placeId, places, tripTags);*/
                 return true;
             }
         });
@@ -152,14 +179,19 @@ public class CreateTripActivity extends AppCompatActivity
        vpPager.setAdapter(new CreateTripPagerAdapter(getSupportFragmentManager()));
 
 
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabStrip.setViewPager(vpPager);
+
+/*
         etTripName = (EditText) findViewById(R.id.etTripName);
         btnClear = (ImageButton) findViewById(R.id.btnClear);
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
         etTripTags = (EditTag) findViewById(R.id.etTripTags);
         etTripTags.setEditable(true);
         ivPlacePhoto = (ImageView) findViewById(R.id.ivPlacePhoto);
+*/
 
-        // Setup list of Places within trip
+        /*// Setup list of Places within trip
         lvPlaces = (ListView) findViewById(R.id.lvPlaces);
         places = new ArrayList<>();
         aPlaces = new PlaceListArrayAdapter(this, places, mGoogleApiClient);
@@ -182,9 +214,9 @@ public class CreateTripActivity extends AppCompatActivity
                         .setNegativeButton(android.R.string.no, null).show();
                 return true;
             }
-        });
+        });*/
 
-
+/*
         // Setup Number Picker for Trip Length
         npTripLengthDays = (NumberPicker) findViewById(R.id.npTripLengthDays);
         npTripLengthDays.setMinValue(0);
@@ -195,7 +227,7 @@ public class CreateTripActivity extends AppCompatActivity
         npTripLengthHours.setMinValue(0);
         npTripLengthHours.setMaxValue(23);
         npTripLengthHours.setWrapSelectorWheel(true);
-        npTripLengthHours.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        npTripLengthHours.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);*/
     }
 
 
@@ -203,27 +235,28 @@ public class CreateTripActivity extends AppCompatActivity
 
         actvPlaces = (AutoCompleteTextView) findViewById(R.id.actv_places);
         // Register a listener that receives callbacks when a suggestion has been selected
-        actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
+     //   actvPlaces.setOnItemClickListener(mAutocompleteClickListener);
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API
-        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
+/*        mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, null,
                 null);
-        actvPlaces.setAdapter(mAdapter);
+        actvPlaces.setAdapter(mAdapter);*/
 
         // Set up the 'clear text' button that clears the text in the autocomplete view
-        ImageButton btnClear = (ImageButton) findViewById(R.id.btnClear);
+/*        ImageButton btnClear = (ImageButton) findViewById(R.id.btnClear);
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 actvPlaces.setText("");
             }
-        });
+        });*/
 
     }
 
 
 
     // Once a user has selected a Place from autocomplete
+/*
     private AdapterView.OnItemClickListener mAutocompleteClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
@@ -234,20 +267,23 @@ public class CreateTripActivity extends AppCompatActivity
 
             Log.i(TAG, "Autocomplete item selected: " + primaryText);
 
-            /*
+            */
+/*
              Issue a request to the Places Geo Data API to retrieve a PlaceModel object with additional
              details about the place.
-              */
+              *//*
+
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
             Log.i(TAG, "Called getPlaceById to get PlaceModel details for " + placeId);
         }
     };
+*/
 
 
 
-    // Callback from successfully retrieving Google Place.
+/*    // Callback from successfully retrieving Google Place.
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
@@ -271,10 +307,11 @@ public class CreateTripActivity extends AppCompatActivity
             places.release();
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
-    };
+    };*/
 
 
     // Connection to Google API Fails
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
@@ -283,6 +320,7 @@ public class CreateTripActivity extends AppCompatActivity
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
     }
+
 
 
     private void writeNewTrip(String name, int totalLength, String placeId, ArrayList<PlaceModel> places, List<String> tripTags) {
@@ -316,7 +354,7 @@ public class CreateTripActivity extends AppCompatActivity
         tripID ++;
         finish();
     }
-
+/*
     public int getTripLength(){
         int totalHours;
         int daysCount = npTripLengthDays.getValue();
@@ -324,13 +362,13 @@ public class CreateTripActivity extends AppCompatActivity
         totalHours = daysCount > 0 ? (daysCount * 24) : 0;
         totalHours += hoursCount;
         return totalHours;
-    }
+    }*/
 
     // Tab Slider Setup
     // This will make the create trip look like it is multiple pages
     public class CreateTripPagerAdapter extends FragmentPagerAdapter {
 
-    private String tabTitles[] = {"Name your trip", "Add the places"};
+    private String tabTitles[] = {"Name your trip", "Add the places", "Estimate Trip Length", "Add Tags"};
 
     // Adapter gets teh manager insert of remove fragment from activity
     public CreateTripPagerAdapter(FragmentManager fm){
@@ -345,6 +383,12 @@ public class CreateTripActivity extends AppCompatActivity
         }
         else if (position ==1){
             return new CreateTripPlacesFragment();
+        }
+        else if (position == 2){
+            return new CreateTripLengthFragment();
+        }
+        else if (position == 3){
+            return new CreateTripTagsFragment();
         }
         else
             return null;
@@ -361,6 +405,8 @@ public class CreateTripActivity extends AppCompatActivity
     public int getCount() {
         return tabTitles.length;
     }
+
+
 }
 
 

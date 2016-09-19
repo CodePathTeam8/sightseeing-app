@@ -81,6 +81,12 @@ public class SearchActivity extends AppCompatActivity implements GoogleApiClient
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.left_in, R.anim.right_out);
+    }
+
     private void findNearbyPlaces(Double lat, Double longit, double distance){
         GeoFire geoFire = new GeoFire(geoDatabase);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(lat, longit), distance);

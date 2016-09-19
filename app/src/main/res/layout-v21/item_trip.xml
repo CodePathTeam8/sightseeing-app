@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><!-- A CardView that contains a TextView -->
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvTrip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/activity_horizontal_small_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_small_margin"
+    android:layout_marginTop="@dimen/activity_vertical_small_margin"
+    card_view:cardElevation="@dimen/cardview_default_elevation"
+    card_view:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/ivTripBanner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_height"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:transitionName="transitionTripMap"
+            tools:src="@android:drawable/btn_star_big_on" />
+
+        <ImageButton
+            android:id="@+id/ivFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:padding="@dimen/activity_horizontal_margin"
+            tools:src="@drawable/ic_heart_outline_34" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivTripBanner"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_small_padding">
+
+            <TextView
+                android:id="@+id/tvTripName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_horizontal"
+                android:textSize="@dimen/big_text_size"
+                android:transitionName="transitionTripName"
+                tools:text="Ice Cream Tour" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvTripDistance"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_horizontal"
+                    android:paddingRight="@dimen/zero_padding"
+                    tools:text="3.1 miles" />
+
+                <TextView
+                    android:id="@+id/tvAway"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_toEndOf="@+id/tvTripDistance"
+                    android:layout_toRightOf="@+id/tvTripDistance" />
+
+                <TextView
+                    android:id="@+id/tvTripLength"
+                    android:transitionName="transitionTripLength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    tools:text="10" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

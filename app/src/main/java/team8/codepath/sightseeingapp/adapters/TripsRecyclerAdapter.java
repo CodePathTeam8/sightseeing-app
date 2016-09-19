@@ -1,9 +1,12 @@
 package team8.codepath.sightseeingapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,6 +32,7 @@ import java.util.HashMap;
 
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.activities.TripDetailActivity;
+import team8.codepath.sightseeingapp.activities.TripListActivity;
 import team8.codepath.sightseeingapp.classes.PhotoTask;
 import team8.codepath.sightseeingapp.models.TripModel;
 
@@ -133,7 +137,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
     public void onBindViewHolder(final TripsRecyclerAdapter.ViewHolder viewHolder, final int position) {
         final TripModel trip = getItem(position);
 
-        final boolean isFavorite = (userFavorites.contains(trip.getId()));
+        final boolean[] isFavorite = {(userFavorites.contains(trip.getId()))};
 
         final ImageView bannerView = viewHolder.banner;
 
@@ -158,13 +162,13 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
                     }
                 }
             }.execute(PhotoPlaceId);
-            Log.i("favss", "api");
+            Log.i("LOADING IMAGE...", "api");
 
         }
         else{
             Bitmap imageBitMap = (Bitmap) images.get(trip.getId());
             bannerView.setImageBitmap(imageBitMap);
-            Log.i("favss", "bitmap");
+            Log.i("LOADING IMAGE...", "bitmap hashmap");
 
         }
 
@@ -172,7 +176,7 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.length.setText("Length: " + trip.getHumanReadableTotalLength());
 
         viewHolder.ivFavorite.setImageBitmap(null);
-        if(isFavorite)
+        if(isFavorite[0])
             favoriteTrip(viewHolder.ivFavorite);
         else
             unfavoriteTrip(viewHolder.ivFavorite);
@@ -180,13 +184,15 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.ivFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isFavorite){
+                if(isFavorite[0]){
                     mDatabaseReferenceFavs.child(trip.getId()).removeValue();
                     unfavoriteTrip(viewHolder.ivFavorite);
+                    isFavorite[0] = false;
                 }
                 else{
                     mDatabaseReferenceFavs.child(trip.getId()).setValue(trip);
                     favoriteTrip(viewHolder.ivFavorite);
+                    isFavorite[0] = true;
                 }
             }
         });
@@ -194,9 +200,21 @@ public class TripsRecyclerAdapter extends FirebaseRecyclerAdapter<TripModel,
         viewHolder.cvTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), TripDetailActivity.class);
+
+                Activity activity = (Activity) getContext();
+
+                Intent intent = new Intent(activity, TripDetailActivity.class);
                 intent.putExtra("trip", Parcels.wrap(trip));
-                getContext().startActivity(intent);
+
+                Pair<View, String> p1 = Pair.create((View)viewHolder.name, "transitionTripName");
+                Pair<View, String> p2 = Pair.create((View)viewHolder.banner, "transitionTripMap");
+                Pair<View, String> p3 = Pair.create((View)viewHolder.length, "transitionTripLength");
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(activity, p1, p2, p3);
+
+                activity.startActivity(intent, options.toBundle());
+
             }
         });
     }

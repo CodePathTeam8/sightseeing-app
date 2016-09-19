@@ -1,6 +1,7 @@
 package team8.codepath.sightseeingapp.activities;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -11,8 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.ChangeTransform;
+import android.transition.Explode;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -37,6 +45,9 @@ import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.adapters.PlacesRecyclerAdapter;
 import team8.codepath.sightseeingapp.classes.AppBarStateChangeListener;
 import team8.codepath.sightseeingapp.models.TripModel;
+import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.utils.Constants;
+import team8.codepath.sightseeingapp.utils.Utilities;
 
 public class TripDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -47,20 +58,41 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
     protected GoogleApiClient mGoogleApiClient;
     @BindView(R.id.tvRating)
     TextView tvRating;
+    @BindView(R.id.tvPriceAvg)
+    TextView tvPriceAvg;
+    @BindView(R.id.llPrice)
+    LinearLayout llPrice;
 
     private View mMap;
+    DatabaseReference databaseReferenceRecent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            // set an enter transition
+            getWindow().setEnterTransition(new Explode());
+            // set an exit transition
+            getWindow().setExitTransition(new Explode());
+
+        }
+
         setContentView(R.layout.activity_trip_detail);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         SightseeingApplication app = (SightseeingApplication) getApplicationContext();
+        UserModel user = app.getUserInfo();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvTrips);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        databaseReferenceRecent = app.getUsersReference()
+                .child(Utilities.encodeEmail(user.getEmail()))
+                .child(Constants.FIREBASE_LOCATION_LIST_RECENT);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
@@ -72,6 +104,8 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         distance = trip.getDistance();
         time = trip.getHumanReadableTotalLength();
         List<String> tripTags = trip.getTripTags();
+        //Recently viewed
+        databaseReferenceRecent.child(trip.getId()).setValue(trip);
 
         final TextView tripName = (TextView) findViewById(R.id.tvTitle);
         tripName.setText(name);
@@ -128,7 +162,7 @@ public class TripDetailActivity extends AppCompatActivity implements GoogleApiCl
         params.setBehavior(behavior);
 
         DatabaseReference databaseReference = app.getPlacesReference().child(trip.getId().toString());
-        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating);
+        FirebaseRecyclerAdapter adapter = new PlacesRecyclerAdapter(R.layout.item_place, databaseReference, getSupportFragmentManager(), mGoogleApiClient, fab, tvRating, tvPriceAvg, llPrice);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

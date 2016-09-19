@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import team8.codepath.sightseeingapp.R;
 import team8.codepath.sightseeingapp.SightseeingApplication;
 import team8.codepath.sightseeingapp.models.UserModel;
+import team8.codepath.sightseeingapp.services.ImagesIntentService;
 import team8.codepath.sightseeingapp.utils.Constants;
 import team8.codepath.sightseeingapp.utils.Utilities;
 
@@ -178,6 +179,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
+
+        //Start service
+        Intent msgIntent = new Intent(this, ImagesIntentService.class);
+        startService(msgIntent);
+
         Intent i = new Intent(this, TripListActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_NEW_TASK

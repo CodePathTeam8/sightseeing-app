@@ -140,6 +140,8 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             public void onClick(View view) {
                 Intent i = new Intent(TripListActivity.this, CreateTripActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
             }
         });
 
@@ -243,16 +245,26 @@ public class TripListActivity extends AppCompatActivity implements GoogleApiClie
             case R.id.navProfile:
                 Intent p = new Intent(this, ProfileActivity.class);
                 startActivity(p);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
+                break;
+
+            case R.id.navUserTrips:
+                Intent u = new Intent(this, UserTripsActivity.class);
+                startActivity(u);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
 
             case R.id.navFavorites:
                 Intent f = new Intent(this, FavoritesActivity.class);
                 startActivity(f);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
 
             case R.id.navNewTrip:
                 Intent t = new Intent(this, CreateTripActivity.class);
                 startActivity(t);
+                overridePendingTransition(R.anim.right_in, R.anim.left_out);
                 break;
 
             case R.id.navLogout:

@@ -58,20 +58,14 @@ public class SearchRecyclerAdapter extends
 
         // Populate subviews
         bannerView.setImageResource(android.R.color.transparent); // clear out old image for recycled view
-        // Picasso.with(getContext()).load(trip.getBannerPhoto()).into(bannerView);
-//        loadPlaceImage(trip.getPlaceId());
-
         String PhotoPlaceId = trip.getPlaceId();
 
-        if(PhotoPlaceId == null){
-            Log.d("debug", "hi");
-        }
 
         new PhotoTask(200, 200, mGoogleApiClient) {
             @Override
             protected void onPreExecute() {
                 // Display a temporary image to show while bitmap is loading.
-                //ivPlacePhoto.setImageResource(R.drawable.background_fb_btn);
+                bannerView.setImageResource(R.drawable.places_back);
             }
             @Override
             protected void onPostExecute(AttributedPhoto attributedPhoto) {

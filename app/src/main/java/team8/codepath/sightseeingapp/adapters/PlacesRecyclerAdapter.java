@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +36,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.uber.sdk.android.rides.RideParameters;
@@ -120,7 +120,10 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
 
                             mMap.addMarker(new MarkerOptions()
                                     .position(placeLatLng)
+                                    .title(String.valueOf(myPlace.getName()))
+                                    .snippet((String) myPlace.getPhoneNumber())
                                     .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.marker, placeNumber))));
+
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(placeLatLng));
                             mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
@@ -251,12 +254,14 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
     }
 
 
-    private class MapReadyCallback extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+    private class MapReadyCallback extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+            GoogleApiClient.OnConnectionFailedListener {
 
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            mMap.setOnMarkerClickListener(this);
         }
 
         @Override
@@ -271,6 +276,20 @@ public class PlacesRecyclerAdapter extends FirebaseRecyclerAdapter<PlaceModel,
                     Toast.LENGTH_SHORT).show();
         }
 
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            // Retrieve the data from the marker.
+
+            // Check if a click count was set, then display the click count.
+            Toast.makeText(context, "This is my Toast message!",
+                    Toast.LENGTH_LONG).show();
+            marker.showInfoWindow();
+            // Return false to indicate that we have not consumed the event and that we wish
+            // for the default behavior to occur (which is for the camera to move such that the
+            // marker is centered and for the marker's info window to open, if it has one).
+            return false;
+
+        }
     }
 
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!-- A CardView that contains a TextView -->
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:foreground="?android:attr/selectableItemBackground"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvTrip"
     android:layout_width="match_parent"
